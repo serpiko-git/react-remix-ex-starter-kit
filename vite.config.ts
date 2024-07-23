@@ -1,6 +1,7 @@
-import { vitePlugin as remix } from "@remix-run/dev";
-import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { vitePlugin as remix } from '@remix-run/dev';
+import { defineConfig } from 'vite';
+import tsconfigPaths from 'vite-tsconfig-paths';
+import checker from 'vite-plugin-checker';
 
 export default defineConfig({
   plugins: [
@@ -12,5 +13,11 @@ export default defineConfig({
       },
     }),
     tsconfigPaths(),
+    checker({
+      typescript: true,
+      eslint: {
+        lintCommand: 'eslint .',
+      },
+    }),
   ],
 });
