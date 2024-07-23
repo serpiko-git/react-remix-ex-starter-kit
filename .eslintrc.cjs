@@ -66,8 +66,10 @@ module.exports = {
    */
   extends: [
     'eslint:recommended', // * eslint
-    'react-app', // * eslint-config-react-app
-    'react-app/jest', // * @testing-library/jest-dom
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    // 'react-app', // * eslint-config-react-app
+    // 'react-app/jest', // * @testing-library/jest-dom
     'plugin:@tanstack/eslint-plugin-query/recommended', // * @tanstack/eslint-plugin-query
     'plugin:prettier/recommended', // * prettier, * eslint-config-prettier
   ],
