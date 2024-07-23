@@ -1,4 +1,5 @@
 {
+  /** 컴파일 대상 지정 */
   "include": [
     "**/*.ts",
     "**/*.tsx",
@@ -7,26 +8,41 @@
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx"
   ],
+
+  /** 컴파일 예외 목록 */
+  "exclude": ["node_modules", "public"],
+
+  /** ts 컴파일러 옵션 */
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@remix-run/node", "vite/client"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "target": "ES2022",
+    "lib": ["DOM", "DOM.Iterable", "ES2022", "WebWorker"], // ECMAScript 표준 라이브러리의 목록을 명시적으로 설정함
+    "types": ["@remix-run/node", "vite/client"], // TypeScript가 사용할 타입 정의 파일을 명시함. 이 옵션은 TypeScript가 특정 패키지의 타입 정의를 자동으로 포함하도록 함
+    "isolatedModules": true, // 각 파일을 독립적인 모듈로 취급하고, 파일 간에 전역 스코프를 공유하지 않도록 함. 파일을 모듈처럼 독립적으로 컴파일하게 됨
+    "esModuleInterop": true, // ES모듈에서 CommonJS모듈을 가져올때 import문을 사용하여 가져올 수 있다. 호환성을 높히고 모듈 간의 이전 코드를 더 쉽게 업그레이드할 수 있다
+    "jsx": "react-jsx", // JSX 코드를 React.createElement 함수 호출로 변환
+    "module": "ESNext", // 파일간 import 문법 commonjs 는 require, es2015, esnext는 import로 사용. IE 호환성의 경우 es5의 commonjs 사용, BigInt함수나 타입등 신버전 js는 esnext로 사용
+    "moduleResolution": "Bundler", // 모듈 해석방식
+    "resolveJsonModule": true, // json 파일을 모듈로 가져올 수 있도록 함
+    "target": "ES2022", // TypeScript가 컴파일된 JavaScript 코드의 ECMAScript(ES) 버전을 설정. ES2022는 최신 JavaScript 기능을 포함하며, 새로운 문법과 현대적인 API를 지원한다
     "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
+    /** strict 모드 (아래 옵션이 모두 활성화 된다) */
+    // noImplicitAny
+    // noImplicitThis
+    // alwaysStrict
+    // strictBindCallApply
+    // strictFunctionTypes
+    // strictNullChecks
+    // strictPropertyInitialization
+    "allowJs": true, // js 파일을 ts에서 import 하여 사용
+    "skipLibCheck": true, // 타입 선언 파일(*.d.ts)검사를 스킵, 외부 라이브러리 타입 선언 검사를 생략한다
+    "forceConsistentCasingInFileNames": true, // 파일이름의 대소문자의 일관성을 강제함
+    "baseUrl": ".", // 상대 모듈 경로를 해결할 때 사용되는 기본 경로, src에서 기준 디렉토리가 된다
     "paths": {
+      // 모듈을 가져올 때 상대 경로가 아닌 별칭을 사용할 수 있다, import from './app/some/path' 를 import from '~/some/path'로 가져올 수 있다
       "~/*": ["./app/*"]
     },
 
     // Vite takes care of building everything, not tsc.
-    "noEmit": true
+    "noEmit": true, // 컴파일러가 실행 될때 .js파일을 생성하지 않도록 한다. 오직 타입 체크만 수행하여 빠른 빌드 및 타입 검사만 진행한다
+    "removeComments": true // 컴파일시 주석제거
   }
 }

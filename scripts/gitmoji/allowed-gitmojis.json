@@ -1,0 +1,42 @@
+[
+  {
+    "emoji": "✨",
+    "description": "새로운 기능 추가 / 새로운 파일 추가",
+    "name": "feat"
+  },
+  {
+    "emoji": "🐛",
+    "description": "버그 수정",
+    "name": "fix"
+  },
+  {
+    "emoji": "📝",
+    "description": ".md 파일이나 주석에 한정한 수정",
+    "name": "docs"
+  },
+  {
+    "emoji": "🌐",
+    "description": "번역 관련 업데이트",
+    "name": "i18n"
+  },
+  {
+    "emoji": "🎨",
+    "description": "코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우",
+    "name": "style"
+  },
+  {
+    "emoji": "♻️",
+    "description": "코드의 구조 및 형태를 개선하는 작업 / 결과물이 기존과 동일해야 함",
+    "name": "refactor"
+  },
+  {
+    "emoji": "🔖",
+    "description": "릴리즈 태깅, Changelog 작성",
+    "name": "release"
+  },
+  {
+    "emoji": "💡",
+    "description": "그 외 / 패키지 버전 업데이트",
+    "name": "chore"
+  }
+]
