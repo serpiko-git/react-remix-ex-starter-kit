@@ -1,1 +1,83 @@
-{"gitmoji.onlyUseCustomEmoji":true,"gitmoji.outputType": "emoji","gitmoji.showEmojiCode": true,"gitmoji.addCustomEmoji": [{"emoji":"✨","description":"새로운 기능 추가 / 새로운 파일 추가","code":":feat:"},{"emoji":"🐛","description":"버그 수정","code":":fix:"},{"emoji":"📝","description":".md 파일이나 주석에 한정한 수정","code":":docs:"},{"emoji":"🌐","description":"번역 관련 업데이트","code":":i18n:"},{"emoji":"🎨","description":"코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우","code":":style:"},{"emoji":"♻️","description":"코드의 구조 및 형태를 개선하는 작업 / 결과물이 기존과 동일해야 함","code":":refactor:"},{"emoji":"🔖","description":"릴리즈 태깅, Changelog 작성","code":":release:"},{"emoji":"💡","description":"그 외 / 패키지 버전 업데이트","code":":chore:"}]}
+{
+  /** 검색 제외 파일 */
+  "search.exclude": {
+    "public": true
+  },
+  /** 프롬프트 */
+  "typescript.enablePromptUseWorkspaceTsdk": true, // 작업 공간 내에서 사용 가능한 ts sdk를 권고
+  /** ui 설정 */
+  "workbench.colorCustomizations": {
+    "tab.activeBackground": "#505050", // 활성화된 탭 배경색 변경
+    "tab.activeBorder": "#b4b4b4" // 활성화된 탭 아래 보더 색상 변경
+  },
+  /** 에디터 설정 */
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // 모든 파일 형식의 기본 포맷터로 prettier 사용
+  "[json]": {
+    // .json
+    "editor.quickSuggestions": {
+      "strings": true // 문자열 완성 사용
+    },
+    "editor.suggest.insertMode": "replace", // 제안된 문자열을 기존 코드를 대체
+    "gitlens.codeLens.scopes": ["document"] // gitlens 코드 분석을 문서 영역에만 적용
+  },
+  "editor.tabSize": 2, // 탭 크기
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit" // 저장 시 코드 수정 제안 기능을 명시적으로 허용
+  },
+  "editor.formatOnSave": true, // 파일 저장 시 자동으로 코드 포멧을 적용
+  "gitmoji.onlyUseCustomEmoji": true,
+  "gitmoji.outputType": "emoji",
+  "gitmoji.showEmojiCode": true,
+  "gitmoji.addCustomEmoji": [
+    {
+      "emoji": "✨",
+      "description": "새로운 기능 추가 / 새로운 파일 추가",
+      "code": ":feat:"
+    },
+    {
+      "emoji": "🐛",
+      "description": "버그 수정",
+      "code": ":fix:"
+    },
+    {
+      "emoji": "📝",
+      "description": ".md 파일이나 주석에 한정한 수정",
+      "code": ":docs:"
+    },
+    {
+      "emoji": "🌐",
+      "description": "번역 관련 업데이트",
+      "code": ":i18n:"
+    },
+    {
+      "emoji": "🎨",
+      "description": "코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우",
+      "code": ":style:"
+    },
+    {
+      "emoji": "♻️",
+      "description": "코드의 구조 및 형태를 개선하는 작업 / 결과물이 기존과 동일해야 함",
+      "code": ":refactor:"
+    },
+    {
+      "emoji": "🔖",
+      "description": "릴리즈 태깅, Changelog 작성",
+      "code": ":release:"
+    },
+    {
+      "emoji": "💡",
+      "description": "그 외 / 패키지 버전 업데이트",
+      "code": ":chore:"
+    }
+  ],
+  "i18n-ally.localesPaths": ["public/locales"]
+}
