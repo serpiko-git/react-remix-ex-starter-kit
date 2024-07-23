@@ -65,6 +65,7 @@ module.exports = {
    * @see {@link https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb} airbnb eslint rules
    */
   extends: [
+    'plugin:import/recommended',
     'eslint:recommended', // * eslint
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
@@ -175,6 +176,7 @@ module.exports = {
      * @description 수동 룰
      */
     'no-console': WARNING, // console.log 사용여부
+    '@typescript-eslint/no-unused-vars': WARNING,
     'no-unused-vars': WARNING, // 사용하지 않는 변수
     camelcase: OFF, // 카멜케이스 사용 허용
     'no-underscore-dangle': OFF, // 변수에 밑줄 허용 여부 (var _foo;)
@@ -222,6 +224,7 @@ module.exports = {
      */
     'no-shadow': OFF, // no-shadow 기능을 끄고
     '@typescript-eslint/no-shadow': [ERROR], // @typescript-eslint/no-shadow 를 활성화 시킨다
+    'react/react-in-jsx-scope': 'off', // React 17 이상에서는 React를 필수로 불러오지 않아도 되므로, 이 규칙을 비활성화
   },
 
   /**
@@ -245,6 +248,7 @@ module.exports = {
       env: { node: true },
       parserOptions: { sourceType: 'script' },
       rules: {
+        '@typescript-eslint/no-unused-vars': WARNING,
         'no-unused-vars': WARNING,
         /**
          * ReduxToolkit의 immer 에서 state에 값을 바로 적용하기위한 설정
@@ -279,7 +283,7 @@ module.exports = {
     'import/resolver': {
       /** Node.js 모듈 해석 리졸버, 확장자는 EXTENSIONS 을 사용한다 */
       node: { extensions: EXTENSIONS },
-      typescript: { alwaysTryTypes: true },
+      typescript: { extensions: EXTENSIONS, alwaysTryTypes: true },
     },
     react: {
       version: 'detect',
@@ -298,6 +302,8 @@ module.exports = {
    * - node_modules와 `.`으로 시작하는 설정 파일은 기본으로 무시하도록 되어있음을 참고
    */
   ignorePatterns: [
+    '.eslintrc.cjs',
+    'vite.config.ts',
     '!**/.server',
     '!**/.client',
     'build',
