@@ -7,11 +7,11 @@
  * - commitlint.config.js
  */
 
-import { readFileSync, writeFile } from "fs";
-import { join } from "path";
-import { inspect } from "util";
+import { applyEdits, modify } from 'jsonc-parser';
 
-import { applyEdits, modify } from "jsonc-parser";
+import { readFileSync, writeFile } from 'fs';
+import { join } from 'path';
+import { inspect } from 'util';
 
 /** Gitmoji 타입
  * emoji: string;
@@ -21,25 +21,25 @@ import { applyEdits, modify } from "jsonc-parser";
 
 const GITMOJIRC = {
   autoAdd: false,
-  emojiFormat: "emoji",
+  emojiFormat: 'emoji',
   scopePrompt: true,
   messagePrompt: true,
   capitalizeTitle: false,
-  gitmojisUrl: "",
+  gitmojisUrl: '',
 };
 
-const file = readFileSync("scripts/gitmoji/allowed-gitmojis.json", "utf-8");
+const file = readFileSync('scripts/gitmoji/allowed-gitmojis.json', 'utf-8');
 export const ALLOWED_GITMOJIS = JSON.parse(file);
 
 export function getGitmojisUrl(data) {
-  console.log("[gitmoji] Generate gitmojisUrl...");
+  console.log('[gitmoji] Generate gitmojisUrl...');
   const gitmojis = data.map((gitmoji) => ({
     ...gitmoji,
     code: `:${gitmoji.name}:`,
   }));
   const stringified = JSON.stringify({ gitmojis });
   return `data:application/json;base64,${Buffer.from(stringified).toString(
-    "base64"
+    'base64',
   )}`;
 }
 
@@ -51,24 +51,24 @@ export function updateGitmojiRC(data) {
     gitmojisUrl: uri,
   };
   writeFile(
-    join(process.cwd(), ".gitmojirc.json"),
+    join(process.cwd(), '.gitmojirc.json'),
     JSON.stringify(gitmojirc),
     () => {
       console.log('[gitmoji] Update ".gitmojirc.json" success');
-    }
+    },
   );
 }
 
 export function updateCommitLintConfig(data) {
-  const filePath = join(process.cwd(), "commitlint.config.js");
+  const filePath = join(process.cwd(), 'commitlint.config.js');
 
   const EMOJI_CHECK_LIST = Object.fromEntries(
-    data.map(({ emoji, name }) => [emoji, name])
+    data.map(({ emoji, name }) => [emoji, name]),
   );
   const MATCH_GITMOJI = new RegExp(
-    `(${Array.from(Object.keys(EMOJI_CHECK_LIST)).join("|")})`
+    `(${Array.from(Object.keys(EMOJI_CHECK_LIST)).join('|')})`,
   );
-  let configFileContents = readFileSync(filePath, { encoding: "utf-8" });
+  let configFileContents = readFileSync(filePath, { encoding: 'utf-8' });
   configFileContents = configFileContents
     .replace(/const MATCH_GITMOJI.*;/, `const MATCH_GITMOJI=${MATCH_GITMOJI};`)
     .replace(
@@ -76,7 +76,7 @@ export function updateCommitLintConfig(data) {
       `const EMOJI_CHECK_LIST=${inspect(EMOJI_CHECK_LIST, {
         compact: true,
         breakLength: Infinity,
-      })};` // replace할 단어 검출하는 정규식이 줄바꿈에 대응하지 않아 object가 줄바꿈 되지 않도록 처리함
+      })};`, // replace할 단어 검출하는 정규식이 줄바꿈에 대응하지 않아 object가 줄바꿈 되지 않도록 처리함
     );
 
   writeFile(filePath, configFileContents, () => {
@@ -85,23 +85,23 @@ export function updateCommitLintConfig(data) {
 }
 
 export function updateVSCodeSettings(_data) {
-  const filePath = join(process.cwd(), ".vscode", "settings.json");
+  const filePath = join(process.cwd(), '.vscode', 'settings.json');
   const customEmojis = ALLOWED_GITMOJIS.map(({ emoji, name, description }) => ({
     emoji,
     description,
     code: `:${name}:`,
   }));
-  let settings = readFileSync(filePath, { encoding: "utf-8" });
+  let settings = readFileSync(filePath, { encoding: 'utf-8' });
   [
-    ["gitmoji.onlyUseCustomEmoji", true],
-    ["gitmoji.outputType", "emoji"],
-    ["gitmoji.showEmojiCode", true],
-    ["gitmoji.addCustomEmoji", customEmojis],
+    ['gitmoji.onlyUseCustomEmoji', true],
+    ['gitmoji.outputType', 'emoji'],
+    ['gitmoji.showEmojiCode', true],
+    ['gitmoji.addCustomEmoji', customEmojis],
   ].forEach(([jsonPath, value]) => {
     const config = {};
     settings = applyEdits(
       settings,
-      modify(settings, [jsonPath], value, config)
+      modify(settings, [jsonPath], value, config),
     );
   });
   writeFile(filePath, settings, () => {

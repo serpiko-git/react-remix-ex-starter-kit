@@ -47,6 +47,9 @@ module.exports = {
     browser: true, // browser 설정으로 windows 객체를 참조 가능하다
     es2021: true, // ECMAScript 2021 전역변수 사전 정의
     jest: true, // jest 활성화 시, describe, test, expect 함수를 no-undef 규칙에서 예외 시킨다
+    commonjs: true,
+    es6: true,
+    node: true,
   },
 
   /**
@@ -169,8 +172,8 @@ module.exports = {
      * @custom
      * @description 수동 룰
      */
-    'no-console': OFF, // console.log 사용여부
-    'no-unused-vars': OFF, // 사용하지 않는 변수
+    'no-console': WARNING, // console.log 사용여부
+    'no-unused-vars': WARNING, // 사용하지 않는 변수
     camelcase: OFF, // 카멜케이스 사용 허용
     'no-underscore-dangle': OFF, // 변수에 밑줄 허용 여부 (var _foo;)
     /** 함수나 클래스 메서드에 명시적 반환 유형을 강제하는 여부
@@ -236,8 +239,8 @@ module.exports = {
    */
   overrides: [
     {
-      env: { node: true },
       files: ['.eslintrc.{js,cjs}', '*.{js}', 'src/**/*.slice.ts'],
+      env: { node: true },
       parserOptions: { sourceType: 'script' },
       rules: {
         'no-unused-vars': WARNING,
@@ -247,6 +250,14 @@ module.exports = {
          *  @see {@link https://redux-toolkit.js.org/usage/immer-reducers#linting-state-mutations}
          */
         'no-param-reassign': ['error', { props: false }],
+      },
+    },
+
+    // Node
+    {
+      files: ['.eslintrc.cjs', 'server.js'],
+      env: {
+        node: true,
       },
     },
   ],
@@ -264,10 +275,19 @@ module.exports = {
      * @see {@link https://github.com/import-js/eslint-plugin-import/issues/1485#issuecomment-535351922}
      */
     'import/resolver': {
-      typescript: { extensions: EXTENSIONS },
       /** Node.js 모듈 해석 리졸버, 확장자는 EXTENSIONS 을 사용한다 */
       node: { extensions: EXTENSIONS },
+      typescript: { alwaysTryTypes: true },
     },
+    react: {
+      version: 'detect',
+    },
+    formComponents: ['Form'],
+    linkComponents: [
+      { name: 'Link', linkAttribute: 'to' },
+      { name: 'NavLink', linkAttribute: 'to' },
+    ],
+    'import/internal-regex': '^~/',
   },
 
   /**
@@ -276,13 +296,15 @@ module.exports = {
    * - node_modules와 `.`으로 시작하는 설정 파일은 기본으로 무시하도록 되어있음을 참고
    */
   ignorePatterns: [
+    '!**/.server',
+    '!**/.client',
     'build',
     'dist',
     'public',
     'package.json',
     '**/index.html',
     '**/assets/*.html',
-    'yarn.lock',
+    'pnpm-lock.lock',
     '*.sass',
     '*.scss',
     '*.css',
