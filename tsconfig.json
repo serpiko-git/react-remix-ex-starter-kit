@@ -40,6 +40,7 @@
       // 모듈을 가져올 때 상대 경로가 아닌 별칭을 사용할 수 있다, import from './app/some/path' 를 import from '~/some/path'로 가져올 수 있다
       "~/*": ["./app/*"]
     },
+    // "typeRoots": ["./node_modules/@types"],
 
     // Vite takes care of building everything, not tsc.
     "noEmit": true, // 컴파일러가 실행 될때 .js파일을 생성하지 않도록 한다. 오직 타입 체크만 수행하여 빠른 빌드 및 타입 검사만 진행한다

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LinksFunction, MetaFunction } from '@remix-run/node';
 import {
   Links,
   Meta,
@@ -7,7 +8,21 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-import './tailwind.css';
+
+// import '~/styles/tailwind.css';
+
+import appStylesHref from '~/styles/app.css?url';
+
+import SideBar from './layout/SideBar';
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: appStylesHref },
+];
+
+export const meta: MetaFunction = () => [
+  { title: 'Derivatives Admin Debug' },
+  { name: 'description', content: 'Welcome to Remix!' },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -19,6 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
+        <SideBar />
         {children}
         <ScrollRestoration />
         <Scripts />

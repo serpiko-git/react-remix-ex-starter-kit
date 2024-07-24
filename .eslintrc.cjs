@@ -184,6 +184,7 @@ module.exports = {
      * @see {@link https://gitlab.univ-lorraine.fr/laroche5/r203_depot_a_cloner/-/blob/main/node_modules/@typescript-eslint/eslint-plugin/docs/rules/explicit-function-return-type.md}
      */
     '@typescript-eslint/explicit-function-return-type': OFF,
+    '@typescript-eslint/no-explicit-any': OFF,
 
     /**
      * @prettier
