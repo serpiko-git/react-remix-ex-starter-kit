@@ -13,7 +13,7 @@ import {
 } from '@remix-run/react';
 
 import ClientStyleContext from './layout/mui/ClientStyleContext';
-import Layout from './layout/mui/Layout';
+// import Layout from './layout/mui/Layout';
 import theme from './layout/mui/theme';
 
 interface DocumentProps {
@@ -80,9 +80,9 @@ const Document = withEmotionCache(
 export default function App() {
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      {/* <Layout> */}
+      <Outlet />
+      {/* </Layout> */}
     </Document>
   );
 }
@@ -114,12 +114,12 @@ export function ErrorBoundary() {
 
     return (
       <Document title={`${error.status} ${error.statusText}`}>
-        <Layout>
-          <h1>
-            {error.status}: {error.statusText}
-          </h1>
-          {message}
-        </Layout>
+        {/* <Layout> */}
+        <h1>
+          {error.status}: {error.statusText}
+        </h1>
+        {message}
+        {/* </Layout> */}
       </Document>
     );
   }
@@ -128,17 +128,17 @@ export function ErrorBoundary() {
     console.error(error);
     return (
       <Document title="Error!">
-        <Layout>
-          <div>
-            <h1>There was an error</h1>
-            <p>{error.message}</p>
-            <hr />
-            <p>
-              Hey, developer, you should replace this with what you want your
-              users to see.
-            </p>
-          </div>
-        </Layout>
+        {/* <Layout> */}
+        <div>
+          <h1>There was an error</h1>
+          <p>{error.message}</p>
+          <hr />
+          <p>
+            Hey, developer, you should replace this with what you want your
+            users to see.
+          </p>
+        </div>
+        {/* </Layout> */}
       </Document>
     );
   }

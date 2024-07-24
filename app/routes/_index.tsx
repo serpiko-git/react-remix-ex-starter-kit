@@ -4,6 +4,8 @@ import { Typography, Link } from '@mui/material';
 import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink } from '@remix-run/react';
 
+import Main from '~/features/main/Main';
+
 // https://remix.run/docs/en/main/route/meta
 export const meta: MetaFunction = () => [
   { title: 'Remix Starter' },
@@ -14,12 +16,14 @@ export const meta: MetaFunction = () => [
 export default function Index() {
   return (
     <React.Fragment>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-        Material UI Remix in TypeScript example
-      </Typography>
-      <Link to="/about" color="secondary" component={RemixLink}>
-        Go to the about page
-      </Link>
+      <Main>
+        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+          React Remix Express in TypeScript. Mui Remix Server.
+        </Typography>
+        <Link to="/dashboard" color="secondary" component={RemixLink}>
+          Go to the order-dashboard
+        </Link>
+      </Main>
     </React.Fragment>
   );
 }

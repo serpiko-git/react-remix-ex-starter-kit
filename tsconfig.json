@@ -21,7 +21,8 @@
     "esModuleInterop": true, // ES모듈에서 CommonJS모듈을 가져올때 import문을 사용하여 가져올 수 있다. 호환성을 높히고 모듈 간의 이전 코드를 더 쉽게 업그레이드할 수 있다
     "jsx": "react-jsx", // JSX 코드를 React.createElement 함수 호출로 변환
     "module": "ESNext", // 파일간 import 문법 commonjs 는 require, es2015, esnext는 import로 사용. IE 호환성의 경우 es5의 commonjs 사용, BigInt함수나 타입등 신버전 js는 esnext로 사용
-    "moduleResolution": "Bundler", // 모듈 해석방식
+    // "moduleResolution": "Bundler", // 모듈 해석방식
+    "moduleResolution": "Node", // 모듈 해석방식
     "resolveJsonModule": true, // json 파일을 모듈로 가져올 수 있도록 함
     "target": "ES2022", // TypeScript가 컴파일된 JavaScript 코드의 ECMAScript(ES) 버전을 설정. ES2022는 최신 JavaScript 기능을 포함하며, 새로운 문법과 현대적인 API를 지원한다
     "strict": true,

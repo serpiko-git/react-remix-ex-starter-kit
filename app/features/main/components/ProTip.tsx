@@ -14,11 +14,15 @@ export default function ProTip() {
   return (
     <Typography sx={{ mt: 6, mb: 3, color: 'text.secondary' }}>
       <LightBulbIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-      {'Pro tip: See more '}
-      <Link href="https://mui.com/material-ui/getting-started/templates/">
-        templates
+      {'Tip: order-dashboard 는 '}
+      <Link
+        href="https://remix.run/docs/en/main/guides/spa-mode"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Clent Side Render
       </Link>
-      {' in the Material UI documentation.'}
+      {' 로 구동됩니다.'}
     </Typography>
   );
 }
