@@ -111,6 +111,7 @@ module.exports = {
      */
     'import/no-named-as-default': WARNING,
     'import/no-unresolved': [ERROR, { caseSensitive: true }], // 모듈이 실제 존재하는지 확인
+    'import/named': WARNING,
     // import할때 EXTENSIONS 리스트의 확장자를 빼도록 함
     'import/extensions': [
       ERROR,

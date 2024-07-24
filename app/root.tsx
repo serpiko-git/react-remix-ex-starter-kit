@@ -1,36 +1,25 @@
-// import '~/styles/tailwind.css';
-// import appStylesHref from '~/styles/app.css?url';
-
 import * as React from 'react';
 
 import { withEmotionCache } from '@emotion/react';
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
-import { LinksFunction, MetaFunction } from '@remix-run/node';
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  LiveReload,
   useRouteError,
   isRouteErrorResponse,
 } from '@remix-run/react';
 
-import Layout from '~/layout/mui/Layout';
-
 import ClientStyleContext from './layout/mui/ClientStyleContext';
+import Layout from './layout/mui/Layout';
 import theme from './layout/mui/theme';
 
 interface DocumentProps {
   children: React.ReactNode;
   title?: string;
 }
-
-export const meta: MetaFunction = () => [
-  { title: 'Derivatives Admin Debug' },
-  { name: 'description', content: 'Welcome to Remix!' },
-];
 
 const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
@@ -80,7 +69,6 @@ const Document = withEmotionCache(
           {children}
           <ScrollRestoration />
           <Scripts />
-          <LiveReload />
         </body>
       </html>
     );
@@ -89,7 +77,6 @@ const Document = withEmotionCache(
 
 // https://remix.run/docs/en/main/route/component
 // https://remix.run/docs/en/main/file-conventions/routes
-// eslint-disable-next-line import/export
 export default function App() {
   return (
     <Document>

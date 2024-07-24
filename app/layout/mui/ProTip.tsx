@@ -1,9 +1,6 @@
 import * as React from 'react';
 
-import Link from '@mui/material/Link';
-// eslint-disable-next-line import/named
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
-import Typography from '@mui/material/Typography';
+import { Typography, Link, SvgIcon, SvgIconProps } from '@mui/material';
 
 function LightBulbIcon(props: SvgIconProps) {
   return (
