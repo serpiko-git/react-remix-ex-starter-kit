@@ -1,6 +1,7 @@
 {
   /** 컴파일 대상 지정 */
   "include": [
+    "remix.env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/.server/**/*.ts",
@@ -37,7 +38,7 @@
     "forceConsistentCasingInFileNames": true, // 파일이름의 대소문자의 일관성을 강제함
     "baseUrl": ".", // 상대 모듈 경로를 해결할 때 사용되는 기본 경로, src에서 기준 디렉토리가 된다
     "paths": {
-      // 모듈을 가져올 때 상대 경로가 아닌 별칭을 사용할 수 있다, import from './app/some/path' 를 import from '~/some/path'로 가져올 수 있다
+      // 모듈을 가져올 때 상대 경로가 아닌 별칭baseUrl을 사용할 수 있다, import from './app/some/path' 를 import from '~/some/path'로 가져올 수 있다
       "~/*": ["./app/*"]
     },
     // "typeRoots": ["./node_modules/@types"],
