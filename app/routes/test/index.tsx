@@ -35,9 +35,9 @@ export default function index() {
         </thead>
         <tbody>
           {datas.length ? (
-            datas.map((data) => (
+            datas.map((data, i) => (
               <>
-                <tr>
+                <tr key={`todo_${i}`}>
                   <td>{data.id}</td>
                   <td>{data.name}</td>
                   <td>{data.username}</td>
