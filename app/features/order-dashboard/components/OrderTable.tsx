@@ -558,6 +558,7 @@ export default function OrderTable() {
           variant="outlined"
           color="neutral"
           endDecorator={<KeyboardArrowRightIcon />}
+          onClick={(e) => console.log(e)}
         >
           Next
         </Button>
