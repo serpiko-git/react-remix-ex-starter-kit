@@ -6,9 +6,11 @@ import { Link as RemixLink } from '@remix-run/react';
 
 import Main from '~/features/main/Main';
 
-// https://remix.run/docs/en/main/route/meta
+/**
+ * @see {@link https://remix.run/docs/en/main/route/meta} - 라우트에 필요한 HTML 메타 태그 관리
+ */
 export const meta: MetaFunction = () => [
-  { title: 'Remix Starter' },
+  { title: 'React Remix express Starter-Kit' },
   { name: 'description', content: 'Welcome to remix!' },
 ];
 

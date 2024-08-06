@@ -1,12 +1,13 @@
 import { vitePlugin as remix } from '@remix-run/dev';
-import react from '@vitejs/plugin-react';
+import { installGlobals } from '@remix-run/node';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import checker from 'vite-plugin-checker';
 
+installGlobals();
+
 export default defineConfig({
   plugins: [
-    react(),
     remix({
       future: {
         v3_fetcherPersist: true,

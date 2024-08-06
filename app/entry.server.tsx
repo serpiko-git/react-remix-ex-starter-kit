@@ -1,6 +1,5 @@
-import { CacheProvider } from '@emotion/react';
 import createEmotionServer from '@emotion/server/create-instance';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { createReadableStreamFromReadable } from '@remix-run/node';
 import type { AppLoadContext, EntryContext } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
@@ -10,8 +9,8 @@ import { renderToPipeableStream } from 'react-dom/server';
 
 import { PassThrough } from 'node:stream';
 
-import createEmotionCache from './layout/mui/createEmotionCache';
-import theme from './layout/mui/theme';
+import createEmotionCache from './common/mui/common/createEmotionCache';
+import { MuiProvider } from './common/mui/MuiProvider';
 
 const ABORT_DELAY = 5_000;
 
@@ -80,16 +79,14 @@ function handleBrowserRequest(
     const { extractCriticalToChunks } = createEmotionServer(cache);
 
     const MuiRemixServerElement = (
-      <CacheProvider value={cache}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <RemixServer
-            context={remixContext}
-            url={request.url}
-            abortDelay={ABORT_DELAY}
-          />
-        </ThemeProvider>
-      </CacheProvider>
+      <MuiProvider>
+        <CssBaseline />
+        <RemixServer
+          context={remixContext}
+          url={request.url}
+          abortDelay={ABORT_DELAY}
+        />
+      </MuiProvider>
     );
 
     const { pipe, abort } = renderToPipeableStream(MuiRemixServerElement, {

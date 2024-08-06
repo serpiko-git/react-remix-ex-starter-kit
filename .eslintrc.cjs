@@ -67,8 +67,8 @@ module.exports = {
   extends: [
     'plugin:import/recommended',
     'eslint:recommended', // * eslint
-    'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
     // 'react-app', // * eslint-config-react-app
     // 'react-app/jest', // * @testing-library/jest-dom
     'plugin:@tanstack/eslint-plugin-query/recommended', // * @tanstack/eslint-plugin-query
@@ -82,6 +82,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest', // ECMAScript 최신버전 지원 (latest는 현재 2022)
     sourceType: 'module', // 모듈 형식의 코드를 지원
+    ecmaFeatures: {
+      jsx: true,
+    },
     // project: ['./tsconfig.json'], // `./tsconfig.json` 파일설정을 사용하여 코드 분석 // NOT USE
   },
 
@@ -240,37 +243,6 @@ module.exports = {
   ],
 
   /**
-   * @overrides
-   * @description 프로젝트 내 일부 파일에 대해 복수 설정하여 덮어쓴다
-   * - JS & Node.js
-   */
-  overrides: [
-    {
-      files: ['.eslintrc.{js,cjs}', '*.{js}', 'src/**/*.slice.ts'],
-      env: { node: true },
-      parserOptions: { sourceType: 'script' },
-      rules: {
-        '@typescript-eslint/no-unused-vars': WARNING,
-        'no-unused-vars': WARNING,
-        /**
-         * ReduxToolkit의 immer 에서 state에 값을 바로 적용하기위한 설정
-         * 매개 변수에 대한 할당 방지기능을 해제한다
-         *  @see {@link https://redux-toolkit.js.org/usage/immer-reducers#linting-state-mutations}
-         */
-        'no-param-reassign': ['error', { props: false }],
-      },
-    },
-
-    // Node
-    {
-      files: ['.eslintrc.cjs', 'server.js'],
-      env: {
-        node: true,
-      },
-    },
-  ],
-
-  /**
    * @settings
    * @description 추가 설정
    */
@@ -297,6 +269,89 @@ module.exports = {
     ],
     'import/internal-regex': '^~/',
   },
+
+  /**
+   * @overrides
+   * @description 프로젝트 내 일부 파일에 대해 복수 설정하여 덮어쓴다
+   * - JS & Node.js
+   */
+  overrides: [
+    {
+      files: ['.eslintrc.{js,cjs}', '*.{js}', 'src/**/*.slice.ts'],
+      env: { node: true },
+      parserOptions: { sourceType: 'script' },
+      rules: {
+        '@typescript-eslint/no-unused-vars': WARNING,
+        'no-unused-vars': WARNING,
+        /**
+         * ReduxToolkit의 immer 에서 state에 값을 바로 적용하기위한 설정
+         * 매개 변수에 대한 할당 방지기능을 해제한다
+         *  @see {@link https://redux-toolkit.js.org/usage/immer-reducers#linting-state-mutations}
+         */
+        'no-param-reassign': ['error', { props: false }],
+      },
+    },
+
+    // React
+    // {
+    //   files: ['**/*.{jsx,tsx}'],
+    //   plugins: ['react', 'jsx-a11y'],
+    //   extends: [
+    //     'plugin:react/recommended',
+    //     'plugin:react/jsx-runtime',
+    //     'plugin:react-hooks/recommended',
+    //     'plugin:jsx-a11y/recommended',
+    //     'plugin:@tanstack/eslint-plugin-query/recommended', // * @tanstack/eslint-plugin-query
+    //   ],
+    //   settings: {
+    //     react: {
+    //       version: 'detect',
+    //     },
+    //     formComponents: ['Form'],
+    //     linkComponents: [
+    //       { name: 'Link', linkAttribute: 'to' },
+    //       { name: 'NavLink', linkAttribute: 'to' },
+    //     ],
+    //     'import/resolver': {
+    //       typescript: {},
+    //     },
+    //   },
+    //   rules: {
+    //     '@typescript-eslint/no-explicit-any': OFF,
+    //   },
+    // },
+
+    // Typescript
+    // {
+    //   files: ['**/*.{ts,tsx}'],
+    //   plugins: ['@typescript-eslint', 'import'],
+    //   parser: '@typescript-eslint/parser',
+    //   settings: {
+    //     'import/internal-regex': '^~/',
+    //     'import/resolver': {
+    //       node: {
+    //         extensions: ['.ts', '.tsx'],
+    //       },
+    //       typescript: {
+    //         alwaysTryTypes: true,
+    //       },
+    //     },
+    //   },
+    //   extends: [
+    //     'plugin:@typescript-eslint/recommended',
+    //     'plugin:import/recommended',
+    //     'plugin:import/typescript',
+    //   ],
+    // },
+
+    // Node
+    {
+      files: ['.eslintrc.cjs', 'server.js'],
+      env: {
+        node: true,
+      },
+    },
+  ],
 
   /**
    * @ignorePatterns

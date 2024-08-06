@@ -16,7 +16,7 @@ export const loader: LoaderFunction = async () => {
   return data;
 };
 
-export default function index() {
+export default function Index() {
   const datas: Users[] = useLoaderData();
   return (
     <div>

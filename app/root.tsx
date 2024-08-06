@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { withEmotionCache } from '@emotion/react';
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
+import { LinksFunction } from '@remix-run/node';
 import {
   Links,
   Meta,
@@ -12,14 +13,21 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 
-import ClientStyleContext from './layout/mui/ClientStyleContext';
 // import Layout from './layout/mui/Layout';
-import theme from './layout/mui/theme';
+import ClientStyleContext from './common/mui/common/ClientStyleContext';
+import { getMuiLinks } from './common/mui/getMuiLinks';
+import { MuiDocument } from './common/mui/MuiDocument';
+import { MuiMeta } from './common/mui/MuiMeta';
 
 interface DocumentProps {
   children: React.ReactNode;
   title?: string;
 }
+
+/**
+ * @see {@link https://remix.run/docs/en/main/route/links#links} - 사용자가 경로를 방문할 때 페이지에 어떤 <link> 요소를 추가할지 정의함
+ */
+export const links: LinksFunction = () => [...getMuiLinks()];
 
 const Document = withEmotionCache(
   ({ children, title }: DocumentProps, emotionCache) => {
@@ -45,25 +53,11 @@ const Document = withEmotionCache(
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width,initial-scale=1" />
-          <meta name="theme-color" content={theme.palette.primary.main} />
-          {title ? <title>{title}</title> : null}
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          {title && <title>{title}</title>}
           <Meta />
+          <MuiMeta />
           <Links />
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossOrigin=""
-          />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
-          />
-          <meta
-            name="emotion-insertion-point"
-            content="emotion-insertion-point"
-          />
         </head>
         <body>
           {children}
@@ -79,12 +73,19 @@ const Document = withEmotionCache(
 // https://remix.run/docs/en/main/file-conventions/routes
 export default function App() {
   return (
-    <Document>
-      {/* <Layout> */}
-      <Outlet />
-      {/* </Layout> */}
-    </Document>
+    <>
+      <MuiDocument>
+        <Outlet />
+      </MuiDocument>
+    </>
   );
+}
+
+/**
+ * @see {@link https://remix.run/docs/en/main/route/links#links} - 공통 레이아웃을 라우트 컴포넌트에 래핑
+ */
+export function Layout({ children }: { children: React.ReactNode }) {
+  return <Document>{children}</Document>;
 }
 
 // https://remix.run/docs/en/main/route/error-boundary
