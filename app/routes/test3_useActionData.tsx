@@ -3,6 +3,7 @@ import {
   ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
+  json,
   redirect,
 } from '@remix-run/node';
 import { Form, useActionData, useLoaderData } from '@remix-run/react';
@@ -25,7 +26,7 @@ export const loader: LoaderFunction = async ({
 
   const response = await fetch('https://jsonplaceholder.typicode.com/posts');
   const data: Posts[] = await response.json();
-  return data.slice(0, limit);
+  return json(data.slice(0, limit));
 };
 
 export const action: ActionFunction = async ({
@@ -51,7 +52,7 @@ export const action: ActionFunction = async ({
     },
   });
   const data: Posts[] = await response.json();
-  return data;
+  return json(data);
   // return redirect(`/test/${inputItem}`);
 };
 

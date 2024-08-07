@@ -1,6 +1,6 @@
 import React, { MouseEventHandler, ReactNode } from 'react';
 
-import { ActionFunction, LoaderFunction } from '@remix-run/node';
+import { ActionFunction, LoaderFunction, json } from '@remix-run/node';
 import { Form, useLoaderData, useNavigate, useParams } from '@remix-run/react';
 
 interface Post {
@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     throw new Response('Not Found', { status: 404 });
   }
   const data: Post = await response.json();
-  return data;
+  return json(data);
 };
 
 export default function Index() {

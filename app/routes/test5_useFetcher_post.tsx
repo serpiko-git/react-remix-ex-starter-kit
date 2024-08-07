@@ -5,6 +5,7 @@ import {
   ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
+  json,
   redirect,
 } from '@remix-run/node';
 import {
@@ -41,7 +42,7 @@ export const loader: LoaderFunction = async ({
 
   const response = await fetch('https://jsonplaceholder.typicode.com/posts');
   const data: Posts[] = await response.json();
-  return data.slice(0, limit);
+  return json(data.slice(0, limit));
 };
 
 export const action: ActionFunction = async ({
@@ -67,7 +68,7 @@ export const action: ActionFunction = async ({
     },
   });
   const data: Posts[] = await response.json();
-  return data;
+  return json(data);
   // return redirect(`/test/${inputItem}`);
 };
 
@@ -83,10 +84,10 @@ export default function Index() {
       Number(formData.get('input-name')) + 10 ?? '0',
     ) as string;
 
-    formData.set('input-name', inputNameValue); // get
-    formData.append('addValue', 'serpiko'); // post
+    formData.set('input-name', inputNameValue);
+    formData.append('addValue', 'serpiko');
 
-    fetcher.submit(formData, { method: 'post', action: './' }); // => goto loader
+    fetcher.submit(formData, { method: 'post', action: './' }); // => goto action
   };
 
   // Safely extract data from fetcher.data
