@@ -1,5 +1,5 @@
 {
-  "name": "react-remix-ex-starter-kit",
+  "name": "derivatives-admin-debug",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -31,6 +31,7 @@
     "axios": "^1.7.2",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
+    "dayjs": "^1.11.12",
     "express": "^4.19.2",
     "isbot": "^4.1.0",
     "match-sorter": "^6.3.4",
@@ -75,6 +76,6 @@
     "vite-tsconfig-paths": "^4.3.2"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.5.1"
   }
 }

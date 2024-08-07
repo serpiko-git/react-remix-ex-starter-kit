@@ -1,8 +1,10 @@
 import * as React from 'react';
 
+import { Typography, Link } from '@mui/material';
 import type { MetaFunction } from '@remix-run/node';
+import { Link as RemixLink } from '@remix-run/react';
 
-import SignInSideTemplate from '~/features/sign-in-side/App';
+import Main from '~/features/main/Main';
 
 /**
  * @see {@link https://remix.run/docs/en/main/route/meta} - 라우트에 필요한 HTML 메타 태그 관리
@@ -16,7 +18,14 @@ export const meta: MetaFunction = () => [
 export default function Index() {
   return (
     <React.Fragment>
-      <SignInSideTemplate />
+      <Main>
+        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+          React Remix Express in TypeScript. Mui Remix Server.
+        </Typography>
+        <Link to="/dashboard" color="secondary" component={RemixLink}>
+          Go to the order-dashboard
+        </Link>
+      </Main>
     </React.Fragment>
   );
 }

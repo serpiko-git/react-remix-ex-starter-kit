@@ -35,10 +35,17 @@ import {
   Stack,
   Typography,
 } from '@mui/joy';
+import { useLocation, useMatches, useNavigate } from '@remix-run/react';
 
-import { closeSidebar } from '../utils';
+import { ColorSchemeToggle } from '../sign-in-side/App';
 
-import ColorSchemeToggle from './ColorSchemeToggle';
+import { closeSidebar } from './utils';
+
+const PATH_NAVIGATE = {
+  symbols: '/dashboard/symbol',
+  orders: '/dashboard/order',
+} as const;
+type PathNavigateTypes = (typeof PATH_NAVIGATE)[keyof typeof PATH_NAVIGATE];
 
 function Toggler({
   defaultExpanded = false,
@@ -75,6 +82,14 @@ function Toggler({
 }
 
 export default function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const handleSideClick = (path: PathNavigateTypes) => {
+    navigate(path);
+  };
+
   return (
     <Sheet
       className="Sidebar"
@@ -131,7 +146,7 @@ export default function Sidebar() {
         <IconButton variant="soft" color="primary" size="sm">
           <BrightnessAutoRoundedIcon />
         </IconButton>
-        <Typography level="title-lg">Acme Co.</Typography>
+        <Typography level="title-lg">Admin Debug</Typography>
         <ColorSchemeToggle sx={{ ml: 'auto' }} />
       </Box>
       <Input
@@ -178,10 +193,25 @@ export default function Sidebar() {
           </ListItem>
 
           <ListItem>
-            <ListItemButton selected>
+            <ListItemButton
+              selected={currentPath.startsWith(PATH_NAVIGATE.orders)}
+              onClick={() => handleSideClick(PATH_NAVIGATE.orders)}
+            >
               <ShoppingCartRoundedIcon />
               <ListItemContent>
                 <Typography level="title-sm">Orders</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(PATH_NAVIGATE.symbols)}
+              onClick={() => handleSideClick(PATH_NAVIGATE.symbols)}
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Symbols</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>

@@ -15,13 +15,15 @@ import {
 } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { SymbolResponse } from '~/routes/dashboard.symbol';
+
 import Sidebar from '../side/Sidebar';
 
 import Header from './components/Header';
 import OrderList from './components/OrderList';
 import OrderTable from './components/OrderTable';
 
-export default function OrderDashboard(props: any) {
+export default function SymbolDashboard(props: SymbolResponse) {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
@@ -90,7 +92,7 @@ export default function OrderDashboard(props: any) {
             }}
           >
             <Typography level="h2" component="h1">
-              Orders
+              Symbols
             </Typography>
             <Button
               color="primary"
@@ -100,7 +102,8 @@ export default function OrderDashboard(props: any) {
               Download PDF
             </Button>
           </Box>
-          <OrderTable />
+          <OrderTable {...props} />
+          {/* mobile */}
           <OrderList />
         </Box>
       </Box>
