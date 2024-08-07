@@ -5,14 +5,7 @@ import {
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import {
-  Box,
-  CssBaseline,
-  Breadcrumbs,
-  Button,
-  Link,
-  Typography,
-} from '@mui/joy';
+import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
 import Sidebar from '../side/Sidebar';
@@ -24,7 +17,6 @@ import OrderTable from './components/OrderTable';
 export default function OrderDashboard(props: any) {
   return (
     <CssVarsProvider disableTransitionOnChange>
-      <CssBaseline />
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Header />
         <Sidebar />
