@@ -4,7 +4,8 @@ import { Typography, Link } from '@mui/material';
 import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink } from '@remix-run/react';
 
-import Main from '~/features/main/Main';
+import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
+import Welcome from '~/features/welcome/Welcome';
 
 /**
  * @see {@link https://remix.run/docs/en/main/route/meta} - 라우트에 필요한 HTML 메타 태그 관리
@@ -18,14 +19,18 @@ export const meta: MetaFunction = () => [
 export default function Index() {
   return (
     <React.Fragment>
-      <Main>
+      <Welcome>
         <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
           React Remix Express in TypeScript. Mui Remix Server.
         </Typography>
-        <Link to="/dashboard" color="secondary" component={RemixLink}>
+        <Link
+          to={DEFAULT_PATH_NAVIGATE.symbols}
+          color="primary"
+          component={RemixLink}
+        >
           Go to the order-dashboard
         </Link>
-      </Main>
+      </Welcome>
     </React.Fragment>
   );
 }

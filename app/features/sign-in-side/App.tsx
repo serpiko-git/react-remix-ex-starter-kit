@@ -24,6 +24,8 @@ import {
 import { CssVarsProvider, extendTheme, useColorScheme } from '@mui/joy/styles';
 import { useNavigate } from '@remix-run/react';
 
+import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
+
 import GoogleIcon from './GoogleIcon';
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -65,7 +67,7 @@ export default function SignInSideTemplate() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    navigate('/order-dashboard');
+    navigate(DEFAULT_PATH_NAVIGATE.symbols);
   };
   return (
     <CssVarsProvider theme={customTheme} disableTransitionOnChange>

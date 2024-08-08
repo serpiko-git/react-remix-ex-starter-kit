@@ -37,15 +37,11 @@ import {
 } from '@mui/joy';
 import { useLocation, useMatches, useNavigate } from '@remix-run/react';
 
-import { ColorSchemeToggle } from '../sign-in-side/App';
+import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
 
-import { closeSidebar } from './utils';
-
-const PATH_NAVIGATE = {
-  symbols: '/dashboard/symbol',
-  orders: '/dashboard/order',
-} as const;
-type PathNavigateTypes = (typeof PATH_NAVIGATE)[keyof typeof PATH_NAVIGATE];
+import { ColorSchemeToggle } from '../../sign-in-side/App';
+import { closeSidebar } from '../libs/utils';
+import { PathNavigateTypes } from '../models/sidebar.model';
 
 function Toggler({
   defaultExpanded = false,
@@ -81,7 +77,7 @@ function Toggler({
   );
 }
 
-export default function Sidebar() {
+export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
@@ -194,24 +190,24 @@ export default function Sidebar() {
 
           <ListItem>
             <ListItemButton
-              selected={currentPath.startsWith(PATH_NAVIGATE.orders)}
-              onClick={() => handleSideClick(PATH_NAVIGATE.orders)}
+              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
+              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.symbols)}
             >
               <ShoppingCartRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Orders</Typography>
+                <Typography level="title-sm">Symbols</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
 
           <ListItem>
             <ListItemButton
-              selected={currentPath.startsWith(PATH_NAVIGATE.symbols)}
-              onClick={() => handleSideClick(PATH_NAVIGATE.symbols)}
+              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.orders)}
+              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.orders)}
             >
               <ShoppingCartRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Symbols</Typography>
+                <Typography level="title-sm">Orders</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>

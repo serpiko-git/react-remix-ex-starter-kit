@@ -3,7 +3,7 @@ import * as React from 'react';
 // import MenuIcon from '@mui/icons-material/Menu';
 import { GlobalStyles, IconButton, Sheet } from '@mui/joy';
 
-import { toggleSidebar } from '../../side/utils';
+import { toggleSidebar } from '../../side-bar/libs/utils';
 
 export default function Header() {
   return (

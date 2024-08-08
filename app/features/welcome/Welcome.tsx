@@ -9,7 +9,7 @@ import { Container, Box } from '@mui/material';
  */
 import Copyright from './components/Copyright';
 import ProTip from './components/ProTip';
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function Welcome({ children }: { children: React.ReactNode }) {
   return (
     <Container maxWidth="sm">
       <Box sx={{ my: 4 }}></Box>

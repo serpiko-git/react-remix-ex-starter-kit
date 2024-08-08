@@ -8,7 +8,7 @@ import {
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
-import Sidebar from '../side/Sidebar';
+import { Sidebar } from '../side-bar';
 
 import Header from './components/Header';
 import OrderList from './components/OrderList';
@@ -92,6 +92,7 @@ export default function OrderDashboard(props: any) {
               Download PDF
             </Button>
           </Box>
+
           <OrderTable />
           <OrderList />
         </Box>

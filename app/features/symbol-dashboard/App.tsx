@@ -10,7 +10,7 @@ import { CssVarsProvider } from '@mui/joy/styles';
 
 import { SymbolResponse } from '~/routes/dashboard.symbol';
 
-import Sidebar from '../side/Sidebar';
+import { Sidebar } from '../side-bar';
 
 import Header from './components/Header';
 import OrderList from './components/OrderList';

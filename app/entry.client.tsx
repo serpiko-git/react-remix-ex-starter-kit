@@ -15,11 +15,11 @@ const hydrate = () => {
   React.startTransition(() => {
     ReactDOM.hydrateRoot(
       document,
-      // <React.StrictMode>
-      <ClientCacheProvider>
-        <RemixBrowser />
-      </ClientCacheProvider>,
-      // </React.StrictMode>,
+      <React.StrictMode>
+        <ClientCacheProvider>
+          <RemixBrowser />
+        </ClientCacheProvider>
+      </React.StrictMode>,
     );
   });
 };
