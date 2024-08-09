@@ -1,1 +1,1 @@
-import DetailForm from './DetailForm';
+export * from './DetailForm';

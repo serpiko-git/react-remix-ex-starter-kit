@@ -265,7 +265,7 @@ function RowMenu() {
     </Dropdown>
   );
 }
-export default function OrderTable() {
+export function OrderTable() {
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);

@@ -39,9 +39,10 @@ import { useLocation, useMatches, useNavigate } from '@remix-run/react';
 
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
 
-import { ColorSchemeToggle } from '../../sign-in-side/App';
 import { closeSidebar } from '../libs/utils';
 import { PathNavigateTypes } from '../models/sidebar.model';
+
+import { ColorSchemeToggle } from './ColorSchemeToggle';
 
 function Toggler({
   defaultExpanded = false,
@@ -96,7 +97,7 @@ export function Sidebar() {
           md: 'none',
         },
         transition: 'transform 0.4s, width 0.4s',
-        zIndex: 10000,
+        zIndex: 1,
         height: '100dvh',
         width: 'var(--Sidebar-width)',
         top: 0,

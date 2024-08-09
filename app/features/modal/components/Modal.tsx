@@ -5,7 +5,7 @@ import { Box, Button, Modal, ModalDialog, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 import Draggable from 'react-draggable';
 
-import DetailForm from '~/features/detail-form/components/DetailForm';
+import { ModalProps } from '../models/modal.model';
 
 // eslint-disable-next-line react/display-name
 const DraggablePaper = React.forwardRef((props: PaperProps, ref) => {
@@ -23,21 +23,27 @@ const DraggablePaper = React.forwardRef((props: PaperProps, ref) => {
   );
 });
 
-export function ResponsiveModal() {
-  const [open, setOpen] = React.useState(false);
+export function ResponsiveModal(props: ModalProps) {
+  const { onOpen = false, onSetOpen, children } = props;
+
+  const handleClose = () => {
+    if (onSetOpen) {
+      onSetOpen(false);
+    }
+  };
   return (
     <React.Fragment>
       <CssVarsProvider disableTransitionOnChange>
-        <Button
+        {/* <Button
           variant="outlined"
           color="neutral"
           onClick={() => setOpen(true)}
         >
           Open modal
-        </Button>
+        </Button> */}
         <Modal
-          open={open}
-          onClose={() => setOpen(false)}
+          open={onOpen}
+          onClose={handleClose}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -80,7 +86,7 @@ export function ResponsiveModal() {
                 This action cannot be undone. This will permanently delete your
                 account and remove your data from our servers.
               </Typography>
-              <DetailForm />
+              {children}
               <Box
                 sx={{
                   mt: 1,
@@ -89,17 +95,13 @@ export function ResponsiveModal() {
                   flexDirection: { xs: 'column', sm: 'row-reverse' },
                 }}
               >
-                <Button
-                  variant="solid"
-                  color="primary"
-                  onClick={() => setOpen(false)}
-                >
+                <Button variant="solid" color="primary" onClick={handleClose}>
                   Continue
                 </Button>
                 <Button
                   variant="outlined"
                   color="neutral"
-                  onClick={() => setOpen(false)}
+                  onClick={handleClose}
                 >
                   Cancel
                 </Button>

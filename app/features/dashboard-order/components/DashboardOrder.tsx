@@ -8,13 +8,13 @@ import {
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
-import { Sidebar } from '../side-bar';
+import { Sidebar } from '~/features/side-bar';
 
-import Header from './components/Header';
-import OrderList from './components/OrderList';
-import OrderTable from './components/OrderTable';
+import { Header } from './Header';
+import { OrderList } from './OrderList';
+import { OrderTable } from './OrderTable';
 
-export default function OrderDashboard(props: any) {
+export function DashboardOrder(props: any) {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>

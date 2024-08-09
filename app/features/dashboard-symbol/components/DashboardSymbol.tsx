@@ -8,15 +8,15 @@ import {
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
-import { SymbolResponse } from '~/routes/dashboard.symbol';
+import { Sidebar } from '~/features/side-bar';
 
-import { Sidebar } from '../side-bar';
+import { SymbolResponse } from '../models/symbol.model';
 
-import Header from './components/Header';
-import OrderList from './components/OrderList';
-import OrderTable from './components/OrderTable';
+import { Header } from './Header';
+import { SymbolList } from './SymbolList';
+import { SymbolTable } from './SymbolTable';
 
-export default function SymbolDashboard(props: SymbolResponse) {
+export function DashboardSymbol(props: SymbolResponse) {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
@@ -94,9 +94,9 @@ export default function SymbolDashboard(props: SymbolResponse) {
               Download PDF
             </Button>
           </Box>
-          <OrderTable {...props} />
+          <SymbolTable {...props} />
           {/* mobile */}
-          <OrderList />
+          <SymbolList />
         </Box>
       </Box>
     </CssVarsProvider>

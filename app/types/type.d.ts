@@ -1,15 +1,6 @@
 export interface Config {
-  /** flag for local dev mode */
-  jwtTokenDebug: string;
-  /** fixed hosts */
-  landingHost: string;
-  staticHost: string;
   accountHost: string;
-  pnlHost: string;
-  /** version list */
   apiHost_v1: string;
-  wsPublicHost_v1: string;
-  wsPrivateHost_v1: string;
 }
 
 /** `'Timeout' 형식은 'number' 형식에 할당할 수 없습니다` 를 해결하기 위한 선언 */

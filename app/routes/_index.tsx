@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import type { MetaFunction } from '@remix-run/node';
 
-import SignInSideTemplate from '~/features/sign-in-side/App';
+import { SignInSide } from '~/features/sign-in-side';
 
 /**
  * @see {@link https://remix.run/docs/en/main/route/meta} - 라우트에 필요한 HTML 메타 태그 관리
@@ -16,7 +16,7 @@ export const meta: MetaFunction = () => [
 export default function Index() {
   return (
     <React.Fragment>
-      <SignInSideTemplate />
+      <SignInSide />
     </React.Fragment>
   );
 }

@@ -26,7 +26,7 @@ import { useNavigate } from '@remix-run/react';
 
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
 
-import GoogleIcon from './GoogleIcon';
+import { GoogleIcon } from './GoogleIcon';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -63,7 +63,7 @@ export function ColorSchemeToggle(props: IconButtonProps) {
 
 const customTheme = extendTheme();
 
-export default function SignInSideTemplate() {
+export function SignInSide() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {

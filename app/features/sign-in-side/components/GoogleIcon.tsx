@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Typography, Link, SvgIcon, SvgIconProps } from '@mui/joy';
 
-export default function GoogleIcon() {
+export function GoogleIcon() {
   return (
     <SvgIcon fontSize="xl">
       <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">

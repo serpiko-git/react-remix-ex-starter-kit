@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -41,7 +42,11 @@ import { ColorPaletteProp } from '@mui/joy/styles';
 import { useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
 
-import { SymbolResponse } from '~/routes/dashboard.symbol';
+import { ResponsiveModal } from '~/features/modal';
+
+import { SymbolResponse } from '../models/symbol.model';
+
+import { DetailForm } from './DetailForm';
 
 const rows = [
   {
@@ -269,7 +274,7 @@ function RowMenu() {
     </Dropdown>
   );
 }
-export default function OrderTable(props: SymbolResponse) {
+export function SymbolTable(props: SymbolResponse) {
   const fetcher = useFetcher();
 
   const { data: symbols } = props;
@@ -277,6 +282,8 @@ export default function OrderTable(props: SymbolResponse) {
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [symbolId, setSymbolId] = useState<string>('');
+  const [modalOpen, setModalOpen] = React.useState(false);
 
   const renderFilters = () => (
     <React.Fragment>
@@ -317,6 +324,11 @@ export default function OrderTable(props: SymbolResponse) {
     </React.Fragment>
   );
 
+  const handleTrClick = ($symbolId: string) => {
+    setSymbolId($symbolId);
+    setModalOpen(true);
+  };
+
   const handleNextPage = () => {
     const a = fetcher.load('/');
     console.log(a);
@@ -324,6 +336,13 @@ export default function OrderTable(props: SymbolResponse) {
 
   return (
     <React.Fragment>
+      {Boolean(symbolId && modalOpen) && (
+        <>
+          <ResponsiveModal onOpen={modalOpen} onSetOpen={setModalOpen}>
+            <DetailForm />
+          </ResponsiveModal>
+        </>
+      )}
       <Sheet
         className="SearchAndFilters-mobile"
         sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}
@@ -454,7 +473,7 @@ export default function OrderTable(props: SymbolResponse) {
                       : { '& svg': { transform: 'rotate(180deg)' } },
                   ]}
                 >
-                  symbol_id
+                  SymbolId
                 </Link>
               </th>
               <th style={{ width: 140, padding: '12px 6px' }}>symbol_alias</th>
@@ -471,15 +490,18 @@ export default function OrderTable(props: SymbolResponse) {
           </thead>
           <tbody>
             {[...symbols]
-              .sort(getComparator(order, 'symbol_id'))
+              .sort(getComparator(order, 'SymbolId'))
               .map((symbol) => (
-                <tr key={symbol.symbol_id}>
+                <tr
+                  key={symbol.SymbolId}
+                  onClick={() => handleTrClick(symbol.SymbolId)}
+                >
                   <td style={{ textAlign: 'center', width: 120 }}>
                     <Checkbox
                       size="sm"
-                      checked={selected.includes(symbol.symbol_id)}
+                      checked={selected.includes(symbol.SymbolId)}
                       color={
-                        selected.includes(symbol.symbol_id)
+                        selected.includes(symbol.SymbolId)
                           ? 'primary'
                           : undefined
                       }
@@ -487,9 +509,9 @@ export default function OrderTable(props: SymbolResponse) {
                         // eslint-disable-next-line no-confusing-arrow
                         setSelected((ids) =>
                           event.target.checked
-                            ? ids.concat(symbol.symbol_id)
+                            ? ids.concat(symbol.SymbolId)
                             : ids.filter(
-                                (itemId) => itemId !== symbol.symbol_id,
+                                (itemId) => itemId !== symbol.SymbolId,
                               ),
                         );
                       }}
@@ -498,17 +520,15 @@ export default function OrderTable(props: SymbolResponse) {
                     />
                   </td>
                   <td>
-                    <Typography level="body-xs">{symbol.symbol_id}</Typography>
+                    <Typography level="body-xs">{symbol.SymbolId}</Typography>
                   </td>
                   <td>
                     <Typography level="body-xs">
-                      {symbol.symbol_alias}
+                      {symbol.SymbolAlias}
                     </Typography>
                   </td>
                   <td>
-                    <Typography level="body-xs">
-                      {symbol.symbol_name}
-                    </Typography>
+                    <Typography level="body-xs">{symbol.SymbolName}</Typography>
                   </td>
                   <td>
                     <Chip
@@ -519,45 +539,45 @@ export default function OrderTable(props: SymbolResponse) {
                           1: <CheckRoundedIcon />,
                           2: <AutorenewRoundedIcon />,
                           3: <BlockIcon />,
-                        }[symbol.status]
+                        }[symbol.Status]
                       }
                       color={
                         {
                           1: 'success',
                           2: 'neutral',
                           3: 'danger',
-                        }[symbol.status] as ColorPaletteProp
+                        }[symbol.Status] as ColorPaletteProp
                       }
                     >
-                      {symbol.status}
+                      {symbol.Status}
                     </Chip>
                   </td>
                   <td>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                      <Avatar size="sm">{symbol.base_asset}</Avatar>
+                      <Avatar size="sm">{symbol.BaseAsset}</Avatar>
                       <div>
                         <Typography level="body-xs">
-                          {symbol.base_asset}
+                          {symbol.BaseAsset}
                         </Typography>
                         <Typography level="body-xs">
-                          {symbol.quote_asset}
+                          {symbol.QuoteAsset}
                         </Typography>
                       </div>
                     </Box>
                   </td>
                   <td>
                     <Typography level="body-xs">
-                      {symbol.contract_type}
+                      {symbol.ContractType}
                     </Typography>
                   </td>
                   <td>
                     <Typography level="body-xs">
-                      {dayjs(symbol.updated_at).format('YYYY-MM-DD HH:mm:ss')}
+                      {dayjs(symbol.UpdatedAt).format('YYYY-MM-DD HH:mm:ss')}
                     </Typography>
                   </td>
                   <td>
                     <Typography level="body-xs">
-                      {dayjs(symbol.created_at).format('YYYY-MM-DD HH:mm:ss')}
+                      {dayjs(symbol.CreatedAt).format('YYYY-MM-DD HH:mm:ss')}
                     </Typography>
                   </td>
                   <td>

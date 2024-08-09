@@ -5,7 +5,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { Link as RemixLink } from '@remix-run/react';
 
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
-import Welcome from '~/features/welcome/Welcome';
+import { Welcome } from '~/features/welcome';
 
 /**
  * @see {@link https://remix.run/docs/en/main/route/meta} - 라우트에 필요한 HTML 메타 태그 관리

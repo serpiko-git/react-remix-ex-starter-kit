@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { AspectRatio, AspectRatioProps } from '@mui/joy';
 
-export default function MuiLogo(props: AspectRatioProps) {
+export function MuiLogo(props: AspectRatioProps) {
   const { sx, ...other } = props;
   return (
     <AspectRatio

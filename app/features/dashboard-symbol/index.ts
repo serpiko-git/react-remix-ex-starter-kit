@@ -1,5 +1,5 @@
 /** Models */
-export * from './models/modal.model';
+export * from './models/symbol.model';
 
 /** Services */
 

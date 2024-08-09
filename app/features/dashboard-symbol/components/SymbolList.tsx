@@ -111,7 +111,7 @@ function RowMenu() {
   );
 }
 
-export default function OrderList() {
+export function SymbolList() {
   return (
     <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
       {listItems.map((listItem) => (

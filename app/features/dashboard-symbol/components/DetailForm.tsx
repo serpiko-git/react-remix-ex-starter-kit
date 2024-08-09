@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -21,7 +22,20 @@ import Select from '@mui/joy/Select';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 
+import { useSymbol, useTanstack } from '../hooks/queries';
+
 export function DetailForm() {
+  const { refetch: tanstackQuery } = useTanstack();
+
+  // tanstackQuery();
+  const { data: symbolData } = useSymbol('1');
+
+  useEffect(() => {
+    if (symbolData) {
+      console.log(symbolData);
+    }
+  }, [symbolData]);
+
   return (
     <div>
       <Box sx={{ mb: 1 }}>

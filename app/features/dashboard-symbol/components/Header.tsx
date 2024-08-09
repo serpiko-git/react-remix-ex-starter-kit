@@ -1,11 +1,11 @@
 import * as React from 'react';
 
-// import MenuIcon from '@mui/icons-material/Menu';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { GlobalStyles, IconButton, Sheet } from '@mui/joy';
 
 import { toggleSidebar } from '../../side-bar/libs/utils';
 
-export default function Header() {
+export function Header() {
   return (
     <Sheet
       sx={{
@@ -40,7 +40,7 @@ export default function Header() {
         color="neutral"
         size="sm"
       >
-        {/* <MenuIcon /> */}
+        <MenuIcon />
       </IconButton>
     </Sheet>
   );

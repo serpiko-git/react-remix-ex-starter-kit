@@ -1,5 +1,4 @@
 /** Models */
-export * from './models/modal.model';
 
 /** Services */
 
