@@ -24,7 +24,7 @@ const DraggablePaper = React.forwardRef((props: PaperProps, ref) => {
 });
 
 export function ResponsiveModal(props: ModalProps) {
-  const { onOpen = false, onSetOpen, children } = props;
+  const { title, header, onOpen = false, onSetOpen, children } = props;
 
   const handleClose = () => {
     if (onSetOpen) {
@@ -77,14 +77,13 @@ export function ResponsiveModal(props: ModalProps) {
               })}
             >
               <Typography id="draggable-dialog-title" level="h2">
-                Are you absolutely sure?
+                {title}
               </Typography>
               <Typography
                 id="draggable-dialog-description"
                 textColor="text.tertiary"
               >
-                This action cannot be undone. This will permanently delete your
-                account and remove your data from our servers.
+                {header}
               </Typography>
               {children}
               <Box
