@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -21,188 +21,336 @@ import Option from '@mui/joy/Option';
 import Select from '@mui/joy/Select';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
+import Grid from '@mui/material/Grid';
 
 import { useSymbol, useTanstack } from '../hooks/queries';
+import { ISymbol, SymbolResponse } from '../models/symbol.model';
 
-export function DetailForm() {
-  const { refetch: tanstackQuery } = useTanstack();
+type DetailFormProps = {
+  symbolId: string;
+};
 
-  // tanstackQuery();
-  const { data: symbolData } = useSymbol('1');
+export function DetailForm(props: DetailFormProps) {
+  const { symbolId } = props;
+  const { data } = useSymbol(symbolId);
+
+  const [symbol, setSymbol] = useState<ISymbol>();
 
   useEffect(() => {
-    if (symbolData) {
-      console.log(symbolData);
+    if (data) {
+      setSymbol(data.data as unknown as ISymbol);
     }
-  }, [symbolData]);
+  }, [data]);
 
   return (
     <div>
-      <Box sx={{ mb: 1 }}>
+      {/* <Box sx={{ mb: 1 }}>
         <Typography level="title-md">Personal info</Typography>
         <Typography level="body-sm">
           Customize how your profile information will appear to the networks.
         </Typography>
       </Box>
+      */}
       <Divider />
-      <Stack
-        direction="row"
-        sx={{ display: { xs: 'none', md: 'flex' }, my: 1 }}
-      >
-        <Stack spacing={2} sx={{ flexGrow: 1 }}>
-          <Stack spacing={1}>
-            <FormLabel>Name</FormLabel>
-            <Stack direction="row" spacing={2}>
-              <FormControl>
-                <Input size="sm" placeholder="First name" />
-              </FormControl>
-              <FormControl sx={{ flexGrow: 1 }}>
-                <Input size="sm" placeholder="Last name" />
-              </FormControl>
-            </Stack>
-          </Stack>
-          <Stack direction="row" spacing={2}>
-            <FormControl>
-              <FormLabel>Role</FormLabel>
-              <Input size="sm" defaultValue="UI Developer" />
-            </FormControl>
-            <FormControl sx={{ flexGrow: 1 }}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                size="sm"
-                type="email"
-                startDecorator={<EmailRoundedIcon />}
-                placeholder="email"
-                defaultValue="siriwatk@test.com"
-                sx={{ flexGrow: 1 }}
-              />
-            </FormControl>
-          </Stack>
-          <FormControl>
-            <Select size="sm" defaultValue="1" sx={{ minWidth: 160 }}>
-              <Option value="1">Normal text</Option>
-              <Option value="2" sx={{ fontFamily: 'code' }}>
-                Code text
-              </Option>
-            </Select>
-          </FormControl>
-          <FormControl>
-            <FormLabel>Timezone</FormLabel>
-            <Select
-              size="sm"
-              startDecorator={<AccessTimeFilledRoundedIcon />}
-              defaultValue="1"
-            >
-              <Option value="1">
-                Indochina Time (Bangkok){' '}
-                <Typography textColor="text.tertiary" sx={{ ml: 0.5 }}>
-                  — GMT+07:00
-                </Typography>
-              </Option>
-              <Option value="2">
-                Indochina Time (Ho Chi Minh City){' '}
-                <Typography textColor="text.tertiary" sx={{ ml: 0.5 }}>
-                  — GMT+07:00
-                </Typography>
-              </Option>
-            </Select>
-          </FormControl>
-        </Stack>
-      </Stack>
-      <Stack
-        direction="column"
-        spacing={2}
-        sx={{ display: { xs: 'flex', md: 'none' }, my: 1 }}
-      >
-        <Stack direction="row" spacing={2}>
-          <Stack direction="column" spacing={1}>
-            <AspectRatio
-              ratio="1"
-              maxHeight={108}
-              sx={{ flex: 1, minWidth: 108, borderRadius: '100%' }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                srcSet="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286&dpr=2 2x"
-                loading="lazy"
-                alt=""
-              />
-            </AspectRatio>
-            <IconButton
-              aria-label="upload new picture"
-              size="sm"
-              variant="outlined"
-              color="neutral"
-              sx={{
-                bgcolor: 'background.body',
-                position: 'absolute',
-                zIndex: 2,
-                borderRadius: '50%',
-                left: 85,
-                top: 180,
-                boxShadow: 'sm',
-              }}
-            >
-              <EditRoundedIcon />
-            </IconButton>
-          </Stack>
-          <Stack spacing={1} sx={{ flexGrow: 1 }}>
-            <FormLabel>Name</FormLabel>
-            <Stack direction="row" spacing={2}>
-              <FormControl>
-                <Input size="sm" placeholder="First name" />
-              </FormControl>
-              <FormControl>
-                <Input size="sm" placeholder="Last name" />
-              </FormControl>
-            </Stack>
-          </Stack>
-        </Stack>
-        <FormControl>
-          <FormLabel>Role</FormLabel>
-          <Input size="sm" defaultValue="UI Developer" />
-        </FormControl>
-        <FormControl sx={{ flexGrow: 1 }}>
-          <FormLabel>Email</FormLabel>
-          <Input
-            size="sm"
-            type="email"
-            startDecorator={<EmailRoundedIcon />}
-            placeholder="email"
-            defaultValue="siriwatk@test.com"
-            sx={{ flexGrow: 1 }}
-          />
-        </FormControl>
-        <FormControl>
-          <Select size="sm" defaultValue="1" sx={{ minWidth: 160 }}>
-            <Option value="1">Normal text</Option>
-            <Option value="2" sx={{ fontFamily: 'code' }}>
-              Code text
-            </Option>
-          </Select>
-        </FormControl>
-        <FormControl>
-          <FormLabel>Timezone</FormLabel>
-          <Select
-            size="sm"
-            startDecorator={<AccessTimeFilledRoundedIcon />}
-            defaultValue="1"
+      {symbol && (
+        <div>
+          <Stack
+            direction="row"
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              my: 1,
+              maxHeight: '70vh',
+              overflowY: 'auto',
+              pr: 2, // 오른쪽에 여백 추가
+              maxWidth: '100%', // 최대 너비를 100%로 설정
+              width: '100%', // 너비를 100%로 설정
+              '&::-webkit-scrollbar': {
+                width: '8px', // 스크롤바 너비
+              },
+              '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#888', // 스크롤바 색상
+                borderRadius: '4px',
+              },
+              '&::-webkit-scrollbar-thumb:hover': {
+                backgroundColor: '#555', // 스크롤바 hover 시 색상
+              },
+            }}
           >
-            <Option value="1">
-              Indochina Time (Bangkok){' '}
-              <Typography textColor="text.tertiary" sx={{ ml: 0.5 }}>
-                — GMT+07:00
-              </Typography>
-            </Option>
-            <Option value="2">
-              Indochina Time (Ho Chi Minh City){' '}
-              <Typography textColor="text.tertiary" sx={{ ml: 0.5 }}>
-                — GMT+07:00
-              </Typography>
-            </Option>
-          </Select>
-        </FormControl>
-      </Stack>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} md={6}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolId:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolId"
+                      value={symbol.SymbolId}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolName:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolName"
+                      value={symbol.SymbolName}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    Status:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="Status"
+                      value={symbol.Status}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    BaseAsset:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="BaseAsset"
+                      value={symbol.BaseAsset}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    QuoteAsset:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="QuoteAsset"
+                      value={symbol.QuoteAsset}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    AllowTrade:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="AllowTrade"
+                      value={symbol.AllowTrade}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    SymbolAlias:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input
+                      size="sm"
+                      placeholder="SymbolAlias"
+                      value={symbol.SymbolAlias}
+                    />
+                  </FormControl>
+                </Stack>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    Symbol:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input size="sm" placeholder="SymbolId" />
+                  </FormControl>
+                </Stack>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <FormLabel sx={{ minWidth: '100px', marginRight: '8px' }}>
+                    Symbol:
+                  </FormLabel>
+                  <FormControl sx={{ flexGrow: 1 }}>
+                    <Input size="sm" placeholder="SymbolId" />
+                  </FormControl>
+                </Stack>
+              </Grid>
+              {/* Add more fields as needed */}
+            </Grid>
+          </Stack>
+        </div>
+      )}
+
       <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
         <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
           <Button size="sm" variant="outlined" color="neutral">

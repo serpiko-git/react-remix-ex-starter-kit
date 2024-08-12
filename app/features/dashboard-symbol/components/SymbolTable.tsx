@@ -283,6 +283,7 @@ export function SymbolTable(props: SymbolResponse) {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
   const [symbolId, setSymbolId] = useState<string>('');
+  const [symbolName, setSymbolName] = useState<string>('');
   const [modalOpen, setModalOpen] = React.useState(false);
 
   const renderFilters = () => (
@@ -324,8 +325,9 @@ export function SymbolTable(props: SymbolResponse) {
     </React.Fragment>
   );
 
-  const handleTrClick = ($symbolId: string) => {
+  const handleTrClick = ($symbolId: string, $symbolName: string) => {
     setSymbolId($symbolId);
+    setSymbolName($symbolName);
     setModalOpen(true);
   };
 
@@ -338,8 +340,13 @@ export function SymbolTable(props: SymbolResponse) {
     <React.Fragment>
       {Boolean(symbolId && modalOpen) && (
         <>
-          <ResponsiveModal onOpen={modalOpen} onSetOpen={setModalOpen}>
-            <DetailForm />
+          <ResponsiveModal
+            title={symbolName}
+            header={''}
+            onOpen={modalOpen}
+            onSetOpen={setModalOpen}
+          >
+            <DetailForm symbolId={symbolId} />
           </ResponsiveModal>
         </>
       )}
@@ -494,7 +501,9 @@ export function SymbolTable(props: SymbolResponse) {
               .map((symbol) => (
                 <tr
                   key={symbol.SymbolId}
-                  onClick={() => handleTrClick(symbol.SymbolId)}
+                  onClick={() =>
+                    handleTrClick(symbol.SymbolId, symbol.SymbolName)
+                  }
                 >
                   <td style={{ textAlign: 'center', width: 120 }}>
                     <Checkbox
