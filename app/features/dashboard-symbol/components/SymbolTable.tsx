@@ -346,7 +346,7 @@ export function SymbolTable(props: SymbolResponse) {
             onOpen={modalOpen}
             onSetOpen={setModalOpen}
           >
-            <DetailForm symbolId={symbolId} />
+            <DetailForm symbolId={symbolId} width={1200} />
           </ResponsiveModal>
         </>
       )}

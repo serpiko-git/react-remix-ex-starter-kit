@@ -11,7 +11,11 @@ import { ModalProps } from '../models/modal.model';
 const DraggablePaper = React.forwardRef((props: PaperProps, ref) => {
   const nodeRef = React.useRef(null);
   return (
-    <Draggable nodeRef={nodeRef} handle=".draggable-handle">
+    <Draggable
+      nodeRef={nodeRef}
+      handle=".draggable-handle"
+      cancel=".not-draggable"
+    >
       <Paper
         ref={nodeRef}
         {...props}
@@ -31,6 +35,11 @@ export function ResponsiveModal(props: ModalProps) {
       onSetOpen(false);
     }
   };
+
+  const handleConfirm = () => {
+    alert('!!!');
+  };
+
   return (
     <React.Fragment>
       <CssVarsProvider disableTransitionOnChange>
@@ -88,15 +97,24 @@ export function ResponsiveModal(props: ModalProps) {
               {children}
               <Box
                 sx={{
-                  mt: 1,
+                  mt: 2, // 버튼들 위쪽 여백
                   display: 'flex',
-                  gap: 1,
-                  flexDirection: { xs: 'column', sm: 'row-reverse' },
+                  justifyContent: 'space-between', // 좌측과 우측으로 배치
+                  alignItems: 'center',
                 }}
               >
-                <Button variant="solid" color="primary" onClick={handleClose}>
-                  Continue
-                </Button>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="solid"
+                    color="primary"
+                    onClick={handleConfirm}
+                  >
+                    Modify
+                  </Button>
+                  <Button color="danger" onClick={handleConfirm}>
+                    Delete
+                  </Button>
+                </Box>
                 <Button
                   variant="outlined"
                   color="neutral"
