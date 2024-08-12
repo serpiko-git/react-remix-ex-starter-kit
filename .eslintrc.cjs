@@ -179,9 +179,13 @@ module.exports = {
      * @custom
      * @description 수동 룰
      */
-    'no-console': WARNING, // console.log 사용여부
-    '@typescript-eslint/no-unused-vars': WARNING,
-    'no-unused-vars': WARNING, // 사용하지 않는 변수
+    // TODO rollback after developed
+    // 'no-console': WARNING, // console.log 사용여부
+    // '@typescript-eslint/no-unused-vars': WARNING,
+    // 'no-unused-vars': WARNING, // 사용하지 않는 변수
+    'no-console': "off", // console.log 사용여부
+    '@typescript-eslint/no-unused-vars': "off",
+    'no-unused-vars': "off", // 사용하지 않는 변수
     camelcase: OFF, // 카멜케이스 사용 허용
     'no-underscore-dangle': OFF, // 변수에 밑줄 허용 여부 (var _foo;)
     /** 함수나 클래스 메서드에 명시적 반환 유형을 강제하는 여부
@@ -281,8 +285,13 @@ module.exports = {
       env: { node: true },
       parserOptions: { sourceType: 'script' },
       rules: {
-        '@typescript-eslint/no-unused-vars': WARNING,
-        'no-unused-vars': WARNING,
+        // TODO rollback after developed
+        // 'no-console': WARNING, // console.log 사용여부
+        // '@typescript-eslint/no-unused-vars': WARNING,
+        // 'no-unused-vars': WARNING,
+        'no-console': "off", // console.log 사용여부
+        '@typescript-eslint/no-unused-vars': "off",
+        'no-unused-vars': "off",
         /**
          * ReduxToolkit의 immer 에서 state에 값을 바로 적용하기위한 설정
          * 매개 변수에 대한 할당 방지기능을 해제한다

@@ -8,7 +8,7 @@
     "postinstall": "husky && gitmoji init",
     "apply-gitmojis": "ts-node scripts/gitmoji/gitmoji.js && gitmoji update",
     "build": "remix vite:build",
-    "dev": "node ./server.js",
+    "dev": "node --no-warnings ./server.js",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "cross-env NODE_ENV=production node ./server.js",
     "typecheck": "tsc"
@@ -37,6 +37,7 @@
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.12",
     "express": "^4.19.2",
+    "gitmoji-cli": "^9.4.0",
     "isbot": "^4.1.0",
     "match-sorter": "^6.3.4",
     "morgan": "^1.10.0",
