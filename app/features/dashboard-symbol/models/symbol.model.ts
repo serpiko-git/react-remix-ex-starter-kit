@@ -1,9 +1,4 @@
-interface BaseResponse<T> {
-  code: number;
-  data: T[];
-  msg: string;
-  time_now: string;
-}
+import { BaseResponseList } from '~/features/models/common.model';
 
 // TODO: 추후 언더스코어로 변경될 예정
 // interface SymbolResponseData {
@@ -90,4 +85,5 @@ export interface ISymbol {
   CreatedAt: string;
 }
 
-export interface SymbolResponse extends BaseResponse<ISymbol> {}
+
+export interface SymbolResponse extends BaseResponseList<ISymbol> {}

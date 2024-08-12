@@ -1,4 +1,5 @@
 /** Models */
+export * from './models/order.model';
 
 /** Services */
 

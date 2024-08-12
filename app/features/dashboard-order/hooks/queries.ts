@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getSymbol, getTanstack } from '~/features//dashboard-symbol/services/symbol.service';
+import { getOpenOrders, getTanstack } from '~/features/dashboard-order/services/order.service';
 
 export const useTanstack = (enabled = true) =>
   useQuery({
@@ -10,10 +10,11 @@ export const useTanstack = (enabled = true) =>
     retry: false,
   });
 
-export const useSymbol = (symbolId: string, enabled = true) =>
+export const useOrder = (orderId: string, enabled = true) =>
   useQuery({
-    queryKey: ['symbol', symbolId],
-    queryFn: () => getSymbol(symbolId),
+    queryKey: ['order', orderId],
+    queryFn: () => getOpenOrders(orderId),
     enabled,
     retry: false,
   });
+

@@ -183,6 +183,7 @@ module.exports = {
     // 'no-console': WARNING, // console.log 사용여부
     // '@typescript-eslint/no-unused-vars': WARNING,
     // 'no-unused-vars': WARNING, // 사용하지 않는 변수
+    "prettier/prettier": "off",
     'no-console': "off", // console.log 사용여부
     '@typescript-eslint/no-unused-vars': "off",
     'no-unused-vars': "off", // 사용하지 않는 변수
@@ -289,6 +290,7 @@ module.exports = {
         // 'no-console': WARNING, // console.log 사용여부
         // '@typescript-eslint/no-unused-vars': WARNING,
         // 'no-unused-vars': WARNING,
+        "prettier/prettier": "off",
         'no-console': "off", // console.log 사용여부
         '@typescript-eslint/no-unused-vars': "off",
         'no-unused-vars': "off",

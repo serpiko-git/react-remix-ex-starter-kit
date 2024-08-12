@@ -1,5 +1,6 @@
 import { apiHost_v1 } from '~/consts';
-import { SymbolResponse } from '~/features/dashboard-symbol/models/symbol.model';
+
+import { OpenOrdersResponse } from '~/features/dashboard-order/models/order.model';
 
 export async function getTanstack() {
   const response = await fetch('https://api.github.com/repos/TanStack/query');
@@ -7,13 +8,15 @@ export async function getTanstack() {
   return data;
 }
 
-export async function getSymbol(symbolId: string): Promise<SymbolResponse> {
-  const url = new URL(`${apiHost_v1}/symbol`);
-  const params = new URLSearchParams({ symbol_id: symbolId });
-  console.log('getSymbol : ', url.toString());
+export async function getOpenOrders(openOrderId: string): Promise<OpenOrdersResponse> {
+  const url = new URL(`${apiHost_v1}/open-orders/list`);
 
+  const params = new URLSearchParams({ order_id: openOrderId });
   url.search = params.toString();
+
   const response = await fetch(url.toString());
   const data = await response.json();
+
+  console.log("order_data: ", data);
   return data;
 }
