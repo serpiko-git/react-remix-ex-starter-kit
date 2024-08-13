@@ -18,14 +18,22 @@ import { CssVarsProvider } from '@mui/joy/styles';
 
 import { Sidebar } from '~/features/side-bar';
 
-import { OpenOrderResponse } from '../models/open-order.model';
+import {
+  OpenOrderCombineProps,
+  OpenOrderResponse,
+} from '../models/open-order.model';
 
 import { Header } from './Header';
 import { OpenOrderList } from './OpenOrderList';
 import { OpenOrderTable } from './OpenOrderTable';
 
-export function DashboardOpenOrder(props: OpenOrderResponse) {
-  const { code, msg, time_now, data } = props;
+export function DashboardOpenOrder({
+  openOrderResponseProps,
+  openOrderQueriesProps,
+}: OpenOrderCombineProps) {
+  const { code, msg, time_now, data } = openOrderResponseProps;
+  const { account_id, limit, page } = openOrderQueriesProps;
+
   const [open, setOpen] = React.useState<boolean>(true);
 
   return (
@@ -135,7 +143,10 @@ export function DashboardOpenOrder(props: OpenOrderResponse) {
             </Button>
           </Box>
 
-          <OpenOrderTable {...data} />
+          <OpenOrderTable
+            openOrderResponseProps={openOrderResponseProps}
+            openOrderQueriesProps={openOrderQueriesProps}
+          />
           {/* mobile */}
           <OpenOrderList />
         </Box>

@@ -1,7 +1,7 @@
 export interface Config {
   accountHost: string;
   apiHost_v1: string;
-  account_id: string;
+  apiAccount_id: string;
 }
 
 /** `'Timeout' 형식은 'number' 형식에 할당할 수 없습니다` 를 해결하기 위한 선언 */

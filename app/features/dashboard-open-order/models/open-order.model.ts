@@ -1,7 +1,8 @@
 interface BaseResponse<T> {
   code: number;
   data: {
-    open_orders: T[];
+    items: T[];
+    total: string;
   };
   msg: string;
   time_now: string;
@@ -317,3 +318,22 @@ export interface OpenOrder {
 }
 
 export interface OpenOrderResponse extends BaseResponse<OpenOrder> {}
+
+export interface OpenOrderQueries {
+  account_id: string;
+  page: number;
+  limit: number;
+  category_key?: string;
+  category_value?: string;
+}
+
+export interface OpenOrderCombineProps {
+  openOrderResponseProps: OpenOrderResponse;
+  openOrderQueriesProps: OpenOrderQueries;
+}
+
+export interface OpenOrderSearchValues {
+  account_id: string;
+  category_key: string;
+  category_value: string;
+}

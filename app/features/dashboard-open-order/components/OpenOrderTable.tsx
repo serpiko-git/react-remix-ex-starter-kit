@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -12,6 +13,7 @@ import {
   Search as SearchIcon,
   Close as CloseIcon,
   Warning as WarningIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -39,13 +41,18 @@ import {
   Typography,
   iconButtonClasses,
   Alert,
+  Stack,
 } from '@mui/joy';
 import { ColorPaletteProp } from '@mui/joy/styles';
+import { Form } from '@remix-run/react';
 import dayjs from 'dayjs';
+import { useForm, Controller } from 'react-hook-form';
 
 import {
   OpenOrder,
+  OpenOrderCombineProps,
   OpenOrderResponse,
+  OpenOrderSearchValues,
   cancelTypeText,
   contractTypeText,
   createTypeText,
@@ -126,57 +133,121 @@ function RowMenu() {
     </Dropdown>
   );
 }
-export function OpenOrderTable(props: OpenOrderResponse['data']) {
-  const { open_orders } = props;
+export function OpenOrderTable({
+  openOrderResponseProps,
+  openOrderQueriesProps,
+}: OpenOrderCombineProps) {
+  const {
+    data: { items },
+  } = openOrderResponseProps;
 
-  console.log(open_orders);
-  console.log(open_orders.length);
-  console.log(open_orders[0]);
+  const { account_id, page, limit } = openOrderQueriesProps;
 
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  const theadRef = useRef<HTMLTableSectionElement | null>(null);
+  const [thCount, setThCount] = React.useState<number>();
+
+  const { control, handleSubmit, watch } = useForm<OpenOrderSearchValues>({
+    defaultValues: { account_id, category_key: '', category_value: '' },
+  });
+
+  useLayoutEffect(() => {
+    if (items.length && theadRef.current) {
+      // theadRef.current.querySelectorAll('th')를 사용
+      const thElements = theadRef.current.querySelectorAll('th');
+      setThCount(thElements.length);
+    }
+  }, [items]);
 
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
-        <FormLabel>Status</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-        >
-          <Option value="paid">Paid</Option>
-          <Option value="pending">Pending</Option>
-          <Option value="refunded">Refunded</Option>
-          <Option value="cancelled">Cancelled</Option>
-        </Select>
-      </FormControl>
-      <FormControl size="sm">
         <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="refund">Refund</Option>
-          <Option value="purchase">Purchase</Option>
-          <Option value="debit">Debit</Option>
-        </Select>
-      </FormControl>
-      <FormControl size="sm">
-        <FormLabel>Customer</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="olivia">Olivia Rhye</Option>
-          <Option value="steve">Steve Hampton</Option>
-          <Option value="ciaran">Ciaran Murray</Option>
-          <Option value="marina">Marina Macdonald</Option>
-          <Option value="charles">Charles Fulton</Option>
-          <Option value="jay">Jay Hoper</Option>
-        </Select>
+
+        <Controller
+          name="category_key"
+          control={control}
+          render={({ field }) => (
+            <Select
+              size="sm"
+              placeholder="Select by category"
+              slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+            >
+              <Option value="order_id">order_id</Option>
+              <Option value="parent_order_id">parent_order_id</Option>
+              <Option value="account_id">account_id</Option>
+              <Option value="symbol">symbol</Option>
+              <Option value="side">side</Option>
+              <Option value="order_type">order_type</Option>
+              <Option value="create_type">create_type</Option>
+              <Option value="cancel_type">cancel_type</Option>
+              <Option value="stop_order_type">stop_order_type</Option>
+              <Option value="contract_type">contract_type</Option>
+              <Option value="is_cancel_amend">is_cancel_amend</Option>
+              <Option value="order_status">order_status</Option>
+              <Option value="cxl_rej_reason_cd">cxl_rej_reason_cd</Option>
+              <Option value="time_in_force">time_in_force</Option>
+              <Option value="position_mode">position_mode</Option>
+              <Option value="reduce_only">reduce_only</Option>
+              <Option value="close_on_trigger">close_on_trigger</Option>
+              <Option value="quantity">quantity</Option>
+              <Option value="org_quantity">org_quantity</Option>
+              <Option value="price">price</Option>
+              <Option value="amount">amount</Option>
+              <Option value="trigger_price">trigger_price</Option>
+              <Option value="trail_value">trail_value</Option>
+              <Option value="active_price">active_price</Option>
+              <Option value="trigger_by">trigger_by</Option>
+              <Option value="take_profit">take_profit</Option>
+              <Option value="stop_loss">stop_loss</Option>
+              <Option value="tpsl_mode">tpsl_mode</Option>
+              <Option value="tp_order_type">tp_order_type</Option>
+              <Option value="sl_order_type">sl_order_type</Option>
+              <Option value="tp_limit">tp_limit</Option>
+              <Option value="sl_limit">sl_limit</Option>
+              <Option value="tp_trigger_by">tp_trigger_by</Option>
+              <Option value="sl_trigger_by">sl_trigger_by</Option>
+              <Option value="last_exec_price">last_exec_price</Option>
+              <Option value="cum_exec_qty">cum_exec_qty</Option>
+              <Option value="cum_exec_open_qty">cum_exec_open_qty</Option>
+              <Option value="cum_exec_close_qty">cum_exec_close_qty</Option>
+              <Option value="cum_exec_amount">cum_exec_amount</Option>
+              <Option value="cum_exec_open_amount">cum_exec_open_amount</Option>
+              <Option value="cum_exec_close_amount">
+                cum_exec_close_amount
+              </Option>
+              <Option value="cum_exec_fee">cum_exec_fee</Option>
+              <Option value="cum_close_pos_open_fee">
+                cum_close_pos_open_fee
+              </Option>
+              <Option value="cum_close_pos_close_fee">
+                cum_close_pos_close_fee
+              </Option>
+              <Option value="cum_open_pnl">cum_open_pnl</Option>
+              <Option value="cum_close_pnl">cum_close_pnl</Option>
+              <Option value="cum_entry_amount">cum_entry_amount</Option>
+              <Option value="i_margin">i_margin</Option>
+              <Option value="margin">margin</Option>
+              <Option value="bkrc_price">bkrc_price</Option>
+              <Option value="liq_price">liq_price</Option>
+              <Option value="updated_at">updated_at</Option>
+              <Option value="created_at">created_at</Option>
+              <Option value="asset">asset</Option>
+              <Option value="ts_id">ts_id</Option>
+              <Option value="created_ts">created_ts</Option>
+            </Select>
+          )}
+        />
       </FormControl>
     </React.Fragment>
   );
+
+  console.log('thCount', thCount);
   return (
     <React.Fragment>
+      {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
         sx={{ display: { xs: 'flex', sm: 'none' }, my: 1, gap: 1 }}
@@ -211,29 +282,75 @@ export function OpenOrderTable(props: OpenOrderResponse['data']) {
           </ModalDialog>
         </Modal>
       </Sheet>
-      <Box
-        className="SearchAndFilters-tabletUp"
-        sx={{
-          borderRadius: 'sm',
-          py: 2,
-          display: { xs: 'none', sm: 'flex' },
-          flexWrap: 'wrap',
-          gap: 1.5,
-          '& > *': {
-            minWidth: { xs: '120px', md: '160px' },
-          },
-        }}
-      >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for order</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search"
-            startDecorator={<SearchIcon />}
-          />
-        </FormControl>
-        {renderFilters()}
-      </Box>
+
+      {/* search desktop */}
+      <Form method="get" action="./">
+        <Box
+          className="SearchAndFilters-tabletUp"
+          sx={{
+            borderRadius: 'sm',
+            py: 2,
+            display: { xs: 'none', sm: 'flex' },
+            flexWrap: 'wrap',
+            gap: 1.5,
+            '& > *': {
+              minWidth: { xs: '120px', md: '160px' },
+            },
+          }}
+        >
+          <Stack direction="row" alignItems="flex-end" spacing={1}>
+            <FormControl size="sm">
+              <FormLabel>account_id</FormLabel>
+              <Controller
+                name="account_id"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="account_id"
+                    size="sm"
+                    placeholder="Search"
+                    startDecorator={<AccountCircleIcon />}
+                  />
+                )}
+              />
+            </FormControl>
+          </Stack>
+
+          {renderFilters()}
+          <Stack
+            direction="row"
+            alignItems="flex-end"
+            spacing={1}
+            sx={{ flex: 1 }}
+          >
+            <FormControl sx={{ flex: 1 }} size="sm">
+              <FormLabel>Input for category</FormLabel>
+              <Controller
+                name="category_value"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    id="category_value"
+                    size="sm"
+                    placeholder="category_value"
+                    startDecorator={<SearchIcon />}
+                  />
+                )}
+              />
+            </FormControl>
+            <Button
+              type="submit"
+              variant="solid"
+              color="primary"
+              sx={{ height: '32px' }}
+            >
+              Search
+            </Button>
+          </Stack>
+        </Box>
+      </Form>
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -260,7 +377,7 @@ export function OpenOrderTable(props: OpenOrderResponse['data']) {
             '--TableCell-paddingX': '8px',
           }}
         >
-          <thead>
+          <thead ref={theadRef}>
             <tr>
               <th
                 style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
@@ -395,10 +512,10 @@ export function OpenOrderTable(props: OpenOrderResponse['data']) {
             </tr>
           </thead>
 
-          {!open_orders.length && (
+          {!items.length && (
             <tbody>
               <tr>
-                <td colSpan={5}>
+                <td colSpan={thCount}>
                   <Box
                     display="flex"
                     justifyContent="center"
@@ -417,10 +534,10 @@ export function OpenOrderTable(props: OpenOrderResponse['data']) {
             </tbody>
           )}
 
-          {open_orders.length && (
+          {items.length && (
             <>
               <tbody>
-                {[...open_orders]
+                {[...items]
                   .sort(getComparator(order, 'order_id'))
                   .map((row) => (
                     <tr key={row.order_id}>
@@ -765,14 +882,14 @@ export function OpenOrderTable(props: OpenOrderResponse['data']) {
         </Button>
 
         <Box sx={{ flex: 1 }} />
-        {['1', '2', '3', '…', '8', '9', '10'].map((page) => (
+        {['1', '2', '3', '…', '8', '9', '10'].map(($page) => (
           <IconButton
-            key={page}
+            key={$page}
             size="sm"
-            variant={Number(page) ? 'outlined' : 'plain'}
+            variant={Number($page) ? 'outlined' : 'plain'}
             color="neutral"
           >
-            {page}
+            {$page}
           </IconButton>
         ))}
         <Box sx={{ flex: 1 }} />
