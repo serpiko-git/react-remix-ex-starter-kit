@@ -9,6 +9,7 @@ declare namespace NodeJS {
     REACT_APP_LANDING_HOST: string;
     REACT_APP_STATIC_HOST: string;
     REACT_APP_ACCOUNT_HOST: string;
+    REACT_APP_API_ACCOUNT_ID: string;
     REACT_APP_PNL_HOST: string;
     /** version list */
     REACT_APP_API_HOST_V1: string;
