@@ -38,6 +38,7 @@ import {
   iconButtonClasses,
 } from '@mui/joy';
 import { ColorPaletteProp } from '@mui/joy/styles';
+import { OpenOrdersResponse } from '../models/order.model';
 
 const rows = [
   {
@@ -265,10 +266,16 @@ function RowMenu() {
     </Dropdown>
   );
 }
-export function OrderTable() {
+export function OrderTable(props: OpenOrdersResponse) {
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState(false);
+  console.log("props: ", props)
+
+  const { data: {
+    total: total,
+    items: items,
+  }} = props;
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
@@ -400,16 +407,16 @@ export function OrderTable() {
                 <Checkbox
                   size="sm"
                   indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
+                    selected.length > 0 && selected.length !== items.length
                   }
-                  checked={selected.length === rows.length}
+                  checked={selected.length === items.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : [],
+                      event.target.checked ? items.map((item) => item.order_id) : [],
                     );
                   }}
                   color={
-                    selected.length > 0 || selected.length === rows.length
+                    selected.length > 0 || selected.length === items.length
                       ? 'primary'
                       : undefined
                   }
@@ -447,76 +454,80 @@ export function OrderTable() {
             </tr>
           </thead>
           <tbody>
-            {[...rows].sort(getComparator(order, 'id')).map((row) => (
-              <tr key={row.id}>
-                <td style={{ textAlign: 'center', width: 120 }}>
-                  <Checkbox
-                    size="sm"
-                    checked={selected.includes(row.id)}
-                    color={selected.includes(row.id) ? 'primary' : undefined}
-                    onChange={(event) => {
-                      // eslint-disable-next-line no-confusing-arrow
-                      setSelected((ids) =>
-                        event.target.checked
-                          ? ids.concat(row.id)
-                          : ids.filter((itemId) => itemId !== row.id),
-                      );
-                    }}
-                    slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
-                    sx={{ verticalAlign: 'text-bottom' }}
-                  />
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.id}</Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{row.date}</Typography>
-                </td>
-                <td>
-                  <Chip
-                    variant="soft"
-                    size="sm"
-                    startDecorator={
+            {[...items]
+              .sort(getComparator(order, 'order_id'))
+              .map((item) => (
+                <tr key={item.order_id}>
+                  <td style={{ textAlign: 'center', width: 120 }}>
+                    <Checkbox
+                      size="sm"
+                      checked={selected.includes(item.order_id)}
+                      color={selected.includes(item.order_id) ? 'primary' : undefined}
+                      onChange={(event) => {
+                        // eslint-disable-next-line no-confusing-arrow
+                        setSelected((ids) =>
+                          event.target.checked
+                            ? ids.concat(item.order_id)
+                            : ids.filter((itemId) => itemId !== item.order_id),
+                        );
+                      }}
+                      slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
+                      sx={{ verticalAlign: 'text-bottom' }}
+                    />
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{item.order_id}</Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">{item.created_ts}</Typography>
+                  </td>
+                  <td>
+                    <Chip
+                      variant="soft"
+                      size="sm"
+                      startDecorator={
+                        {
+                          Paid: <CheckRoundedIcon />,
+                          Refunded: <AutorenewRoundedIcon />,
+                          Cancelled: <BlockIcon />,
+                        }[item.order_status]
+                      }
+                      color={
+                        {
+                          Paid: 'success',
+                          Refunded: 'neutral',
+                          Cancelled: 'danger',
+                        }[item.order_status] as ColorPaletteProp
+                      }
+                    >
+                      {item.order_status}
+                    </Chip>
+                  </td>
+                  <td>
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                       {
-                        Paid: <CheckRoundedIcon />,
-                        Refunded: <AutorenewRoundedIcon />,
-                        Cancelled: <BlockIcon />,
-                      }[row.status]
-                    }
-                    color={
-                      {
-                        Paid: 'success',
-                        Refunded: 'neutral',
-                        Cancelled: 'danger',
-                      }[row.status] as ColorPaletteProp
-                    }
-                  >
-                    {row.status}
-                  </Chip>
-                </td>
-                <td>
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Avatar size="sm">{row.customer.initial}</Avatar>
-                    <div>
-                      <Typography level="body-xs">
-                        {row.customer.name}
-                      </Typography>
-                      <Typography level="body-xs">
-                        {row.customer.email}
-                      </Typography>
-                    </div>
-                  </Box>
-                </td>
-                <td>
-                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu />
-                  </Box>
-                </td>
-              </tr>
-            ))}
+                        // <Avatar size="sm">{item..initial}</Avatar>
+                        // <div>
+                        //   <Typography level="body-xs">
+                        //     {item.customer.name}
+                        //   </Typography>
+                        //   <Typography level="body-xs">
+                        //     {item.customer.email}
+                        //   </Typography>
+                        // </div>
+                      }
+                    </Box>
+                  </td>
+                  <td>
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                      <Link level="body-xs" component="button">
+                        Download
+                      </Link>
+                      <RowMenu />
+                    </Box>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
       </Sheet>

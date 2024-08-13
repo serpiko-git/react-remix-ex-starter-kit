@@ -27,9 +27,11 @@ import { useOrder, useTanstack } from '../hooks/queries';
 
 export function DetailForm() {
   const { refetch: tanstackQuery } = useTanstack();
+  console.log('tanstackQuery', tanstackQuery);
 
   // tanstackQuery();
   const { data: orderData } = useOrder('1');
+  console.log('orderData', orderData);
 
   useEffect(() => {
     if (orderData) {

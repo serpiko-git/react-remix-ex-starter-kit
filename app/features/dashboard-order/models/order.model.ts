@@ -11,7 +11,7 @@ export interface IOpenOrdersRequest {
 }
 
 export interface IOpenOrderInfo {
-  orderid: string;
+  order_id: string;
   parent_order_id: string;
   account_id: string;
   client_order_id: string;

@@ -15,6 +15,7 @@ import { OrderList } from './OrderList';
 import { OrderTable } from './OrderTable';
 
 export function DashboardOrder(props: any) {
+  console.log(JSON.stringify(props));
   return (
     <CssVarsProvider disableTransitionOnChange>
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
@@ -92,8 +93,7 @@ export function DashboardOrder(props: any) {
               Download PDF
             </Button>
           </Box>
-
-          <OrderTable />
+          <OrderTable {...props} />
           <OrderList />
         </Box>
       </Box>

@@ -17,8 +17,8 @@ export interface BaseResponse<T> {
 export interface BaseResponseListPaging<T> {
   code: number;
   data: {
-    total: number;
-    list: T[];
+    total: string;
+    items: T[];
   }
   msg: string;
   time_now: string;

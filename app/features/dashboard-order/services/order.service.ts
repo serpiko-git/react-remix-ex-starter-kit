@@ -17,6 +17,6 @@ export async function getOpenOrders(openOrderId: string): Promise<OpenOrdersResp
   const response = await fetch(url.toString());
   const data = await response.json();
 
-  console.log("order_data: ", data);
+  console.log('order_data: ', data);
   return data;
 }
