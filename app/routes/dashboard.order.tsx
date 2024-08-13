@@ -2,6 +2,7 @@ import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { responseEncoding } from 'axios';
 import { URL } from 'url';
+import { Response } from 'express';
 
 import { apiHost_v1 } from '~/consts';
 import { DashboardOrder } from '~/features/dashboard-order';
@@ -39,7 +40,6 @@ category=${category}
 
 export default function index() {
   const data = useLoaderData<typeof loader>();
-  // const props = data;
   return (
     <div>
       <DashboardOrder {...data} />
