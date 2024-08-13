@@ -95,6 +95,9 @@ importers:
       react-draggable:
         specifier: ^4.4.6
         version: 4.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-hook-form:
+        specifier: ^7.52.2
+        version: 7.52.2(react@18.3.1)
       sort-by:
         specifier: ^1.2.0
         version: 1.2.0
@@ -3510,6 +3513,12 @@ packages:
     peerDependencies:
       react: '>= 16.3.0'
       react-dom: '>= 16.3.0'
+
+  react-hook-form@7.52.2:
+    resolution: {integrity: sha512-pqfPEbERnxxiNMPd0bzmt1tuaPcVccywFDpyk2uV5xCIBphHV5T8SVnX9/o3kplPE1zzKt77+YIoq+EMwJp56A==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -8196,6 +8205,10 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  react-hook-form@7.52.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-is@16.13.1: {}
 
