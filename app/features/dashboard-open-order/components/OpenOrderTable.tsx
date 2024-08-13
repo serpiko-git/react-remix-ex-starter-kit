@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -138,14 +138,14 @@ export function OpenOrderTable({
   openOrderQueriesProps,
 }: OpenOrderCombineProps) {
   const {
-    data: { items },
+    data: { items, total },
   } = openOrderResponseProps;
 
   const { account_id, page, limit } = openOrderQueriesProps;
 
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
   const [thCount, setThCount] = React.useState<number>();
 
@@ -153,8 +153,17 @@ export function OpenOrderTable({
     defaultValues: { account_id, category_key: '', category_value: '' },
   });
 
-  useLayoutEffect(() => {
-    if (items.length && theadRef.current) {
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [numberOfPosts, setNumberOfPosts] = useState<number>(Number(total)); // 전체 포스트 개수
+  const [numberOfPages, setNumberOfPages] = useState<number>(0); // 화면에 보일 전체 페이지 수
+
+  // 포스트 리스트 데이터를 가져오면, 전체 페이지 개수를 갱신한다
+  useEffect(() => {
+    setNumberOfPages(Math.ceil(numberOfPosts / limit));
+  }, [numberOfPosts]);
+
+  useEffect(() => {
+    if (!items.length && theadRef.current) {
       // theadRef.current.querySelectorAll('th')를 사용
       const thElements = theadRef.current.querySelectorAll('th');
       setThCount(thElements.length);
@@ -244,7 +253,6 @@ export function OpenOrderTable({
     </React.Fragment>
   );
 
-  console.log('thCount', thCount);
   return (
     <React.Fragment>
       {/* search mobile */}
@@ -289,7 +297,8 @@ export function OpenOrderTable({
           className="SearchAndFilters-tabletUp"
           sx={{
             borderRadius: 'sm',
-            py: 2,
+            pt: 2,
+            pb: 1,
             display: { xs: 'none', sm: 'flex' },
             flexWrap: 'wrap',
             gap: 1.5,
@@ -299,7 +308,7 @@ export function OpenOrderTable({
           }}
         >
           <Stack direction="row" alignItems="flex-end" spacing={1}>
-            <FormControl size="sm">
+            <FormControl size="sm" sx={{ flex: 1 }}>
               <FormLabel>account_id</FormLabel>
               <Controller
                 name="account_id"
@@ -350,7 +359,11 @@ export function OpenOrderTable({
             </Button>
           </Stack>
         </Box>
+        <Box sx={{ mb: 2 }}>
+          <Typography level="body-sm">Total data count {total}</Typography>
+        </Box>
       </Form>
+
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -512,13 +525,14 @@ export function OpenOrderTable({
             </tr>
           </thead>
 
+          {/* nodata */}
           {!items.length && (
             <tbody>
               <tr>
                 <td colSpan={thCount}>
                   <Box
                     display="flex"
-                    justifyContent="center"
+                    justifyContent="flex-start"
                     alignItems="center"
                     sx={{ padding: 2 }} // 패딩 추가
                   >
@@ -534,7 +548,8 @@ export function OpenOrderTable({
             </tbody>
           )}
 
-          {items.length && (
+          {/* data render */}
+          {!!items.length && (
             <>
               <tbody>
                 {[...items]
