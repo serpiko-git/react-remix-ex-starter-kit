@@ -14,6 +14,7 @@ import {
   Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
+  WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -42,9 +43,18 @@ import {
   iconButtonClasses,
   Alert,
   Stack,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
 } from '@mui/joy';
 import { ColorPaletteProp } from '@mui/joy/styles';
-import { Form, useNavigate, useSearchParams } from '@remix-run/react';
+import {
+  FetcherWithComponents,
+  Form,
+  useFetcher,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 
@@ -116,23 +126,91 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function RowMenu() {
+function RowMenu({
+  fetcher,
+  order_id,
+  account_id,
+  symbol,
+  page,
+  limit,
+}: {
+  fetcher: FetcherWithComponents<unknown>;
+  symbol: string;
+  order_id: string;
+  account_id: string;
+  page: number;
+  limit: number;
+}) {
+  const [openConfirm, setOpenConfirm] = React.useState(false);
+
+  const handleDeleteClick = () => {
+    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+  };
+
+  const handleConfirm = () => {
+    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+    fetcher.submit(
+      {
+        action: 'delete',
+        symbol,
+        order_id,
+        account_id,
+        page,
+        limit,
+      },
+      { method: 'post', action: './' },
+    );
+    setOpenConfirm(false); // 모달 닫기
+  };
+
+  const handleCancel = () => {
+    setOpenConfirm(false); // 모달을 취소하면 닫기
+  };
+
   return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem color="primary">Detail</MenuItem>
-        <Divider />
-        <MenuItem color="warning">Edit</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
+    <React.Fragment>
+      <Dropdown>
+        <MenuButton
+          slots={{ root: IconButton }}
+          slotProps={{
+            root: { variant: 'plain', color: 'neutral', size: 'sm' },
+          }}
+        >
+          <MoreHorizRoundedIcon />
+        </MenuButton>
+        <Menu size="sm" sx={{ minWidth: 140 }}>
+          <MenuItem color="primary">Detail</MenuItem>
+          <Divider />
+          <MenuItem color="warning">Edit</MenuItem>
+          <Divider />
+          {/* Delete */}
+          <MenuItem color="danger" onClick={handleDeleteClick}>
+            Order Cancel
+          </MenuItem>
+        </Menu>
+      </Dropdown>
+      {/* 모달 구현 */}
+      <Modal open={openConfirm} onClose={handleCancel}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Confirm Cancellation
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to cancel this order?
+          </DialogContent>
+          <DialogActions>
+            <Button variant="solid" color="danger" onClick={handleConfirm}>
+              OK
+            </Button>
+            <Button variant="plain" color="neutral" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+    </React.Fragment>
   );
 }
 export function OpenOrderTable({
@@ -144,7 +222,6 @@ export function OpenOrderTable({
   } = openOrderResponseProps;
 
   const { account_id, page, limit } = openOrderQueriesProps;
-
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState<boolean>(false);
@@ -155,6 +232,7 @@ export function OpenOrderTable({
     defaultValues: { account_id, category_key: '', category_value: '' },
   });
 
+  const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -184,7 +262,7 @@ export function OpenOrderTable({
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', String($page));
-    navigate(`?${params.toString()}`);
+    navigate(`./?${params.toString()}`);
   };
 
   const renderFilters = () => (
@@ -892,7 +970,14 @@ export function OpenOrderTable({
                           {/* <Link level="body-xs" component="button">
                             Download
                           </Link> */}
-                          <RowMenu />
+                          <RowMenu
+                            fetcher={fetcher}
+                            order_id={row.order_id}
+                            account_id={row.account_id}
+                            symbol={row.symbol}
+                            page={page}
+                            limit={limit}
+                          />
                         </Box>
                       </td>
                     </tr>

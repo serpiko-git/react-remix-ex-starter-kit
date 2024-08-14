@@ -65,6 +65,9 @@ export const action: ActionFunction = async ({
 
 export default function Index() {
   let posts: Posts[] = useLoaderData();
+
+  console.log('useLoaderData', posts);
+
   const fetcher = useFetcher<Posts[]>();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -78,7 +81,13 @@ export default function Index() {
   };
 
   const data = useActionData<typeof action>();
-  if (data) posts = [data];
+  if (data) {
+    console.log('useActionData', data);
+    posts = [data];
+  }
+
+  const fetcherData = fetcher.data as unknown as Posts;
+  console.log('fetcherData', fetcherData);
 
   return (
     <div>

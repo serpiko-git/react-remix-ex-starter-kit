@@ -1,7 +1,7 @@
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
-import { DashboardOpenOrder } from '~/features/dashboard-open-order';
+import { DashboardOrder } from '~/features/dashboard-order-example';
 
 interface Users {
   id: number;
@@ -25,7 +25,7 @@ export default function index() {
   const props = datas;
   return (
     <div>
-      <DashboardOpenOrder {...props} />
+      <DashboardOrder {...props} />
     </div>
   );
 }

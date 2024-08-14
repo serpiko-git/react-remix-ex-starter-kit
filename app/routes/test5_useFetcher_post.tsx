@@ -74,16 +74,15 @@ export const action: ActionFunction = async ({
 
 export default function Index() {
   const posts: Posts[] = useLoaderData();
+  console.log('useLoaderData', posts);
+
   const fetcher = useFetcher<FetcherData>();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const inputNameValue = String(
-      Number(formData.get('input-name')) + 10 ?? '0',
-    ) as string;
-
+    const inputNameValue = formData.get('input-name') || '';
     formData.set('input-name', inputNameValue);
     formData.append('addValue', 'serpiko');
 
@@ -92,6 +91,7 @@ export default function Index() {
 
   // Safely extract data from fetcher.data
   const fetcherData = fetcher.data as unknown as Posts;
+  console.log('fetcherData', fetcherData);
 
   return (
     <div>
