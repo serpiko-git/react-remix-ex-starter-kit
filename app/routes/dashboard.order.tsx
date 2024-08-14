@@ -2,10 +2,9 @@ import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { responseEncoding } from 'axios';
 import { URL } from 'url';
-import { Response } from 'express';
 
 import { apiHost_v1 } from '~/consts';
-import { DashboardOrder } from '~/features/dashboard-order';
+import { DashboardOpenOrder } from '~/features/dashboard-open-order';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -42,7 +41,7 @@ export default function index() {
   const data = useLoaderData<typeof loader>();
   return (
     <div>
-      <DashboardOrder {...data} />
+      <DashboardOpenOrder {...data} />
     </div>
   );
 }

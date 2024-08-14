@@ -191,6 +191,22 @@ export function Sidebar() {
 
           <ListItem>
             <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['open-order'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['open-order'])
+              }
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Open-Order</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton
               selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
               onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.symbols)}
             >

@@ -22,7 +22,7 @@ import Select from '@mui/joy/Select';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 
-import { useOrder, useTanstack } from '../hooks/queries';
+import { useOrder, useTanstack } from '~/features/dashboard-order/hooks/queries';
 
 
 export function DetailForm() {
