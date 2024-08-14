@@ -41,35 +41,9 @@ import {
 import { ColorPaletteProp } from '@mui/joy/styles';
 import { useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
-
 import { ResponsiveModal } from '~/features/modal';
-
-import { SymbolResponse } from '../models/symbol.model';
-
+import { SymbolResponse, symbolOrderType } from '../models/symbol.model';
 import { DetailForm } from './DetailForm';
-
-const rows = [
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -116,11 +90,10 @@ function RowMenu() {
 }
 export function SymbolTable(props: SymbolResponse) {
   const fetcher = useFetcher();
-
   const {
     data: {
-      list: symbols
-    }
+      list
+    },
   } = props;
 
   const [order, setOrder] = React.useState<Order>('desc');
@@ -284,24 +257,26 @@ export function SymbolTable(props: SymbolResponse) {
               <th
                 style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
               >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
+                {
+                  // <Checkbox
+                  //   size="sm"
+                  //   indeterminate={
+                  //     selected.length > 0 && selected.length !== rows.length
+                  //   }
+                  //   checked={selected.length === rows.length}
+                  //   onChange={(event) => {
+                  //     setSelected(
+                  //       event.target.checked ? rows.map((row) => row.id) : [],
+                  //     );
+                  //   }}
+                  //   color={
+                  //     selected.length > 0 || selected.length === rows.length
+                  //       ? 'primary'
+                  //       : undefined
+                  //   }
+                  //   sx={{ verticalAlign: 'text-bottom' }}                  
+                  // />
+                }
               </th>
               <th style={{ width: 120, padding: '12px 6px' }}>
                 <Link
@@ -340,7 +315,7 @@ export function SymbolTable(props: SymbolResponse) {
             </tr>
           </thead>
           <tbody>
-            {[...symbols]
+            {[...list]
               .sort(getComparator(order, 'SymbolId'))
               .map((symbol) => (
                 <tr
@@ -364,8 +339,8 @@ export function SymbolTable(props: SymbolResponse) {
                           event.target.checked
                             ? ids.concat(symbol.SymbolId)
                             : ids.filter(
-                                (itemId) => itemId !== symbol.SymbolId,
-                              ),
+                              (itemId) => itemId !== symbol.SymbolId,
+                            ),
                         );
                       }}
                       slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
@@ -436,7 +411,7 @@ export function SymbolTable(props: SymbolResponse) {
                   <td>
                     <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                       {/* <Link level="body-xs" component="button">
-                        Download
+                      Download
                       </Link> */}
                       <RowMenu />
                     </Box>

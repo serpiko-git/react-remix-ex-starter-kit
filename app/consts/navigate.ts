@@ -1,6 +1,10 @@
 export const DEFAULT_PATH_NAVIGATE = {
-  index: '/',
+  'index': '/',
+  'symbols': '/dashboard/symbol',
   'open-order': '/dashboard/open-order',
-  symbols: '/dashboard/symbol',
-  orders: '/dashboard/order',
+  'closed-order-pnl': '/dashboard/closed-order-pnl',
+  'closed-order-trade': '/dashboard/closed-order-trade',  
+  'closed-position-pnl': '/dashboard/closed-position-pnl',
+  'closed-position-trade': '/dashboard/closed-position-trade',
+  'orders': '/dashboard/order',
 } as const;

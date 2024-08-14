@@ -19,20 +19,21 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import { Sidebar } from '~/features/side-bar';
 
 import {
-  OpenOrderCombineProps,
-  OpenOrderResponse,
-} from '../models/open-order.model';
+  ClosedOrderPnlCombinProps,
+  ClosedOrderPnlResponse
+} from '../models/closed-order-pnl';
+
 
 import { Header } from './Header';
-import { OpenOrderList } from './OpenOrderList';
-import { OpenOrderTable } from './OpenOrderTable';
+// import {  } from './ClosedOrderPnlList';
+import { ClosedOrderPnlTable } from './ClosedOrderPnlTable';
 
-export function DashboardOpenOrder({
-  openOrderResponseProps,
-  openOrderQueriesProps,
-}: OpenOrderCombineProps) {
-  const { code, msg, time_now, data } = openOrderResponseProps;
-  const { account_id, limit, page } = openOrderQueriesProps;
+export function DashboardClosedOrderPnl({
+  responseProps,
+  queriesProps,
+}: ClosedOrderPnlCombinProps) {
+  const { code, msg, time_now, data } = responseProps;
+  const { account_id, limit, page } = queriesProps;
 
   const [open, setOpen] = React.useState<boolean>(true);
 
@@ -66,6 +67,7 @@ export function DashboardOpenOrder({
           </ModalDialog>
         </Modal>
       )}
+
 
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Header />
@@ -142,10 +144,9 @@ export function DashboardOpenOrder({
               Download PDF
             </Button>
           </Box>
-
-          <OpenOrderTable
-            openOrderResponseProps={openOrderResponseProps}
-            openOrderQueriesProps={openOrderQueriesProps}
+          <ClosedOrderPnlTable
+            responseProps={responseProps}
+            queriesProps={queriesProps}
           />
           {/* mobile */
             // <OpenOrderList />
@@ -155,3 +156,5 @@ export function DashboardOpenOrder({
     </CssVarsProvider>
   );
 }
+
+

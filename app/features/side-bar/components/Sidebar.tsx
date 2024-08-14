@@ -204,7 +204,38 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
+          
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['closed-order-pnl'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-order-pnl'])
+              }
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Closed-Order-P&L</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
 
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['closed-order-trade'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-order-trade'])
+              }>
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Closed-Order-Trade</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+          
           <ListItem>
             <ListItemButton
               selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
@@ -241,11 +272,11 @@ export function Sidebar() {
                     sx={[
                       open
                         ? {
-                            transform: 'rotate(180deg)',
-                          }
+                          transform: 'rotate(180deg)',
+                        }
                         : {
-                            transform: 'none',
-                          },
+                          transform: 'none',
+                        },
                     ]}
                   />
                 </ListItemButton>
@@ -294,11 +325,11 @@ export function Sidebar() {
                     sx={[
                       open
                         ? {
-                            transform: 'rotate(180deg)',
-                          }
+                          transform: 'rotate(180deg)',
+                        }
                         : {
-                            transform: 'none',
-                          },
+                          transform: 'none',
+                        },
                     ]}
                   />
                 </ListItemButton>
