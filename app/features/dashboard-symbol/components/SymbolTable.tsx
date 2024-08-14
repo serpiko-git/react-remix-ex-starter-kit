@@ -117,7 +117,11 @@ function RowMenu() {
 export function SymbolTable(props: SymbolResponse) {
   const fetcher = useFetcher();
 
-  const { data: symbols } = props;
+  const {
+    data: {
+      list: symbols
+    }
+  } = props;
 
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);

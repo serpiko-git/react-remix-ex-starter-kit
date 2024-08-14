@@ -1,4 +1,4 @@
-import { BaseResponseListPaging } from '../../models/common.model';
+import { BaseResponsePaging } from '../../models/common.model';
 
 export interface IOpenOrdersRequest {
   symbol: string;
@@ -70,4 +70,4 @@ export interface IOpenOrderInfo {
   created_ts: string;
 }
 
-export interface OpenOrdersResponse extends BaseResponseListPaging<IOpenOrderInfo> {}
+export interface OpenOrdersResponse extends BaseResponsePaging<IOpenOrderInfo> {}

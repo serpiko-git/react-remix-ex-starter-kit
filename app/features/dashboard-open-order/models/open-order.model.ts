@@ -1,12 +1,4 @@
-interface BaseResponse<T> {
-  code: number;
-  data: {
-    items: T[];
-    total: string;
-  };
-  msg: string;
-  time_now: string;
-}
+import { BaseResponsePaging } from "~/features/models/common.model";
 
 export const positionMode = {
   /** one-way mode */
@@ -317,7 +309,7 @@ export interface OpenOrder {
   created_ts: string;
 }
 
-export interface OpenOrderResponse extends BaseResponse<OpenOrder> {}
+export interface OpenOrderResponse extends BaseResponsePaging<OpenOrder> {}
 
 export interface OpenOrderQueries {
   account_id: string;
