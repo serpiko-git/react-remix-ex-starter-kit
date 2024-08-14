@@ -229,7 +229,7 @@ export function OpenOrderTable({
   const [thCount, setThCount] = React.useState<number>();
 
   const { control, handleSubmit, watch } = useForm<OpenOrderSearchValues>({
-    defaultValues: { account_id, category_key: '', category_value: '' },
+    defaultValues: { account_id, category_key: '', category_value: '', limit },
   });
 
   const fetcher = useFetcher();
@@ -275,6 +275,8 @@ export function OpenOrderTable({
           control={control}
           render={({ field }) => (
             <Select
+              // {...field}
+              name="category_key"
               size="sm"
               placeholder="Select by category"
               slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -440,6 +442,32 @@ export function OpenOrderTable({
                     placeholder="category_value"
                     startDecorator={<SearchIcon />}
                   />
+                )}
+              />
+            </FormControl>
+            <FormControl size="sm">
+              <FormLabel>Category</FormLabel>
+
+              <Controller
+                name="limit"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    // {...field}
+                    size="sm"
+                    name="limit"
+                    placeholder="Limit"
+                    slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+                    // onChange={field.onChange}
+                  >
+                    <Option value="10">10</Option>
+                    <Option value="20">20</Option>
+                    <Option value="30">30</Option>
+                    <Option value="40">40</Option>
+                    <Option value="50">50</Option>
+                    <Option value="70">70</Option>
+                    <Option value="100">100</Option>
+                  </Select>
                 )}
               />
             </FormControl>

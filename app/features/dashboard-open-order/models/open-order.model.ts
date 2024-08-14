@@ -336,4 +336,5 @@ export interface OpenOrderSearchValues {
   account_id: string;
   category_key: string;
   category_value: string;
+  limit: number;
 }
