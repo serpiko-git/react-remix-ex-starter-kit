@@ -204,6 +204,7 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
+          
           <ListItem>
             <ListItemButton
               selected={currentPath.startsWith(
@@ -219,18 +220,18 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
-
+          
           <ListItem>
             <ListItemButton
               selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE['closed-order-trade'],
+                DEFAULT_PATH_NAVIGATE['closed-position-pnl'],
               )}
               onClick={() =>
-                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-order-trade'])
+                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-position-pnl'])
               }>
               <ShoppingCartRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Closed-Order-Trade</Typography>
+                <Typography level="title-sm">Closed-Position-P&L</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>

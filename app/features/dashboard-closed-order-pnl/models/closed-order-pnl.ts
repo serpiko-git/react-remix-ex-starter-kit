@@ -46,5 +46,6 @@ export interface ClosedOrderPnlSearchValues {
   account_id: string;
   category_key: string;
   category_value: string;
+  limit: number;
 }
 
