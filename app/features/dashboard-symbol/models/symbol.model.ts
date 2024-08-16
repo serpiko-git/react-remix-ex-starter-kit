@@ -1,6 +1,8 @@
 interface BaseResponse<T> {
   code: number;
-  data: T[];
+  data: {
+    list: T[];
+  };
   msg: string;
   time_now: string;
 }

@@ -1,8 +1,12 @@
 interface BaseResponse<T> {
   code: number;
   data: {
-    items: T[];
-    total: string;
+    list: T[];
+    pagination: {
+      total: 0;
+      page_no: 1;
+      page_size: 20;
+    };
   };
   msg: string;
   time_now: string;
@@ -74,6 +78,7 @@ export const createTypeText = {
   9: 'createByLiq',
   10: 'createByAdlPassThrough',
   11: 'createByTakeOverPassThrough',
+  12: '12',
 };
 export const cancelType = {
   cancelByUser: '0',
@@ -262,6 +267,7 @@ export interface OpenOrder {
   order_id: string;
   parent_order_id: string;
   account_id: string;
+  client_order_id: string;
   symbol: string;
   side: SideTypes;
   order_type: OrderTypes;
@@ -334,7 +340,9 @@ export interface OpenOrderCombineProps {
 
 export interface OpenOrderSearchValues {
   account_id: string;
-  category_key: string;
-  category_value: string;
+  symbol: string;
+  order_id: string;
+  client_order_id: string;
+  transaction_id: string;
   limit: number;
 }
