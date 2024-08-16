@@ -10,12 +10,16 @@ export default defineConfig({
   plugins: [
     remix(),
     tsconfigPaths(),
-    checker({
-      typescript: true,
-      eslint: {
-        lintCommand: 'eslint .',
-      },
-    }),
+    ...(process.env.SKIP_LINT === 'true'
+      ? []
+      : [
+          checker({
+            typescript: true,
+            eslint: {
+              lintCommand: 'eslint .',
+            },
+          }),
+        ]),
   ],
   define: { 'process.env': process.env },
 });
