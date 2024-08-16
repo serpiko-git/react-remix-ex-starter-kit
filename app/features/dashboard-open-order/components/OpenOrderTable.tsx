@@ -507,16 +507,16 @@ export function OpenOrderTable({
                 <Checkbox
                   size="sm"
                   indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
+                    selected.length > 0 && selected.length !== list.length
                   }
-                  checked={selected.length === rows.length}
+                  checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : [],
+                      event.target.checked ? list.map((row) => row.order_id) : [],
                     );
                   }}
                   color={
-                    selected.length > 0 || selected.length === rows.length
+                    selected.length > 0 || selected.length === list.length
                       ? 'primary'
                       : undefined
                   }
