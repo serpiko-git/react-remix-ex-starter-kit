@@ -263,18 +263,6 @@ export function Sidebar() {
             </ListItemButton>
           </ListItem>
 
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.orders)}
-              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.orders)}
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Orders</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
           <ListItem nested>
             <Toggler
               renderToggle={({ open, setOpen }) => (
