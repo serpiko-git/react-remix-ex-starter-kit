@@ -235,6 +235,21 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['transaction'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['transaction'])
+              }>
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Transaction</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
           
           <ListItem>
             <ListItemButton
