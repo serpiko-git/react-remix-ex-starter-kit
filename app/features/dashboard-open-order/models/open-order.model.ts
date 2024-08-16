@@ -1,5 +1,4 @@
 import { BaseResponsePaging } from "~/features/models/common.model";
-
 export const positionMode = {
   /** one-way mode */
   both: 0,
@@ -328,4 +327,5 @@ export interface OpenOrderSearchValues {
   account_id: string;
   category_key: string;
   category_value: string;
+  limit: number;
 }

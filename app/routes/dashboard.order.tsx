@@ -5,6 +5,16 @@ import { URL } from 'url';
 
 import { apiHost_v1 } from '~/consts';
 import { DashboardOpenOrder } from '~/features/dashboard-open-order';
+import { DashboardOrder } from '~/features/dashboard-order-example';
+
+interface Users {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  website: string;
+}
 
 export const loader: LoaderFunction = async ({
   request,

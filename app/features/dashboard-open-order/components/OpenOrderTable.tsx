@@ -14,6 +14,7 @@ import {
   Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
+  WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
   Avatar,
@@ -42,12 +43,22 @@ import {
   iconButtonClasses,
   Alert,
   Stack,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
 } from '@mui/joy';
 import { ColorPaletteProp } from '@mui/joy/styles';
-import { Form } from '@remix-run/react';
+import {
+  FetcherWithComponents,
+  Form,
+  useFetcher,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 
+import { Pagination } from '~/common/libs/pagination';
 import {
   OpenOrder,
   OpenOrderCombineProps,
@@ -91,23 +102,91 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function RowMenu() {
+function RowMenu({
+  fetcher,
+  order_id,
+  account_id,
+  symbol,
+  page,
+  limit,
+}: {
+  fetcher: FetcherWithComponents<unknown>;
+  symbol: string;
+  order_id: string;
+  account_id: string;
+  page: number;
+  limit: number;
+}) {
+  const [openConfirm, setOpenConfirm] = React.useState(false);
+
+  const handleDeleteClick = () => {
+    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+  };
+
+  const handleConfirm = () => {
+    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+    fetcher.submit(
+      {
+        action: 'delete',
+        symbol,
+        order_id,
+        account_id,
+        page,
+        limit,
+      },
+      { method: 'post', action: './' },
+    );
+    setOpenConfirm(false); // 모달 닫기
+  };
+
+  const handleCancel = () => {
+    setOpenConfirm(false); // 모달을 취소하면 닫기
+  };
+
   return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem color="primary">Detail</MenuItem>
-        <Divider />
-        <MenuItem color="warning">Edit</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
+    <React.Fragment>
+      <Dropdown>
+        <MenuButton
+          slots={{ root: IconButton }}
+          slotProps={{
+            root: { variant: 'plain', color: 'neutral', size: 'sm' },
+          }}
+        >
+          <MoreHorizRoundedIcon />
+        </MenuButton>
+        <Menu size="sm" sx={{ minWidth: 140 }}>
+          <MenuItem color="primary">Detail</MenuItem>
+          <Divider />
+          <MenuItem color="warning">Edit</MenuItem>
+          <Divider />
+          {/* Delete */}
+          <MenuItem color="danger" onClick={handleDeleteClick}>
+            Order Cancel
+          </MenuItem>
+        </Menu>
+      </Dropdown>
+      {/* 모달 구현 */}
+      <Modal open={openConfirm} onClose={handleCancel}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Confirm Cancellation
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to cancel this order?
+          </DialogContent>
+          <DialogActions>
+            <Button variant="solid" color="danger" onClick={handleConfirm}>
+              OK
+            </Button>
+            <Button variant="plain" color="neutral" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+    </React.Fragment>
   );
 }
 export function OpenOrderTable({
@@ -134,17 +213,26 @@ export function OpenOrderTable({
   const [thCount, setThCount] = React.useState<number>();
 
   const { control, handleSubmit, watch } = useForm<OpenOrderSearchValues>({
-    defaultValues: { account_id, category_key: '', category_value: '' },
+    defaultValues: { account_id, category_key: '', category_value: '', limit },
   });
 
-  const [currentPage, setCurrentPage] = React.useState<number>(1);
-  const [numberOfPosts, setNumberOfPosts] = useState<number>(Number(total)); // 전체 포스트 개수
-  const [numberOfPages, setNumberOfPages] = useState<number>(0); // 화면에 보일 전체 페이지 수
+  const fetcher = useFetcher();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  // 포스트 리스트 데이터를 가져오면, 전체 페이지 개수를 갱신한다
-  useEffect(() => {
-    setNumberOfPages(Math.ceil(numberOfPosts / limit));
-  }, [numberOfPosts]);
+  const {
+    no,
+    page: currentPage,
+    previous_page,
+    pageNumbers,
+    next_page,
+    result_data,
+  } = Pagination<OpenOrder>({
+    $current_page: page,
+    $num_records: Number(total),
+    $record_data: list,
+    $num_records_per_page: limit,
+  });
 
   useEffect(() => {
     if (!list.length && theadRef.current) {
@@ -153,6 +241,13 @@ export function OpenOrderTable({
       setThCount(thElements.length);
     }
   }, [list]);
+
+  // 페이지네이션 버튼 클릭 핸들러
+  const handlePagination = ($page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('page', String($page));
+    navigate(`./?${params.toString()}`);
+  };
 
   const renderFilters = () => (
     <React.Fragment>
@@ -164,6 +259,8 @@ export function OpenOrderTable({
           control={control}
           render={({ field }) => (
             <Select
+              // {...field}
+              name="category_key"
               size="sm"
               placeholder="Select by category"
               slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -274,9 +371,8 @@ export function OpenOrderTable({
           </ModalDialog>
         </Modal>
       </Sheet>
-
-      {/* search desktop */}
       <Form method="get" action="./">
+        {/* search desktop */}
         <Box
           className="SearchAndFilters-tabletUp"
           sx={{
@@ -333,6 +429,32 @@ export function OpenOrderTable({
                 )}
               />
             </FormControl>
+            <FormControl size="sm">
+              <FormLabel>Category</FormLabel>
+
+              <Controller
+                name="limit"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    // {...field}
+                    size="sm"
+                    name="limit"
+                    placeholder="Limit"
+                    slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+                    // onChange={field.onChange}
+                  >
+                    <Option value="10">10</Option>
+                    <Option value="20">20</Option>
+                    <Option value="30">30</Option>
+                    <Option value="40">40</Option>
+                    <Option value="50">50</Option>
+                    <Option value="70">70</Option>
+                    <Option value="100">100</Option>
+                  </Select>
+                )}
+              />
+            </FormControl>
             <Button
               type="submit"
               variant="solid"
@@ -347,7 +469,6 @@ export function OpenOrderTable({
           <Typography level="body-sm">Total data count {total}</Typography>
         </Box>
       </Form>
-
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -377,30 +498,32 @@ export function OpenOrderTable({
           <thead ref={theadRef}>
             <tr>
               <th
-                style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
+                style={{
+                  width: 48,
+                  textAlign: 'center',
+                  padding: '12px 6px',
+                }}
               >
-                {
-                  // <Checkbox
-                  //   size="sm"
-                  //   indeterminate={
-                  //     selected.length > 0 && selected.length !== rows.length
-                  //   }
-                  //   checked={selected.length === rows.length}
-                  //   onChange={(event) => {
-                  //     setSelected(
-                  //       event.target.checked ? rows.map((row) => row.id) : [],
-                  //     );
-                  //   }}
-                  //   color={
-                  //     selected.length > 0 || selected.length === rows.length
-                  //       ? 'primary'
-                  //       : undefined
-                  //   }
-                  //   sx={{ verticalAlign: 'text-bottom' }}
-                  //
-                  // />
-                }
+                <Checkbox
+                  size="sm"
+                  indeterminate={
+                    selected.length > 0 && selected.length !== rows.length
+                  }
+                  checked={selected.length === rows.length}
+                  onChange={(event) => {
+                    setSelected(
+                      event.target.checked ? rows.map((row) => row.id) : [],
+                    );
+                  }}
+                  color={
+                    selected.length > 0 || selected.length === rows.length
+                      ? 'primary'
+                      : undefined
+                  }
+                  sx={{ verticalAlign: 'text-bottom' }}
+                />
               </th>
+              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -541,7 +664,7 @@ export function OpenOrderTable({
               <tbody>
                 {[...list]
                   .sort(getComparator(order, 'order_id'))
-                  .map((row) => (
+                  .map((row, i) => (
                     <tr key={row.order_id}>
                       <td style={{ textAlign: 'center', width: 120 }}>
                         <Checkbox
@@ -567,6 +690,9 @@ export function OpenOrderTable({
                           }}
                           sx={{ verticalAlign: 'text-bottom' }}
                         />
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{no + i}</Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">{row.order_id}</Typography>
@@ -865,13 +991,23 @@ export function OpenOrderTable({
                         </Typography>
                       </td>
                       <td>
-                        <Box
-                          sx={{ display: 'flex', gap: 2, alignItems: 'center' }}
+                        <Box sx={{
+                          display: 'flex',
+                          gap: 2,
+                          alignItems: 'center',
+                        }}
                         >
                           {/* <Link level="body-xs" component="button">
                           Download
                           </Link> */}
-                          <RowMenu />
+                          <RowMenu
+                            fetcher={fetcher}
+                            order_id={row.order_id}
+                            account_id={row.account_id}
+                            symbol={row.symbol}
+                            page={page}
+                            limit={limit}
+                          />
                         </Box>
                       </td>
                     </tr>
@@ -881,49 +1017,76 @@ export function OpenOrderTable({
           )}
         </Table>
       </Sheet>
-      <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: '50%' },
-          display: {
-            xs: 'none',
-            md: 'flex',
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
+      <Form method="get" action="./">
+        <Box
+          className="Pagination-laptopUp"
+          sx={{
+            pt: 2,
+            gap: 1,
+            [`& .${iconButtonClasses.root}`]: { borderRadius: '50%' },
+            display: {
+              xs: 'none',
+              md: 'flex',
+            },
+          }}
         >
-          Previous
-        </Button>
+          {previous_page && (
+            <>
+              <Button
+                size="sm"
+                variant="outlined"
+                color="neutral"
+                startDecorator={<KeyboardArrowLeftIcon />}
+                onClick={() => handlePagination(previous_page)}
+              >
+                Previous
+              </Button>
+            </>
+          )}
 
-        <Box sx={{ flex: 1 }} />
-        {['1', '2', '3', '…', '8', '9', '10'].map(($page) => (
-          <IconButton
-            key={$page}
-            size="sm"
-            variant={Number($page) ? 'outlined' : 'plain'}
-            color="neutral"
-          >
-            {$page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-          onClick={(e) => console.log(e)}
-        >
-          Next
-        </Button>
-      </Box>
+          <Box sx={{ flex: 1 }} />
+          {pageNumbers.map((pageNumber) => (
+            <IconButton
+              key={`pageNumber${pageNumber}`}
+              size="sm"
+              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
+              color="neutral"
+              sx={{
+                backgroundColor:
+                  pageNumber === currentPage
+                    ? 'rgba(255, 255, 255, 0.1)'
+                    : 'transparent',
+                color:
+                  pageNumber === currentPage
+                    ? 'white'
+                    : 'rgba(255, 255, 255, 0.7)',
+                borderColor:
+                  pageNumber === currentPage
+                    ? 'rgba(255, 255, 255, 0.3)'
+                    : 'rgba(255, 255, 255, 0.2)',
+              }}
+              onClick={() => handlePagination(pageNumber)}
+            >
+              {pageNumber}
+            </IconButton>
+          ))}
+          <Box sx={{ flex: 1 }} />
+
+          {next_page && (
+            <>
+              <Button
+                size="sm"
+                variant="outlined"
+                color="neutral"
+                endDecorator={<KeyboardArrowRightIcon />}
+                onClick={() => handlePagination(next_page)}
+              >
+                Next
+              </Button>
+            </>
+          )}
+        </Box>
+      </Form>
     </React.Fragment>
   );
 }

@@ -204,7 +204,6 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
-          
           <ListItem>
             <ListItemButton
               selected={currentPath.startsWith(
