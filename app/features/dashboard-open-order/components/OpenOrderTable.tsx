@@ -139,8 +139,8 @@ function RowMenu({
   symbol: string;
   order_id: string;
   account_id: string;
-  page: number;
-  limit: number;
+  page: string;
+  limit: string;
 }) {
   const [openConfirm, setOpenConfirm] = React.useState(false);
 
@@ -227,21 +227,23 @@ export function OpenOrderTable({
   } = openOrderResponseProps;
 
   const { account_id, page, limit } = openOrderQueriesProps;
+
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [open, setOpen] = React.useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
   const [thCount, setThCount] = React.useState<number>();
 
-  const { control, handleSubmit, watch } = useForm<OpenOrderSearchValues>({
-    defaultValues: {
-      account_id,
-      symbol: '',
-      order_id: '',
-      client_order_id: '',
-      limit,
-    },
-  });
+  const { control, handleSubmit, watch, setValue } =
+    useForm<OpenOrderSearchValues>({
+      defaultValues: {
+        account_id,
+        symbol: '',
+        order_id: '',
+        client_order_id: '',
+        limit,
+      },
+    });
 
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
@@ -255,10 +257,10 @@ export function OpenOrderTable({
     next_page,
     result_data,
   } = Pagination<OpenOrder>({
-    $current_page: page,
+    $current_page: Number(page),
     $num_records: Number(total),
     $record_data: list,
-    $num_records_per_page: limit,
+    $num_records_per_page: Number(limit),
   });
 
   useEffect(() => {
@@ -268,6 +270,12 @@ export function OpenOrderTable({
       setThCount(thElements.length);
     }
   }, [list]);
+
+  useEffect(() => {
+    if (limit) {
+      setValue('limit', limit);
+    }
+  }, [limit]);
 
   // 페이지네이션 버튼 클릭 핸들러
   const handlePagination = ($page: number) => {
@@ -452,7 +460,6 @@ export function OpenOrderTable({
 
               <FormControl size="sm">
                 <FormLabel>Category</FormLabel>
-
                 <Controller
                   name="limit"
                   control={control}
@@ -460,7 +467,7 @@ export function OpenOrderTable({
                     <Select
                       name={name}
                       placeholder={name}
-                      value={value}
+                      value={value ?? limit}
                       onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
                       onBlur={onBlur}
                       size="sm"

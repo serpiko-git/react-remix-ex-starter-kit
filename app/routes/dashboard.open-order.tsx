@@ -32,8 +32,8 @@ export const loader: LoaderFunction = async ({
   const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
   const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
   const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
-  const page = searchParams.get('page') || DEFAULT_OPEN_ORDER_PAGE;
-  const limit = searchParams.get('limit') || DEFAULT_OPEN_ORDER_LIMIT;
+  const page = searchParams.get('page') || String(DEFAULT_OPEN_ORDER_PAGE);
+  const limit = searchParams.get('limit') || String(DEFAULT_OPEN_ORDER_LIMIT);
 
   searchParams.set('account_id', account_id);
   searchParams.set('symbol', symbol);
@@ -105,6 +105,9 @@ export default function index() {
     useLoaderData<typeof loader>();
   const { openOrderResponseProps, openOrderQueriesProps } =
     openOrderCombineProps;
+
+  const { account_id, limit, page } = openOrderQueriesProps;
+  console.log(typeof limit, limit);
 
   const fetcher = useFetcher();
   const fetcherData = fetcher.data;

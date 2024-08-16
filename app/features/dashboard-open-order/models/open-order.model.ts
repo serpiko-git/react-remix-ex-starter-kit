@@ -327,8 +327,8 @@ export interface OpenOrderResponse extends BaseResponse<OpenOrder> {}
 
 export interface OpenOrderQueries {
   account_id: string;
-  page: number;
-  limit: number;
+  page: string;
+  limit: string;
   category_key?: string;
   category_value?: string;
 }
@@ -344,5 +344,5 @@ export interface OpenOrderSearchValues {
   order_id: string;
   client_order_id: string;
   transaction_id: string;
-  limit: number;
+  limit: string;
 }
