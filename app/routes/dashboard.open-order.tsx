@@ -10,8 +10,10 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 
 import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
+  DEFAULT_EMPTY,
   DEFAULT_OPEN_ORDER_LIMIT,
   DEFAULT_OPEN_ORDER_PAGE,
+  DEFAULT_SYMBOL_LIST,
 } from '~/consts/open-order';
 import {
   DashboardOpenOrder,
@@ -24,13 +26,24 @@ export const loader: LoaderFunction = async ({
   params,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
-  const account_id = url.searchParams.get('account_id') || apiAccount_id; // 기본값 설정
-  const page = url.searchParams.get('page') || DEFAULT_OPEN_ORDER_PAGE;
-  const limit = url.searchParams.get('limit') || DEFAULT_OPEN_ORDER_LIMIT;
+  const searchParams = new URLSearchParams(url.search);
+
+  const account_id = searchParams.get('account_id') || apiAccount_id;
+  const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
+  const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
+  const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
+  const page = searchParams.get('page') || String(DEFAULT_OPEN_ORDER_PAGE);
+  const limit = searchParams.get('limit') || String(DEFAULT_OPEN_ORDER_LIMIT);
+
+  searchParams.set('account_id', account_id);
+  searchParams.set('symbol', symbol);
+  searchParams.set('client_order_id', client_order_id);
+  searchParams.set('transaction_id', transaction_id);
+  searchParams.set('page', page.toString());
+  searchParams.set('limit', limit.toString());
 
   console.group('Remix: loader');
-
-  const fetchUrl = `${apiHost_v1}/open-order/list?account_id=${account_id}&page=${page}&limit=${limit}`;
+  const fetchUrl = `${apiHost_v1}/open-order/list?${searchParams.toString()}`;
   console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
 
@@ -93,8 +106,8 @@ export default function index() {
   const { openOrderResponseProps, openOrderQueriesProps } =
     openOrderCombineProps;
 
-  console.log({ openOrderResponseProps });
-  console.log({ openOrderQueriesProps });
+  const { account_id, limit, page } = openOrderQueriesProps;
+  console.log(typeof limit, limit);
   const fetcher = useFetcher();
   const fetcherData = fetcher.data;
   if (fetcherData) {

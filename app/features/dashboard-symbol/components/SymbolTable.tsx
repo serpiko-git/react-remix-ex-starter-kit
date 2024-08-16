@@ -91,9 +91,7 @@ function RowMenu() {
 export function SymbolTable(props: SymbolResponse) {
   const fetcher = useFetcher();
   const {
-    data: {
-      list
-    },
+    data: { list },
   } = props;
 
   const [order, setOrder] = React.useState<Order>('desc');
@@ -315,109 +313,99 @@ export function SymbolTable(props: SymbolResponse) {
             </tr>
           </thead>
           <tbody>
-            {[...list]
-              .sort(getComparator(order, 'SymbolId'))
-              .map((symbol) => (
-                <tr
-                  key={symbol.SymbolId}
-                  onClick={() =>
-                    handleTrClick(symbol.SymbolId, symbol.SymbolName)
-                  }
-                >
-                  <td style={{ textAlign: 'center', width: 120 }}>
-                    <Checkbox
-                      size="sm"
-                      checked={selected.includes(symbol.SymbolId)}
-                      color={
-                        selected.includes(symbol.SymbolId)
-                          ? 'primary'
-                          : undefined
-                      }
-                      onChange={(event) => {
-                        // eslint-disable-next-line no-confusing-arrow
-                        setSelected((ids) =>
-                          event.target.checked
-                            ? ids.concat(symbol.SymbolId)
-                            : ids.filter(
-                              (itemId) => itemId !== symbol.SymbolId,
-                            ),
-                        );
-                      }}
-                      slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
-                      sx={{ verticalAlign: 'text-bottom' }}
-                    />
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{symbol.SymbolId}</Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">
-                      {symbol.SymbolAlias}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{symbol.SymbolName}</Typography>
-                  </td>
-                  <td>
-                    <Chip
-                      variant="soft"
-                      size="sm"
-                      startDecorator={
-                        {
-                          1: <CheckRoundedIcon />,
-                          2: <AutorenewRoundedIcon />,
-                          3: <BlockIcon />,
-                        }[symbol.Status]
-                      }
-                      color={
-                        {
-                          1: 'success',
-                          2: 'neutral',
-                          3: 'danger',
-                        }[symbol.Status] as ColorPaletteProp
-                      }
-                    >
-                      {symbol.Status}
-                    </Chip>
-                  </td>
-                  <td>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                      <Avatar size="sm">{symbol.BaseAsset}</Avatar>
-                      <div>
-                        <Typography level="body-xs">
-                          {symbol.BaseAsset}
-                        </Typography>
-                        <Typography level="body-xs">
-                          {symbol.QuoteAsset}
-                        </Typography>
-                      </div>
-                    </Box>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">
-                      {symbol.ContractType}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">
-                      {dayjs(symbol.UpdatedAt).format('YYYY-MM-DD HH:mm:ss')}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">
-                      {dayjs(symbol.CreatedAt).format('YYYY-MM-DD HH:mm:ss')}
-                    </Typography>
-                  </td>
-                  <td>
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                      {/* <Link level="body-xs" component="button">
-                      Download
+            {[...list].sort(getComparator(order, 'SymbolId')).map((symbol) => (
+              <tr
+                key={symbol.SymbolId}
+                onClick={() =>
+                  handleTrClick(symbol.SymbolId, symbol.SymbolName)
+                }
+              >
+                <td style={{ textAlign: 'center', width: 120 }}>
+                  <Checkbox
+                    size="sm"
+                    checked={selected.includes(symbol.SymbolId)}
+                    color={
+                      selected.includes(symbol.SymbolId) ? 'primary' : undefined
+                    }
+                    onChange={(event) => {
+                      // eslint-disable-next-line no-confusing-arrow
+                      setSelected((ids) =>
+                        event.target.checked
+                          ? ids.concat(symbol.SymbolId)
+                          : ids.filter((itemId) => itemId !== symbol.SymbolId),
+                      );
+                    }}
+                    slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
+                    sx={{ verticalAlign: 'text-bottom' }}
+                  />
+                </td>
+                <td>
+                  <Typography level="body-xs">{symbol.SymbolId}</Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">{symbol.SymbolAlias}</Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">{symbol.SymbolName}</Typography>
+                </td>
+                <td>
+                  <Chip
+                    variant="soft"
+                    size="sm"
+                    startDecorator={
+                      {
+                        1: <CheckRoundedIcon />,
+                        2: <AutorenewRoundedIcon />,
+                        3: <BlockIcon />,
+                      }[symbol.Status]
+                    }
+                    color={
+                      {
+                        1: 'success',
+                        2: 'neutral',
+                        3: 'danger',
+                      }[symbol.Status] as ColorPaletteProp
+                    }
+                  >
+                    {symbol.Status}
+                  </Chip>
+                </td>
+                <td>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    <Avatar size="sm">{symbol.BaseAsset}</Avatar>
+                    <div>
+                      <Typography level="body-xs">
+                        {symbol.BaseAsset}
+                      </Typography>
+                      <Typography level="body-xs">
+                        {symbol.QuoteAsset}
+                      </Typography>
+                    </div>
+                  </Box>
+                </td>
+                <td>
+                  <Typography level="body-xs">{symbol.ContractType}</Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">
+                    {dayjs(symbol.UpdatedAt).format('YYYY-MM-DD HH:mm:ss')}
+                  </Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">
+                    {dayjs(symbol.CreatedAt).format('YYYY-MM-DD HH:mm:ss')}
+                  </Typography>
+                </td>
+                <td>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                    {/* <Link level="body-xs" component="button">
+                        Download
                       </Link> */}
-                      <RowMenu />
-                    </Box>
-                  </td>
-                </tr>
-              ))}
+                    <RowMenu />
+                  </Box>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </Sheet>

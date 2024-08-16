@@ -65,6 +65,7 @@ export const createTypeText = {
   9: 'createByLiq',
   10: 'createByAdlPassThrough',
   11: 'createByTakeOverPassThrough',
+  12: '12',
 };
 export const cancelType = {
   cancelByUser: '0',
@@ -253,6 +254,7 @@ export interface OpenOrder {
   order_id: string;
   parent_order_id: string;
   account_id: string;
+  client_order_id: string;
   symbol: string;
   side: SideTypes;
   order_type: OrderTypes;
@@ -312,8 +314,8 @@ export interface OpenOrderResponse extends BaseResponsePaging<OpenOrder> {}
 
 export interface OpenOrderQueries {
   account_id: string;
-  page: number;
-  limit: number;
+  page: string;
+  limit: string;
   category_key?: string;
   category_value?: string;
 }
@@ -325,7 +327,9 @@ export interface OpenOrderCombineProps {
 
 export interface OpenOrderSearchValues {
   account_id: string;
-  category_key: string;
-  category_value: string;
-  limit: number;
+  symbol: string;
+  order_id: string;
+  client_order_id: string;
+  transaction_id: string;
+  limit: string;
 }
