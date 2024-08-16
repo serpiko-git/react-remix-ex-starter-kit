@@ -192,17 +192,17 @@ function RowMenu({
 }
 
 export function OpenOrderTable({
-  openOrderResponseProps,
-  openOrderQueriesProps,
+  responseProps,
+  queriesProps,
 }: OpenOrderCombineProps) {
   const {
     data: {
       list,
       pagination: { total, page_no, page_size },
     },
-  } = openOrderResponseProps;
+  } = responseProps;
 
-  const { account_id, page, limit } = openOrderQueriesProps;
+  const { account_id, page, limit } = queriesProps;
 
   const [order, setOrder] = React.useState<Order>('desc');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -717,7 +717,7 @@ export function OpenOrderTable({
                           }}
                         >
                           {/* <Link level="body-xs" component="button">
-                            Download
+                          Download
                           </Link> */}
                           <RowMenu
                             fetcher={fetcher}

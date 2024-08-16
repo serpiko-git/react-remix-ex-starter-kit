@@ -47,11 +47,11 @@ export const loader: LoaderFunction = async ({
   console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
 
-  const openOrderResponseProps: OpenOrderResponse = await response.json();
-  console.log({ openOrderResponseProps });
+  const responseProps: OpenOrderResponse = await response.json();
+  console.log({ responseProps });
 
-  const openOrderQueriesProps = { account_id, page, limit };
-  const openOrderCombine = { openOrderResponseProps, openOrderQueriesProps };
+  const queriesProps = { account_id, page, limit };
+  const openOrderCombine = { responseProps, queriesProps };
 
   console.groupEnd();
 
@@ -101,12 +101,10 @@ export const action: ActionFunction = async ({
 };
 
 export default function index() {
-  const openOrderCombineProps: OpenOrderCombineProps =
-    useLoaderData<typeof loader>();
-  const { openOrderResponseProps, openOrderQueriesProps } =
-    openOrderCombineProps;
+  const combineProps: OpenOrderCombineProps = useLoaderData<typeof loader>();
+  const { responseProps, queriesProps } = combineProps;
 
-  const { account_id, limit, page } = openOrderQueriesProps;
+  const { account_id, limit, page } = queriesProps;
   console.log(typeof limit, limit);
   const fetcher = useFetcher();
   const fetcherData = fetcher.data;
@@ -117,8 +115,8 @@ export default function index() {
   return (
     <div>
       <DashboardOpenOrder
-        openOrderResponseProps={openOrderResponseProps}
-        openOrderQueriesProps={openOrderQueriesProps}
+        responseProps={responseProps}
+        queriesProps={queriesProps}
       />
     </div>
   );

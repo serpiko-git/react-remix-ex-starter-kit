@@ -28,11 +28,11 @@ import { OpenOrderList } from './OpenOrderList';
 import { OpenOrderTable } from './OpenOrderTable';
 
 export function DashboardOpenOrder({
-  openOrderResponseProps,
-  openOrderQueriesProps,
+  responseProps,
+  queriesProps,
 }: OpenOrderCombineProps) {
-  const { code, msg, time_now, data } = openOrderResponseProps;
-  const { account_id, limit, page } = openOrderQueriesProps;
+  const { code, msg, time_now, data } = responseProps;
+  const { account_id, limit, page } = queriesProps;
 
   const [open, setOpen] = React.useState<boolean>(true);
 
@@ -144,8 +144,8 @@ export function DashboardOpenOrder({
           </Box>
 
           <OpenOrderTable
-            openOrderResponseProps={openOrderResponseProps}
-            openOrderQueriesProps={openOrderQueriesProps}
+            responseProps={responseProps}
+            queriesProps={queriesProps}
           />
           {/* mobile */
             // <OpenOrderList />

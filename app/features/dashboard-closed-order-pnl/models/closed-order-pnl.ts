@@ -44,8 +44,10 @@ export interface ClosedOrderPnlCombinProps {
 
 export interface ClosedOrderPnlSearchValues {
   account_id: string;
-  category_key: string;
-  category_value: string;
-  limit: number;
+  symbol: string;
+  order_id: string;
+  client_order_id: string;
+  limit : number;
+  
 }
 

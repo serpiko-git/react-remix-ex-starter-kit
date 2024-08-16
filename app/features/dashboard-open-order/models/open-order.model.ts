@@ -321,8 +321,8 @@ export interface OpenOrderQueries {
 }
 
 export interface OpenOrderCombineProps {
-  openOrderResponseProps: OpenOrderResponse;
-  openOrderQueriesProps: OpenOrderQueries;
+  responseProps: OpenOrderResponse;
+  queriesProps: OpenOrderQueries;
 }
 
 export interface OpenOrderSearchValues {
