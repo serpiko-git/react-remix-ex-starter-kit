@@ -23,7 +23,7 @@ import {
   OpenOrderResponse,
 } from '../models/open-order.model';
 
-import { Header } from './Header';
+import { Header } from '~/features/dashboard-common/components/Header';
 import { OpenOrderList } from './OpenOrderList';
 import { OpenOrderTable } from './OpenOrderTable';
 

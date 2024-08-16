@@ -12,7 +12,7 @@ import { Sidebar } from '~/features/side-bar';
 
 import { SymbolResponse } from '../models/symbol.model';
 
-import { Header } from './Header';
+import { Header } from '~/features/dashboard-common/components/Header';
 import { SymbolList } from './SymbolList';
 import { SymbolTable } from './SymbolTable';
 

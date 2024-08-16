@@ -24,7 +24,7 @@ import {
 } from '../models/closed-order-pnl';
 
 
-import { Header } from './Header';
+import { Header } from '~/features/dashboard-common/components/Header';
 // import {  } from './ClosedOrderPnlList';
 import { ClosedOrderPnlTable } from './ClosedOrderPnlTable';
 

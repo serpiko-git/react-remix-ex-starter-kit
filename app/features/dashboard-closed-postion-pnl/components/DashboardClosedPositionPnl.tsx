@@ -23,7 +23,7 @@ import {
   ClosedPositionPnlResponse,
 } from '../models/closed-position-pnl.model';
 
-import { Header } from './Header';
+import { Header } from '~/features/dashboard-common/components/Header';
 import { ClosedPositionPnlTable } from './ClosedPositionPnlTable';
 
 
