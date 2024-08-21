@@ -250,6 +250,21 @@ export function Sidebar() {
               </ListItemContent>
             </ListItemButton>
           </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['snapshot-position'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['snapshot-position'])
+              }>
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">SnapshotPosition</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
           
           <ListItem>
             <ListItemButton

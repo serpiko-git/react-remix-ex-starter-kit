@@ -8,5 +8,6 @@ export const DEFAULT_PATH_NAVIGATE = {
   // 'closed-position-trade': '/dashboard/closed-position-trade',
   'transaction': '/dashboard/transaction',
   // 'pending-order': '/dashboard/pending-order',
-  'orders': '/dashboard/order',
+  'snapshot-position': '/dashboard/snapshot-position',
+  // 'orders': '/dashboard/order',
 } as const;

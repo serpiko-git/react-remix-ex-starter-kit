@@ -5,7 +5,6 @@ import {
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import DeleteForever from '@mui/icons-material/DeleteForever';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import DialogActions from '@mui/joy/DialogActions';
@@ -19,19 +18,17 @@ import { CssVarsProvider } from '@mui/joy/styles';
 import { Sidebar } from '~/features/side-bar';
 
 import {
-  OpenOrderCombineProps,
-} from '../models/open-order.model';
+  SnapshotPositionCombineProps,
+} from '../models/snapshot-position.model';
 
 import { Header } from '~/features/dashboard-common/components/Header';
-import { OpenOrderTable } from './OpenOrderTable';
+import { SnapshotPositionTable } from './SnapshotPositionTable';
 
-export function DashboardOpenOrder({
+export function DashboardSnapshotPosition({
   responseProps,
   queriesProps,
-}: OpenOrderCombineProps) {
+}: SnapshotPositionCombineProps) {
   const { code, msg, time_now, data } = responseProps;
-  const { account_id, limit, page } = queriesProps;
-
   const [open, setOpen] = React.useState<boolean>(true);
 
   return (
@@ -49,15 +46,13 @@ export function DashboardOpenOrder({
               <Button
                 variant="solid"
                 color="danger"
-                onClick={() => setOpen(false)}
-              >
+                onClick={() => setOpen(false)}>
                 Discard notes
               </Button>
               <Button
                 variant="plain"
                 color="neutral"
-                onClick={() => setOpen(false)}
-              >
+                onClick={() => setOpen(false)}>
                 Cancel
               </Button>
             </DialogActions>
@@ -85,35 +80,30 @@ export function DashboardOpenOrder({
             minWidth: 0,
             height: '100dvh',
             gap: 1,
-          }}
-        >
+          }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Breadcrumbs
               size="sm"
               aria-label="breadcrumbs"
               separator={<ChevronRightRounded fontSize="small" />}
-              sx={{ pl: 0 }}
-            >
+              sx={{ pl: 0 }}>
               <Link
                 underline="none"
                 color="neutral"
                 href="#some-link"
-                aria-label="Home"
-              >
+                aria-label="Home">
                 <HomeRounded />
               </Link>
               <Link
                 underline="hover"
                 color="neutral"
                 href="#some-link"
-                sx={{ fontSize: 12, fontWeight: 500 }}
-              >
+                sx={{ fontSize: 12, fontWeight: 500 }}>
                 Dashboard
               </Link>
               <Typography
                 color="primary"
-                sx={{ fontWeight: 500, fontSize: 12 }}
-              >
+                sx={{ fontWeight: 500, fontSize: 12 }}>
                 Open-Order
               </Typography>
             </Breadcrumbs>
@@ -127,29 +117,24 @@ export function DashboardOpenOrder({
               alignItems: { xs: 'start', sm: 'center' },
               flexWrap: 'wrap',
               justifyContent: 'space-between',
-            }}
-          >
+            }}>
             <Typography level="h2" component="h1">
               Open-Order
             </Typography>
             <Button
               color="primary"
               startDecorator={<DownloadRounded />}
-              size="sm"
-            >
+              size="sm">
               Download PDF
             </Button>
           </Box>
 
-          <OpenOrderTable
+          <SnapshotPositionTable
             responseProps={responseProps}
             queriesProps={queriesProps}
           />
-          {/* mobile */
-            // <OpenOrderList />
-          }          
         </Box>
       </Box>
     </CssVarsProvider>
-  );
+  )
 }
