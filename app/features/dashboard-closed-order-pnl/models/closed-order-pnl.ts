@@ -48,6 +48,5 @@ export interface ClosedOrderPnlSearchValues {
   order_id: string;
   client_order_id: string;
   limit : number;
-  
 }
 

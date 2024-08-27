@@ -8,22 +8,25 @@ import {
 } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 
-import { apiHost_v1, apiAccount_id } from '~/consts';
+import { apiHost_v1, apiAccount_id, apiAdminHost_v1 } from '~/consts';
 import {
   DEFAULT_EMPTY,
-  DEFAULT_OPEN_ORDER_LIMIT,
-  DEFAULT_OPEN_ORDER_PAGE,
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_PAGINATION_PAGE,
   DEFAULT_SYMBOL_LIST,
-} from '~/consts/open-order';
+} from '~/consts/consts';
 import {
   DashboardOpenOrder,
+
+} from '~/features/dashboard-open-order/components/DashboardOpenOrder';
+import {
   OpenOrderCombineProps,
-  OpenOrderResponse,
-} from '~/features/dashboard-open-order';
+  OpenOrderResponse,  
+} from "~/features/dashboard-open-order/models/open-order.model";
+
 
 export const loader: LoaderFunction = async ({
   request,
-  params,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -32,8 +35,8 @@ export const loader: LoaderFunction = async ({
   const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
   const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
   const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
-  const page = searchParams.get('page') || String(DEFAULT_OPEN_ORDER_PAGE);
-  const limit = searchParams.get('limit') || String(DEFAULT_OPEN_ORDER_LIMIT);
+  const page = searchParams.get('page') || String(DEFAULT_PAGINATION_PAGE);
+  const limit = searchParams.get('limit') || String(DEFAULT_PAGINATION_LIMIT);
 
   searchParams.set('account_id', account_id);
   searchParams.set('symbol', symbol);
@@ -73,7 +76,8 @@ export const action: ActionFunction = async ({
     const limit = formData.get('limit');
 
     console.log(symbol, order_id);
-    const response = await fetch(`${apiHost_v1}/acs/order/cancel`, {
+
+    const response = await fetch(`${apiAdminHost_v1}/acs/etcd/service/list`, {
       method: 'POST',
       body: JSON.stringify({
         symbol,

@@ -3,16 +3,15 @@ import {
   ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
-  json,
   redirect,
 } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 
 import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
-  DEFAULT_OPEN_ORDER_LIMIT,
-  DEFAULT_OPEN_ORDER_PAGE,
-} from '~/consts/open-order';
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_PAGINATION_PAGE,
+} from '~/consts/consts';
 import {
   ClosedOrderPnlCombinProps,
   ClosedOrderPnlResponse,
@@ -24,8 +23,8 @@ export const loader: LoaderFunction = async ({
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const account_id = url.searchParams.get('account_id') || apiAccount_id; // 기본값 설정
-  const page = url.searchParams.get('page') || DEFAULT_OPEN_ORDER_PAGE;
-  const limit = url.searchParams.get('limit') || DEFAULT_OPEN_ORDER_LIMIT;
+  const page = url.searchParams.get('page') || DEFAULT_PAGINATION_PAGE;
+  const limit = url.searchParams.get('limit') || DEFAULT_PAGINATION_LIMIT
   const category = url.searchParams.get('category') || 'linear';
   const startTime = url.searchParams.get('start_time') || '2';
   const endTime= url.searchParams.get('end_time') || '999999999999';
@@ -71,7 +70,6 @@ end_time=${endTime}`;
 
 export const action: ActionFunction = async ({
   request,
-  params,
 }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const actionType = formData.get('action');
@@ -97,7 +95,6 @@ export const action: ActionFunction = async ({
 
     const data = await response.json();
     console.log('action delete', data);
-    // return json(data);
 
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);

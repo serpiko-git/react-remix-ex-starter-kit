@@ -24,7 +24,6 @@ import {
   Chip,
   Divider,
   Dropdown,
-  FormControl,
   FormLabel,
   IconButton,
   Input,
@@ -41,32 +40,21 @@ import {
   Table,
   Typography,
   iconButtonClasses,
-  Alert,
-  Stack,
   DialogContent,
   DialogTitle,
   DialogActions,
+  Stack,
+  FormControl,
 } from '@mui/joy';
-import { ColorPaletteProp } from '@mui/joy/styles';
-import {
-  FetcherWithComponents,
-  Form,
-  useFetcher,
-  useNavigate,
-  useSearchParams,
-} from '@remix-run/react';
-import dayjs from 'dayjs';
-import { useForm, Controller } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs/pagination';
 import {
   ClosedPositionPnl,
   ClosedPositionPnlCombineProps,
-  ClosedPositionPnlResponse,
-  ClosedPositionPnlQueries,
-  ClosedPositionPnlSearchValues,
 } from '..';
 import { ClosedOrderPnlSearchValues } from '~/features/dashboard-closed-order-pnl';
+import { Controller, Form, useForm } from 'react-hook-form';
+import { FetcherWithComponents, useFetcher, useNavigate, useSearchParams } from '@remix-run/react';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -203,7 +191,7 @@ export function ClosedPositionPnlTable({
   const [thCount, setThCount] = React.useState<number>();
 
   const { control, handleSubmit, watch } = useForm<ClosedOrderPnlSearchValues>({
-    defaultValues: { account_id, category_key: '', category_value: '', limit },
+    defaultValues: { account_id,  symbol:"", order_id:"", client_order_id:"",limit},
   });
 
   const fetcher = useFetcher();
@@ -243,9 +231,8 @@ export function ClosedPositionPnlTable({
     <React.Fragment>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
-
         <Controller
-          name="category_key"
+          name='symbol'
           control={control}
           render={({ field }) => (
             <Select
@@ -326,7 +313,7 @@ export function ClosedPositionPnlTable({
           </ModalDialog>
         </Modal>
       </Sheet>
-      <Form method="get" action="./">
+      <Form method="post" action="./">
         {/* search desktop */}
         <Box
           className="SearchAndFilters-tabletUp"
@@ -340,8 +327,8 @@ export function ClosedPositionPnlTable({
             '& > *': {
               minWidth: { xs: '120px', md: '160px' },
             },
-          }}
-        >
+          }}>
+
           <Stack direction="row" alignItems="flex-end" spacing={1}>
             <FormControl size="sm" sx={{ flex: 1 }}>
               <FormLabel>account_id</FormLabel>
@@ -371,7 +358,7 @@ export function ClosedPositionPnlTable({
             <FormControl sx={{ flex: 1 }} size="sm">
               <FormLabel>Input for category</FormLabel>
               <Controller
-                name="category_value"
+                name='account_id'
                 control={control}
                 render={({ field }) => (
                   <Input
@@ -753,7 +740,7 @@ export function ClosedPositionPnlTable({
           )}
         </Table>
       </Sheet>
-      <Form method="get" action="./">
+      <Form method="post" action="./">
         <Box
           className="Pagination-laptopUp"
           sx={{

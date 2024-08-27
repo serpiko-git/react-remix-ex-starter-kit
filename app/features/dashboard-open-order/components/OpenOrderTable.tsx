@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { getComparator, Order  } from '~/utils/ordering';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -59,11 +60,10 @@ import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs/pagination';
-import { DEFAULT_SYMBOL_LIST } from '~/consts/open-order';
+import { DEFAULT_SYMBOL_LIST } from '~/consts/consts';
 import {
   OpenOrder,
   OpenOrderCombineProps,
-  OpenOrderResponse,
   OpenOrderSearchValues,
   cancelTypeText,
   contractTypeText,
@@ -77,641 +77,620 @@ import {
   timeInForceText,
   tpslModeText,
   triggerByText,
-} from '..';
+} from '~/features/dashboard-open-order/index';
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
-  return 0;
-}
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
+//   return 0;
+// }
 
-type Order = 'asc' | 'desc';
+// function RowMenu({
+//   fetcher,
+//   order_id,
+//   account_id,
+//   symbol,
+//   page,
+//   limit,
+// }: {
+//   fetcher: FetcherWithComponents<unknown>;
+//   symbol: string;
+//   order_id: string;
+//   account_id: string;
+//   page: string;
+//   limit: string;
+// }) {
+//   const [openConfirm, setOpenConfirm] = React.useState(false);
 
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+//   const handleDeleteClick = () => {
+//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+//   };
 
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+//   const handleConfirm = () => {
+//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
+//     fetcher.submit(
+//       {
+//         action: 'delete',
+//         symbol,
+//         order_id,
+//         account_id,
+//         page,
+//         limit,
+//       },
+//       { method: 'post', action: './' },
+//     );
+//     setOpenConfirm(false); // 모달 닫기
+//   };
 
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
+//   const handleCancel = () => {
+//     setOpenConfirm(false); // 모달을 취소하면 닫기
+//   };
 
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
-
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
-
-  return (
-    <React.Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
-}
+//   return (
+//     <React.Fragment>
+//       <Dropdown>
+//         <MenuButton
+//           slots={{ root: IconButton }}
+//           slotProps={{
+//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
+//           }}
+//         >
+//           <MoreHorizRoundedIcon />
+//         </MenuButton>
+//         <Menu size="sm" sx={{ minWidth: 140 }}>
+//           <MenuItem color="primary">Create</MenuItem>
+//           <Divider />
+//           <MenuItem color="warning">Edit</MenuItem>
+//           <Divider />
+//           {/* Delete */}
+//           <MenuItem color="danger" onClick={handleDeleteClick}>
+//             Order Cancel
+//           </MenuItem>
+//         </Menu>
+//       </Dropdown>
+//       {/* 모달 구현 */}
+//       <Modal open={openConfirm} onClose={handleCancel}>
+//         <ModalDialog variant="outlined" role="alertdialog">
+//           <DialogTitle>
+//             <WarningRoundedIcon />
+//             Confirm Cancellation
+//           </DialogTitle>
+//           <Divider />
+//           <DialogContent>
+//             Are you sure you want to cancel this order?
+//           </DialogContent>
+//           <DialogActions>
+//             <Button variant="solid" color="danger" onClick={handleConfirm}>
+//               OK
+//             </Button>
+//             <Button variant="plain" color="neutral" onClick={handleCancel}>
+//               Cancel
+//             </Button>
+//           </DialogActions>
+//         </ModalDialog>
+//       </Modal>
+//     </React.Fragment>
+//   );
+// }
 
 export function OpenOrderTable({
   responseProps,
@@ -1240,15 +1219,17 @@ export function OpenOrderTable({
                         >
                           {/* <Link level="body-xs" component="button">
                           Download
-                          </Link> */}
-                          <RowMenu
-                            fetcher={fetcher}
-                            order_id={row.order_id}
-                            account_id={row.account_id}
-                            symbol={row.symbol}
-                            page={page}
-                            limit={limit}
-                          />
+                          </Link> */
+                            // <RowMenu
+                            // fetcher={fetcher}
+                            // order_id={row.order_id}
+                            // account_id={row.account_id}
+                            // symbol={row.symbol}
+                            // page={page}
+                            // limit={limit}
+                            // />
+                          }
+
                         </Box>
                       </td>
                       <td>

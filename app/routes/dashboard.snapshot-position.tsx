@@ -7,9 +7,9 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
   DEFAULT_EMPTY,
-  DEFAULT_OPEN_ORDER_LIMIT,
-  DEFAULT_OPEN_ORDER_PAGE,
-} from '~/consts/open-order';
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_PAGINATION_PAGE,
+} from '~/consts/consts';
 import {
   DashboardSnapshotPosition,
   SnapshotPositionCombineProps,
@@ -18,7 +18,6 @@ import {
 
 export const loader: LoaderFunction = async ({
   request,
-  params,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -27,8 +26,8 @@ export const loader: LoaderFunction = async ({
   const transactionId = searchParams.get('transaction_id') || DEFAULT_EMPTY;
   const startTime = searchParams.get('start_time') || DEFAULT_EMPTY;
   const endTime = searchParams.get('end_time') || DEFAULT_EMPTY;
-  const pageNo = searchParams.get('page_no') || String(DEFAULT_OPEN_ORDER_PAGE);
-  const pageSize = searchParams.get('page_size') || String(DEFAULT_OPEN_ORDER_LIMIT);
+  const pageNo = searchParams.get('page_no') || String(DEFAULT_PAGINATION_PAGE);
+  const pageSize = searchParams.get('page_size') || String(DEFAULT_PAGINATION_LIMIT);
 
   searchParams.set('account_id', accountId);
   searchParams.set('transaction_id', transactionId);

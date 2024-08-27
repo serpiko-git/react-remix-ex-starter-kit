@@ -1,10 +1,6 @@
 import {
-  ActionFunction,
-  ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
-  json,
-  redirect,
 } from '@remix-run/node';
 
 import { useLoaderData, useFetcher } from '@remix-run/react';
@@ -13,21 +9,19 @@ import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
   DEFAULT_EMPTY,
   DEFAULT_END_TIME,
-  DEFAULT_OPEN_ORDER_LIMIT,
-  DEFAULT_OPEN_ORDER_PAGE,
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_PAGINATION_PAGE,
   DEFAULT_START_TIME,
   DEFAULT_SYMBOL_LIST,
-} from '~/consts/open-order';
+} from '~/consts/consts';
 
 import {
   DashboardTransaction,
-  TransactionTable,
 } from '~/features/dashboard-transaction';
 import { TransactionCombineProps, TransactionResponse } from '~/features/dashboard-transaction/models/transaction.model';
 
 export const loader: LoaderFunction = async ({
   request,
-  params,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -36,8 +30,8 @@ export const loader: LoaderFunction = async ({
   const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
   const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
   const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
-  const page = searchParams.get('page') || String(DEFAULT_OPEN_ORDER_PAGE);
-  const limit = searchParams.get('limit') || String(DEFAULT_OPEN_ORDER_LIMIT);
+  const page = searchParams.get('page') || String(DEFAULT_PAGINATION_PAGE);
+  const limit = searchParams.get('limit') || String(DEFAULT_PAGINATION_LIMIT);
   // to number
   const startTime = searchParams.get('start_time') || DEFAULT_START_TIME;
   const endTime = searchParams.get('end_time') || DEFAULT_END_TIME;
