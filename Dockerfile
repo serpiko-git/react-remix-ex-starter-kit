@@ -83,7 +83,7 @@ RUN groupadd -r coin && useradd -r -d /tmp -m -g coin coin
 COPY --from=builder \
     /usr/local/bin/gosu \
     /usr/local/bin/tini \
-    /opt/derivatives-admin-debug/scripts/build-scripts/docker-entrypoint.sh \
+    /opt/derivatives-admin-debug/build-scripts/docker-entrypoint.sh \
     /usr/local/bin/
 
 COPY --from=builder /opt/derivatives-admin-debug /opt/derivatives-admin-debug
