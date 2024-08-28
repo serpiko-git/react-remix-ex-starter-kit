@@ -25,6 +25,7 @@ fi
 rm .env.develop .env.staging .env.prod
 
 npm install -g pnpm --force
+npm i -g gitmoji-cli ts-node
 pnpm install
 
 # npm install
