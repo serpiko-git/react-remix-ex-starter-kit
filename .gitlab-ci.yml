@@ -51,3 +51,4 @@ tirgger-prd:
         ref: master
         file: deploy.yaml
     strategy: depend
+    
