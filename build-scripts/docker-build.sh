@@ -10,7 +10,7 @@ if [[ "$CI_SERVER_HOST" != '' ]]; then
 EOF
 fi
 
-git submodule update --init --recursive
+# git submodule update --init --recursive
 
 if [ $CI_COMMIT_BRANCH = 'develop' ]; then
   cp .env.develop .env
