@@ -2,13 +2,13 @@
 set -e
 set -o pipefail
 
-if [[ "$1" = 'probit-nextjs-web' && "$(id -u)" = '0' ]]; then
+if [[ "$1" = 'derivatives-admin-debug' && "$(id -u)" = '0' ]]; then
     exec gosu coin "${BASH_SOURCE[0]}" "$@"
 fi
 
 args=("${@:1}")
-if [[ "${args[0]}" = 'probit-nextjs-web' ]]; then
-    cd /opt/probit-nextjs-web/
+if [[ "${args[0]}" = 'derivatives-admin-debug' ]]; then
+    cd /opt/derivatives-admin-debug/
     while true; do
         set +e
         echo "Run ${args[@]:1} with --expose-gc"
