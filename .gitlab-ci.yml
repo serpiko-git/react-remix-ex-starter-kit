@@ -1,0 +1,53 @@
+stages:
+  - check-env
+  - build
+  - trigger
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+
+build:
+  stage: build
+  image: docker:git
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build --build-arg "CI_SERVER_HOST=$CI_SERVER_HOST" --build-arg "CI_JOB_TOKEN=$CI_JOB_TOKEN" --build-arg "CI_COMMIT_SHA=$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME"
+
+tirgger:
+  stage: trigger
+  only:
+    - develop
+    - master
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    COMMIT_REF_SLUG: $CI_COMMIT_REF_SLUG
+    PIPELINE: $CI_PIPELINE_ID
+    PROJECT_NAMESPACE: $CI_PROJECT_NAMESPACE
+    PROJECT_NAME: $CI_PROJECT_NAME
+    GITLAB_USER: gitlab-ci-token
+  trigger:
+    include:
+      - project: deploy/dev-continuous-deployment
+        ref: master
+        file: deploy.yaml
+    strategy: depend
+
+tirgger-prd:
+  stage: trigger
+  only:
+    - prod
+  variables:
+    GIT_SUBMODULE_STRATEGY: recursive
+    COMMIT_REF_SLUG: $CI_COMMIT_REF_SLUG
+    PIPELINE: $CI_PIPELINE_ID
+    PROJECT_NAMESPACE: $CI_PROJECT_NAMESPACE
+    PROJECT_NAME: $CI_PROJECT_NAME
+    GITLAB_USER: gitlab-ci-token
+  trigger:
+    include:
+      - project: deploy/prd-continuous-deployment
+        ref: master
+        file: deploy.yaml
+    strategy: depend
