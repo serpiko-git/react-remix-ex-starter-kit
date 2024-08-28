@@ -75,6 +75,8 @@ FROM node:22.5.1-bookworm
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends ca-certificates; \
+    npm install -g pnpm --force; \
+    npm install -g ts-node; \
     rm -rf /var/lib/apt/lists/*;
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
