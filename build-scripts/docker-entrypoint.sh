@@ -13,7 +13,7 @@ if [[ "${args[0]}" = 'derivatives-admin-debug' ]]; then
         set +e
         echo "Run ${args[@]:1} with --expose-gc"
         # node --expose-gc ./dist/index.js "${args[@]:1}"
-        pnpm run dev
+        node ./server.js
         ret=$?
         set -e
         if test -e /tmp/docker-entrypoint-auto-restart.command; then

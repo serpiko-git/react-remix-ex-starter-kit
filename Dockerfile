@@ -75,7 +75,6 @@ FROM node:22.5.1-bookworm
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends ca-certificates; \
-    npm install -g pnpm --force; \
     npm install -g ts-node; \
     rm -rf /var/lib/apt/lists/*;
 
@@ -88,7 +87,7 @@ COPY --from=builder \
     /opt/derivatives-admin-debug/build-scripts/docker-entrypoint.sh \
     /usr/local/bin/
 
-COPY --from=builder /opt/derivatives-admin-debug /opt/derivatives-admin-debug
+COPY --chown=coin:coin --from=builder /opt/derivatives-admin-debug /opt/derivatives-admin-debug
 
 ENTRYPOINT ["/usr/local/bin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
 CMD ["derivatives-admin-debug"]
