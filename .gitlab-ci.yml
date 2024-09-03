@@ -47,7 +47,7 @@ tirgger-prd:
     GITLAB_USER: gitlab-ci-token
   trigger:
     include:
-      - project: deploy/prd-continuous-deployment
+      - project: deploy/der-prd-continuous-deployment
         ref: master
         file: deploy.yaml
     strategy: depend
