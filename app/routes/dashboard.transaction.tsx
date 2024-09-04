@@ -1,24 +1,21 @@
-import {
-  LoaderFunction,
-  LoaderFunctionArgs,
-} from '@remix-run/node';
-
+import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 
-import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
+  apiHost_v1,
+  apiAccount_id,
   DEFAULT_EMPTY,
   DEFAULT_END_TIME,
   DEFAULT_PAGINATION_LIMIT,
   DEFAULT_PAGINATION_PAGE,
   DEFAULT_START_TIME,
   DEFAULT_SYMBOL_LIST,
-} from '~/consts/consts';
-
+} from '~/consts';
 import {
   DashboardTransaction,
+  TransactionCombineProps,
+  TransactionResponse,
 } from '~/features/dashboard-transaction';
-import { TransactionCombineProps, TransactionResponse } from '~/features/dashboard-transaction/models/transaction.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -44,7 +41,6 @@ export const loader: LoaderFunction = async ({
   searchParams.set('limit', limit.toString());
   searchParams.set('start_time', startTime.toString());
   searchParams.set('end_time', endTime.toString());
-  
 
   console.group('Remix: loader');
   const fetchUrl = `${apiHost_v1}/transaction/list?${searchParams.toString()}`;
@@ -65,8 +61,7 @@ export const loader: LoaderFunction = async ({
 export default function index() {
   const transactionCombineProps: TransactionCombineProps =
     useLoaderData<typeof loader>();
-  const { responseProps, queriesProps } =
-    transactionCombineProps;
+  const { responseProps, queriesProps } = transactionCombineProps;
 
   const { account_id, limit, page } = queriesProps;
   console.log(typeof limit, limit);

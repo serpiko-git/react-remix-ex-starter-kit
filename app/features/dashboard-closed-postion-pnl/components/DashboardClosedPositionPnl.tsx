@@ -1,11 +1,10 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ChevronRightRounded,
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import DeleteForever from '@mui/icons-material/DeleteForever';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import DialogActions from '@mui/joy/DialogActions';
@@ -16,25 +15,20 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
-import {
-  ClosedPositionPnlCombineProps,
-  ClosedPositionPnlResponse,
-} from '../models/closed-position-pnl.model';
+import { ClosedPositionPnlCombineProps } from '../models/closed-position-pnl.model';
 
-import { Header } from '~/features/dashboard-common/components/Header';
 import { ClosedPositionPnlTable } from './ClosedPositionPnlTable';
-
 
 export function DashbaordClosedPositionPnl({
   responseProps,
   queriesProps,
 }: ClosedPositionPnlCombineProps) {
   const { code, msg, time_now, data } = responseProps;
-  const { account_id ,limit, page } = queriesProps;
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -147,11 +141,9 @@ export function DashbaordClosedPositionPnl({
             responseProps={responseProps}
             queriesProps={queriesProps}
           />
-          {/* mobile */
-            // <OpenOrderList />
-          }          
+          {}
         </Box>
       </Box>
     </CssVarsProvider>
-  )
+  );
 }

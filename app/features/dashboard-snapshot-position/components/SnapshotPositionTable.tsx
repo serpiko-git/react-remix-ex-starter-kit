@@ -1,38 +1,24 @@
-import * as React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { ChangeEvent, Fragment, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
-  AutorenewRounded as AutorenewRoundedIcon,
-  Block as BlockIcon,
-  CheckRounded as CheckRoundedIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
-  MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
-  Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
-  WarningRounded as WarningRoundedIcon,
-  Pages,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Chip,
   Divider,
-  Dropdown,
   FormControl,
   FormLabel,
   IconButton,
   Input,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
   Modal,
   ModalClose,
   ModalDialog,
@@ -42,37 +28,32 @@ import {
   Table,
   Typography,
   iconButtonClasses,
-  Alert,
   Stack,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
 } from '@mui/joy';
-import { ColorPaletteProp } from '@mui/joy/styles';
 import {
-  FetcherWithComponents,
   Form,
   useFetcher,
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
+
+import { Pagination } from '~/common/libs';
+import {
+  DEFAULT_END_TIME,
+  DEFAULT_OPEN_ORDER_PAGE,
+  DEFAULT_START_TIME,
+} from '~/consts';
 import { getComparator, Order } from '~/utils/ordering';
 
-import { Pagination } from '~/common/libs/pagination';
-import { DEFAULT_END_TIME, DEFAULT_OPEN_ORDER_PAGE, DEFAULT_START_TIME, DEFAULT_SYMBOL_LIST } from '~/consts/open-order';
 import {
   SnapshotPosition,
-  SnapshotPositionResponse,
-  SnapshotPositionQueries,
   SnapshotPositionCombineProps,
   SnaphotPositionSearchValues,
-} from '..';
+} from '../models/snapshot-position.model';
 
 export function SnapshotPositionTable({
   responseProps,
-  queriesProps,
 }: SnapshotPositionCombineProps) {
   const {
     data: {
@@ -80,9 +61,9 @@ export function SnapshotPositionTable({
       pagination: { total, page_no, page_size },
     },
   } = responseProps;
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly number[]>([]);
-  const [open, setOpen] = React.useState(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly number[]>([]);
+  const [open, setOpen] = useState(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
   const [thCount, setThCount] = useState<number>();
 
@@ -97,7 +78,6 @@ export function SnapshotPositionTable({
         page_size: DEFAULT_OPEN_ORDER_PAGE,
       },
     });
-
 
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
@@ -138,8 +118,18 @@ export function SnapshotPositionTable({
     navigate(`./?${params.toString()}`);
   };
 
+  const handleCheckbox = (e: ChangeEvent<HTMLInputElement>, id: number) => {
+    const { checked } = e.currentTarget;
+    setSelected((ids) => {
+      if (checked) {
+        return ids.concat(id);
+      }
+      return ids.filter((itemId) => itemId !== id);
+    });
+  };
+
   return (
-    <React.Fragment>
+    <Fragment>
       {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
@@ -386,7 +376,9 @@ export function SnapshotPositionTable({
                   checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? list.map((row) => row.transaction_id) : [],
+                      event.target.checked
+                        ? list.map((row) => row.transaction_id)
+                        : [],
                     );
                   }}
                   color={
@@ -429,8 +421,12 @@ export function SnapshotPositionTable({
               <th style={{ width: 140, padding: '12px 6px' }}>qtypl</th>
               <th style={{ width: 140, padding: '12px 6px' }}>prps</th>
               <th style={{ width: 140, padding: '12px 6px' }}>qtyps</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>rate_funding_feel</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>rate_funding_fees</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                rate_funding_feel
+              </th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                rate_funding_fees
+              </th>
               <th style={{ width: 140, padding: '12px 6px' }}>created_at</th>
               <th style={{ width: 140, padding: '12px 6px' }}>updated_at</th>
               <th style={{ width: 140, padding: '12px 6px' }}>ts_id</th>
@@ -440,7 +436,9 @@ export function SnapshotPositionTable({
               <th style={{ width: 140, padding: '12px 6px' }}>prps0</th>
               <th style={{ width: 140, padding: '12px 6px' }}>qtyps0</th>
               <th style={{ width: 140, padding: '12px 6px' }}>created_ts</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>transaction_id0</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                transaction_id0
+              </th>
             </tr>
           </thead>
 
@@ -471,7 +469,6 @@ export function SnapshotPositionTable({
           {!!list.length && (
             <>
               <tbody>
-
                 {[...list]
                   .sort(getComparator(order, 'transaction_id'))
                   .map((row, i) => (
@@ -485,43 +482,104 @@ export function SnapshotPositionTable({
                               ? 'primary'
                               : undefined
                           }
-                          onChange={(event) => {
-                            // eslint-disable-next-line no-confusing-arrow
-                            setSelected((ids) =>
-                              event.target.checked
-                                ? ids.concat(row.transaction_id)
-                                : ids.filter(
-                                  (itemId) => itemId !== row.transaction_id,
-                                ),
-                            );
-                          }}
+                          onChange={(e) =>
+                            handleCheckbox(e, row.transaction_id)
+                          }
                           slotProps={{
                             checkbox: { sx: { textAlign: 'left' } },
                           }}
                           sx={{ verticalAlign: 'text-bottom' }}
                         />
                       </td>
-                      <td> <Typography level="body-xs">{no + i}</Typography> </td>
-                      <td> <Typography level="body-xs">{row.transaction_id}</Typography></td>
-                      <td> <Typography level="body-xs">{row.account_id}</Typography></td>
-                      <td> <Typography level="body-xs">{row.category}</Typography></td>
-                      <td> <Typography level="body-xs">{row.symbol}</Typography></td>
-                      <td> <Typography level="body-xs">{row.prpl}</Typography></td>
-                      <td> <Typography level="body-xs">{row.qtypl}</Typography></td>
-                      <td> <Typography level="body-xs">{row.prps}</Typography></td>
-                      <td> <Typography level="body-xs">{row.qtyps}</Typography></td>
-                      <td> <Typography level="body-xs">{row.rate_funding_feel}</Typography></td>
-                      <td> <Typography level="body-xs">{row.rate_funding_fees}</Typography></td>
-                      <td> <Typography level="body-xs">{row.created_at}</Typography></td>
-                      <td> <Typography level="body-xs">{row.updated_at}</Typography></td>
-                      <td> <Typography level="body-xs">{row.ts_id}</Typography></td>
-                      <td> <Typography level="body-xs">{row.ts_ff}</Typography></td>
-                      <td> <Typography level="body-xs">{row.prpl0}</Typography></td>
-                      <td> <Typography level="body-xs">{row.qtypl0}</Typography></td>
-                      <td> <Typography level="body-xs">{row.prps0}</Typography></td>
-                      <td> <Typography level="body-xs">{row.qtyps0}</Typography></td>
-                    </tr
-                    >
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{no + i}</Typography>{' '}
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.transaction_id}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.account_id}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.category}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.symbol}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.prpl}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.qtypl}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.prps}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.qtyps}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.rate_funding_feel}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.rate_funding_fees}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.created_at}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.updated_at}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.ts_id}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.ts_ff}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.prpl0}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.qtypl0}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.prps0}</Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">{row.qtyps0}</Typography>
+                      </td>
+                    </tr>
                   ))}
               </tbody>
             </>
@@ -560,7 +618,6 @@ export function SnapshotPositionTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
               color="neutral"
               sx={{
                 backgroundColor:
@@ -598,7 +655,6 @@ export function SnapshotPositionTable({
           )}
         </Box>
       </Form>
-    </React.Fragment>
-  )  
+    </Fragment>
+  );
 }
-

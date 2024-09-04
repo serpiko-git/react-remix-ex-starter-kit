@@ -1,4 +1,4 @@
-import { BaseResponsePaging } from "~/features/models/common.model";
+import { BaseResponsePaging } from '~/features/models/common.model';
 
 export interface ClosedOrderPnl {
   closed_pnl_order_id: string;
@@ -13,8 +13,8 @@ export interface ClosedOrderPnl {
   leverage: string;
   quantity: string;
   position_qty: string;
-  exit_amount: string
-  entry_amount: string
+  exit_amount: string;
+  entry_amount: string;
   avg_entry_price: string;
   avg_exit_price: string;
   closed_pnl: string;
@@ -27,7 +27,8 @@ export interface ClosedOrderPnl {
   trade_ts: string;
 }
 
-export interface ClosedOrderPnlResponse extends BaseResponsePaging<ClosedOrderPnl> {}
+export interface ClosedOrderPnlResponse
+  extends BaseResponsePaging<ClosedOrderPnl> {}
 
 export interface ClosedOrderPnlQueries {
   account_id: string;
@@ -47,6 +48,5 @@ export interface ClosedOrderPnlSearchValues {
   symbol: string;
   order_id: string;
   client_order_id: string;
-  limit : number;
+  limit: number;
 }
-

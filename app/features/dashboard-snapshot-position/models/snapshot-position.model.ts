@@ -1,4 +1,4 @@
-import { BaseResponsePaging } from "~/features/models/common.model";
+import { BaseResponsePaging } from '~/features/models/common.model';
 
 export interface SnapshotPosition {
   account_id: number;
@@ -23,7 +23,8 @@ export interface SnapshotPosition {
   transaction_id0: number;
 }
 
-export interface SnapshotPositionResponse extends BaseResponsePaging<SnapshotPosition> {}
+export interface SnapshotPositionResponse
+  extends BaseResponsePaging<SnapshotPosition> {}
 
 export interface SnapshotPositionQueries {
   account_id: string;
@@ -47,5 +48,3 @@ export interface SnaphotPositionSearchValues {
   start_time: number;
   end_time: number;
 }
-
-

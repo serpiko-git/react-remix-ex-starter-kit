@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ChevronRightRounded,
@@ -15,13 +15,11 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
-import {
-  OpenOrderCombineProps,
-} from '../services/models/open-order.model';
+import { OpenOrderCombineProps } from '../models/open-order.model';
 
-import { Header } from '~/features/dashboard-common/components/Header';
 import { OpenOrderTable } from './OpenOrderTable';
 
 export function DashboardOpenOrder({
@@ -30,7 +28,7 @@ export function DashboardOpenOrder({
 }: OpenOrderCombineProps) {
   const { code, msg } = responseProps;
 
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(true);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -143,9 +141,6 @@ export function DashboardOpenOrder({
             responseProps={responseProps}
             queriesProps={queriesProps}
           />
-          {/* mobile */
-            // <OpenOrderList />
-          }          
         </Box>
       </Box>
     </CssVarsProvider>

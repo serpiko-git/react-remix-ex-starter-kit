@@ -24,13 +24,13 @@ export const loader: LoaderFunction = async ({
   const url = new URL(request.url);
   const account_id = url.searchParams.get('account_id') || apiAccount_id; // 기본값 설정
   const page = url.searchParams.get('page') || DEFAULT_PAGINATION_PAGE;
-  const limit = url.searchParams.get('limit') || DEFAULT_PAGINATION_LIMIT
+  const limit = url.searchParams.get('limit') || DEFAULT_PAGINATION_LIMIT;
   const category = url.searchParams.get('category') || 'linear';
   const startTime = url.searchParams.get('start_time') || '2';
-  const endTime= url.searchParams.get('end_time') || '999999999999';
+  const endTime = url.searchParams.get('end_time') || '999999999999';
 
   console.group('Remix: loader');
-  
+
   const fetchUrl = `${apiHost_v1}/closed-pnl-order/list?
 account_id=${account_id}&
 page=${page}&
@@ -38,7 +38,7 @@ limit=${limit}&
 category=${category}&
 start_time=${startTime}&
 end_time=${endTime}`;
- 
+
   console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
 
@@ -108,12 +108,11 @@ export const action: ActionFunction = async ({
   return null;
 };
 
-
 export default function index() {
   const combineProps: ClosedOrderPnlCombinProps =
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = combineProps;
-  
+
   console.log({ responseProps });
   console.log({ queriesProps });
   const fetcher = useFetcher();
@@ -130,4 +129,3 @@ export default function index() {
     </div>
   );
 }
-

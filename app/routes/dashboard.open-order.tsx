@@ -3,27 +3,24 @@ import {
   ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
-  json,
   redirect,
 } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 
-import { apiHost_v1, apiAccount_id, apiAdminHost_v1 } from '~/consts';
 import {
+  apiHost_v1,
+  apiAccount_id,
+  apiAdminHost_v1,
   DEFAULT_EMPTY,
   DEFAULT_PAGINATION_LIMIT,
   DEFAULT_PAGINATION_PAGE,
   DEFAULT_SYMBOL_LIST,
-} from '~/consts/consts';
+} from '~/consts';
 import {
   DashboardOpenOrder,
-
-} from '~/features/dashboard-open-order/components/DashboardOpenOrder';
-import {
   OpenOrderCombineProps,
-  OpenOrderResponse,  
-} from "~/features/dashboard-open-order/models/open-order.model";
-
+  OpenOrderResponse,
+} from '~/features/dashboard-open-order';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -90,7 +87,6 @@ export const action: ActionFunction = async ({
 
     const data = await response.json();
     console.log('action delete', data);
-    // return json(data);
 
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);

@@ -1,28 +1,20 @@
-import * as React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
-  AutorenewRounded as AutorenewRoundedIcon,
-  Block as BlockIcon,
-  CheckRounded as CheckRoundedIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
   MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
-  Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
   WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Chip,
   Divider,
   Dropdown,
   FormControl,
@@ -42,13 +34,11 @@ import {
   Table,
   Typography,
   iconButtonClasses,
-  Alert,
   Stack,
   DialogContent,
   DialogTitle,
   DialogActions,
 } from '@mui/joy';
-import { ColorPaletteProp } from '@mui/joy/styles';
 import {
   FetcherWithComponents,
   Form,
@@ -56,11 +46,7 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
-
-import { Pagination } from '~/common/libs/pagination';
-import { DEFAULT_SYMBOL_LIST } from '~/consts/open-order';
 
 function RowMenu({
   fetcher,
@@ -77,7 +63,7 @@ function RowMenu({
   page: string;
   limit: string;
 }) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const handleDeleteClick = () => {
     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
@@ -104,7 +90,7 @@ function RowMenu({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Dropdown>
         <MenuButton
           slots={{ root: IconButton }}
@@ -146,21 +132,19 @@ function RowMenu({
           </DialogActions>
         </ModalDialog>
       </Modal>
-    </React.Fragment>
+    </Fragment>
   );
 }
+
+import { Pagination } from '~/common/libs';
+import { DEFAULT_SYMBOL_LIST } from '~/consts';
+import { getComparator, Order } from '~/utils/ordering';
 
 import {
   ClosedOrderPnl,
   ClosedOrderPnlCombinProps,
-  ClosedOrderPnlResponse,
-  ClosedOrderPnlSearchValues
-} from '..'
-
-import {
-  getComparator,
-  Order,
-} from '~/utils/ordering'
+  ClosedOrderPnlSearchValues,
+} from '..';
 
 export function ClosedOrderPnlTable({
   responseProps,
@@ -168,41 +152,30 @@ export function ClosedOrderPnlTable({
 }: ClosedOrderPnlCombinProps) {
   const {
     data: {
-      pagination: {
-        total,
-        page_no,
-        page_size,
-      },
+      pagination: { total, page_no, page_size },
       list,
-    }
+    },
   } = responseProps;
 
-  const {
-    account_id,
-    page,
-    limit,
-    category_key,
-    category_value
-  } = queriesProps;
+  const { account_id, page, limit, category_key, category_value } =
+    queriesProps;
 
-
-  
-  
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
-  const [thCount, setThCount] = React.useState<number>();
+  const [thCount, setThCount] = useState<number>();
 
-  const { control, handleSubmit, watch, setValue } = useForm<ClosedOrderPnlSearchValues>({
-    defaultValues: {
-      account_id,
-      symbol: '',
-      order_id: '',
-      client_order_id: '',
-      limit,
-    }});
-
+  const { control, handleSubmit, watch, setValue } =
+    useForm<ClosedOrderPnlSearchValues>({
+      defaultValues: {
+        account_id,
+        symbol: '',
+        order_id: '',
+        client_order_id: '',
+        limit,
+      },
+    });
 
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
@@ -222,7 +195,6 @@ export function ClosedOrderPnlTable({
     $num_records_per_page: Number(limit),
   });
 
-  
   useEffect(() => {
     if (!list.length && theadRef.current) {
       // theadRef.current.querySelectorAll('th')를 사용
@@ -237,16 +209,15 @@ export function ClosedOrderPnlTable({
     }
   }, [limit]);
 
-
   // 페이지네이션 버튼 클릭 핸들러
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', String($page));
     navigate(`./?${params.toString()}`);
   };
-  
+
   return (
-    <React.Fragment>
+    <Fragment>
       {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
@@ -458,15 +429,15 @@ export function ClosedOrderPnlTable({
           aria-labelledby="tableTitle"
           stickyHeader
           hoverRow
-          sx={{
-            '--TableCell-headBackground':
-              'var(--joy-palette-background-level1)',
-            '--Table-headerUnderlineThickness': '1px',
-            '--TableRow-hoverBackground':
-              'var(--joy-palette-background-level1)',
-            '--TableCell-paddingY': '4px',
-            '--TableCell-paddingX': '8px',
-          }}
+          // sx={{
+          //   '--TableCell-headBackground':
+          //     'var(--joy-palette-background-level1)',
+          //   '--Table-headerUnderlineThickness': '1px',
+          //   '--TableRow-hoverBackground':
+          //     'var(--joy-palette-background-level1)',
+          //   '--TableCell-paddingY': '4px',
+          //   '--TableCell-paddingX': '8px',
+          // }}
         >
           <thead ref={theadRef}>
             <tr>
@@ -485,7 +456,9 @@ export function ClosedOrderPnlTable({
                   checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? list.map((row) => row.closed_pnl_order_id) : [],
+                      event.target.checked
+                        ? list.map((row) => row.closed_pnl_order_id)
+                        : [],
                     );
                   }}
                   color={
@@ -519,12 +492,15 @@ export function ClosedOrderPnlTable({
                     order === 'desc'
                       ? { '& svg': { transform: 'rotate(0deg)' } }
                       : { '& svg': { transform: 'rotate(180deg)' } },
-                  ]}>
+                  ]}
+                >
                   closed_pnl_order_id
                 </Link>
               </th>
               <th style={{ width: 140, padding: '12px 6px' }}>order_id</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>client_order_id</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                client_order_id
+              </th>
               <th style={{ width: 140, padding: '12px 6px' }}>account_id</th>
               <th style={{ width: 140, padding: '12px 6px' }}>category</th>
               <th style={{ width: 140, padding: '12px 6px' }}>base_asset</th>
@@ -536,8 +512,12 @@ export function ClosedOrderPnlTable({
               <th style={{ width: 140, padding: '12px 6px' }}>position_qty</th>
               <th style={{ width: 140, padding: '12px 6px' }}>exit_amount</th>
               <th style={{ width: 140, padding: '12px 6px' }}>entry_amount</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>avg_entry_price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>avg_exit_price</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                avg_entry_price
+              </th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                avg_exit_price
+              </th>
               <th style={{ width: 140, padding: '12px 6px' }}>closed_pnl</th>
               <th style={{ width: 140, padding: '12px 6px' }}>opening_fee</th>
               <th style={{ width: 140, padding: '12px 6px' }}>closing_fee</th>
@@ -595,8 +575,9 @@ export function ClosedOrderPnlTable({
                               event.target.checked
                                 ? ids.concat(row.closed_pnl_order_id)
                                 : ids.filter(
-                                  (itemId) => itemId !== row.closed_pnl_order_id,
-                                ),
+                                    (itemId) =>
+                                      itemId !== row.closed_pnl_order_id,
+                                  ),
                             );
                           }}
                           slotProps={{
@@ -629,30 +610,163 @@ export function ClosedOrderPnlTable({
                           />
                         </Box>
                       </td>
-                      <td> <Typography level="body-xs">{row.closed_pnl_order_id}</Typography> </td>
-                      <td> <Typography level="body-xs">{row.order_id}</Typography> </td>
-                      <td> <Typography level="body-xs"> {row.client_order_id} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.account_id} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.category} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.base_asset} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.quote_asset} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.symbol} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.side} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.leverage} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.quantity} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.position_qty} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.exit_amount} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.entry_amount} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.avg_entry_price} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.avg_exit_price} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.closed_pnl} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.opening_fee} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.closing_fee} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.funding_fee} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.exec_type} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.is_close} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.ts_id} </Typography></td>
-                      <td> <Typography level="body-xs"> {row.trade_ts} </Typography></td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.closed_pnl_order_id}
+                        </Typography>{' '}
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {row.order_id}
+                        </Typography>{' '}
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.client_order_id}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.account_id}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.category}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.base_asset}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.quote_asset}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs"> {row.symbol} </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs"> {row.side} </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.leverage}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.quantity}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.position_qty}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.exit_amount}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.entry_amount}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.avg_entry_price}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.avg_exit_price}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.closed_pnl}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.opening_fee}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.closing_fee}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.funding_fee}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.exec_type}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.is_close}{' '}
+                        </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs"> {row.ts_id} </Typography>
+                      </td>
+                      <td>
+                        {' '}
+                        <Typography level="body-xs">
+                          {' '}
+                          {row.trade_ts}{' '}
+                        </Typography>
+                      </td>
                     </tr>
                   ))}
               </tbody>
@@ -694,20 +808,20 @@ export function ClosedOrderPnlTable({
               size="sm"
               // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
               color="neutral"
-              sx={{
-                backgroundColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.1)'
-                    : 'transparent',
-                color:
-                  pageNumber === currentPage
-                    ? 'white'
-                    : 'rgba(255, 255, 255, 0.7)',
-                borderColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.3)'
-                    : 'rgba(255, 255, 255, 0.2)',
-              }}
+              // sx={{
+              //   backgroundColor:
+              //     pageNumber === currentPage
+              //       ? 'rgba(255, 255, 255, 0.1)'
+              //       : 'transparent',
+              //   color:
+              //     pageNumber === currentPage
+              //       ? 'white'
+              //       : 'rgba(255, 255, 255, 0.7)',
+              //   borderColor:
+              //     pageNumber === currentPage
+              //       ? 'rgba(255, 255, 255, 0.3)'
+              //       : 'rgba(255, 255, 255, 0.2)',
+              // }}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}
@@ -730,6 +844,6 @@ export function ClosedOrderPnlTable({
           )}
         </Box>
       </Form>
-    </React.Fragment>
+    </Fragment>
   );
 }

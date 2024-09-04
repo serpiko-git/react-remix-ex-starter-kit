@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getSymbol, getTanstack } from '~/features//dashboard-symbol/services/symbol.service';
+import { getSymbol, getTanstack } from '../services/symbol.service';
 
 export const useTanstack = (enabled = true) =>
   useQuery({

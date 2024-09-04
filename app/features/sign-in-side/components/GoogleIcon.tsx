@@ -1,6 +1,4 @@
-import * as React from 'react';
-
-import { Typography, Link, SvgIcon, SvgIconProps } from '@mui/joy';
+import { SvgIcon } from '@mui/joy';
 
 export function GoogleIcon() {
   return (

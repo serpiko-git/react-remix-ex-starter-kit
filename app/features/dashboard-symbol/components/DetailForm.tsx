@@ -1,33 +1,19 @@
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import AccessTimeFilledRoundedIcon from '@mui/icons-material/AccessTimeFilledRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import AspectRatio from '@mui/joy/AspectRatio';
 import Box from '@mui/joy/Box';
-import Breadcrumbs from '@mui/joy/Breadcrumbs';
-import Button from '@mui/joy/Button';
-import Card from '@mui/joy/Card';
-import CardActions from '@mui/joy/CardActions';
 import CardOverflow from '@mui/joy/CardOverflow';
 import CircularProgress from '@mui/joy/CircularProgress';
 import Divider from '@mui/joy/Divider';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
-import IconButton from '@mui/joy/IconButton';
 import Input from '@mui/joy/Input';
-import Link from '@mui/joy/Link';
-import Option from '@mui/joy/Option';
-import Select from '@mui/joy/Select';
 import Stack from '@mui/joy/Stack';
 import Step from '@mui/joy/Step';
 import Stepper from '@mui/joy/Stepper';
-import Typography from '@mui/joy/Typography';
 import Grid from '@mui/material/Grid';
 
-import { useSymbol, useTanstack } from '../hooks/queries';
-import { ISymbol, SymbolResponse } from '../models/symbol.model';
+import { useSymbol } from '../hooks/queries';
+import { ISymbol } from '../models/symbol.model';
 
 type DetailFormProps = {
   symbolId: string;
@@ -48,13 +34,6 @@ export function DetailForm(props: DetailFormProps) {
 
   return (
     <div>
-      {/* <Box sx={{ mb: 1 }}>
-        <Typography level="title-md">Personal info</Typography>
-        <Typography level="body-sm">
-          Customize how your profile information will appear to the networks.
-        </Typography>
-      </Box>
-      */}
       <Divider />
       <div>
         <Stack
@@ -943,16 +922,9 @@ export function DetailForm(props: DetailFormProps) {
         </Stack>
       </div>
 
-      <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
-        {/* <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-          <Button size="sm" variant="outlined" color="neutral">
-            Cancel
-          </Button>
-          <Button size="sm" variant="solid">
-            Save
-          </Button>
-        </CardActions> */}
-      </CardOverflow>
+      <CardOverflow
+        sx={{ borderTop: '1px solid', borderColor: 'divider' }}
+      ></CardOverflow>
     </div>
   );
 }

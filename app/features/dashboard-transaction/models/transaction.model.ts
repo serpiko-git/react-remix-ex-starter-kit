@@ -1,4 +1,4 @@
-import { BaseResponsePaging } from "~/features/models/common.model";
+import { BaseResponsePaging } from '~/features/models/common.model';
 
 export interface Transaction {
   transaction_id: string;

@@ -1,4 +1,3 @@
-
 export interface BaseResponse<T> {
   code: number;
   data: T;
@@ -10,7 +9,7 @@ export interface BaseResponseList<T> {
   code: number;
   data: {
     list: T[];
-  }
+  };
   msg: string;
   time_now: string;
 }
@@ -22,12 +21,9 @@ export interface BaseResponsePaging<T> {
       total: number;
       page_no: number;
       page_size: number;
-    }
+    };
     list: T[];
-  }
+  };
   msg: string;
   time_now: string;
 }
-
-
-

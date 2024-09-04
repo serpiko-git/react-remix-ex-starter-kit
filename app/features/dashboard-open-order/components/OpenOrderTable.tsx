@@ -1,28 +1,20 @@
-import * as React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { getComparator, Order  } from '~/utils/ordering';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
-  AutorenewRounded as AutorenewRoundedIcon,
-  Block as BlockIcon,
-  CheckRounded as CheckRoundedIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
   MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
-  Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
   WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Chip,
   Divider,
   Dropdown,
   FormControl,
@@ -42,13 +34,11 @@ import {
   Table,
   Typography,
   iconButtonClasses,
-  Alert,
   Stack,
   DialogContent,
   DialogTitle,
   DialogActions,
 } from '@mui/joy';
-import { ColorPaletteProp } from '@mui/joy/styles';
 import {
   FetcherWithComponents,
   Form,
@@ -59,8 +49,10 @@ import {
 import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 
-import { Pagination } from '~/common/libs/pagination';
+import { Pagination } from '~/common/libs';
 import { DEFAULT_SYMBOL_LIST } from '~/consts/consts';
+import { getComparator, Order } from '~/utils/ordering';
+
 import {
   OpenOrder,
   OpenOrderCombineProps,
@@ -77,620 +69,94 @@ import {
   timeInForceText,
   tpslModeText,
   triggerByText,
-} from '~/features/dashboard-open-order/index';
+} from '../models/open-order.model';
 
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
+function RowMenu({
+  fetcher,
+  order_id,
+  account_id,
+  symbol,
+  page,
+  limit,
+}: {
+  fetcher: FetcherWithComponents<unknown>;
+  symbol: string;
+  order_id: string;
+  account_id: string;
+  page: string;
+  limit: string;
+}) {
+  const [openConfirm, setOpenConfirm] = useState(false);
 
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
+  const handleDeleteClick = () => {
+    setOpenConfirm(true);
+  };
 
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
+  const handleConfirm = () => {
+    fetcher.submit(
+      {
+        action: 'delete',
+        symbol,
+        order_id,
+        account_id,
+        page,
+        limit,
+      },
+      { method: 'POST', action: './' },
+    );
+    setOpenConfirm(false);
+  };
 
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
+  const handleCancel = () => {
+    setOpenConfirm(false);
+  };
 
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
-//   return 0;
-// }
-
-// function RowMenu({
-//   fetcher,
-//   order_id,
-//   account_id,
-//   symbol,
-//   page,
-//   limit,
-// }: {
-//   fetcher: FetcherWithComponents<unknown>;
-//   symbol: string;
-//   order_id: string;
-//   account_id: string;
-//   page: string;
-//   limit: string;
-// }) {
-//   const [openConfirm, setOpenConfirm] = React.useState(false);
-
-//   const handleDeleteClick = () => {
-//     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-//   };
-
-//   const handleConfirm = () => {
-//     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-//     fetcher.submit(
-//       {
-//         action: 'delete',
-//         symbol,
-//         order_id,
-//         account_id,
-//         page,
-//         limit,
-//       },
-//       { method: 'post', action: './' },
-//     );
-//     setOpenConfirm(false); // 모달 닫기
-//   };
-
-//   const handleCancel = () => {
-//     setOpenConfirm(false); // 모달을 취소하면 닫기
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown>
-//         <MenuButton
-//           slots={{ root: IconButton }}
-//           slotProps={{
-//             root: { variant: 'plain', color: 'neutral', size: 'sm' },
-//           }}
-//         >
-//           <MoreHorizRoundedIcon />
-//         </MenuButton>
-//         <Menu size="sm" sx={{ minWidth: 140 }}>
-//           <MenuItem color="primary">Create</MenuItem>
-//           <Divider />
-//           <MenuItem color="warning">Edit</MenuItem>
-//           <Divider />
-//           {/* Delete */}
-//           <MenuItem color="danger" onClick={handleDeleteClick}>
-//             Order Cancel
-//           </MenuItem>
-//         </Menu>
-//       </Dropdown>
-//       {/* 모달 구현 */}
-//       <Modal open={openConfirm} onClose={handleCancel}>
-//         <ModalDialog variant="outlined" role="alertdialog">
-//           <DialogTitle>
-//             <WarningRoundedIcon />
-//             Confirm Cancellation
-//           </DialogTitle>
-//           <Divider />
-//           <DialogContent>
-//             Are you sure you want to cancel this order?
-//           </DialogContent>
-//           <DialogActions>
-//             <Button variant="solid" color="danger" onClick={handleConfirm}>
-//               OK
-//             </Button>
-//             <Button variant="plain" color="neutral" onClick={handleCancel}>
-//               Cancel
-//             </Button>
-//           </DialogActions>
-//         </ModalDialog>
-//       </Modal>
-//     </React.Fragment>
-//   );
-// }
+  return (
+    <Fragment>
+      <Dropdown>
+        <MenuButton
+          slots={{ root: IconButton }}
+          slotProps={{
+            root: { variant: 'plain', color: 'neutral', size: 'sm' },
+          }}
+        >
+          <MoreHorizRoundedIcon />
+        </MenuButton>
+        <Menu size="sm" sx={{ minWidth: 140 }}>
+          <MenuItem color="primary">Create</MenuItem>
+          <Divider />
+          <MenuItem color="warning">Edit</MenuItem>
+          <Divider />
+          {/* Delete */}
+          <MenuItem color="danger" onClick={handleDeleteClick}>
+            Order Cancel
+          </MenuItem>
+        </Menu>
+      </Dropdown>
+      {/* 모달 구현 */}
+      <Modal open={openConfirm} onClose={handleCancel}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>
+            <WarningRoundedIcon />
+            Confirm Cancellation
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to cancel this order?
+          </DialogContent>
+          <DialogActions>
+            <Button variant="solid" color="danger" onClick={handleConfirm}>
+              OK
+            </Button>
+            <Button variant="plain" color="neutral" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+    </Fragment>
+  );
+}
 
 export function OpenOrderTable({
   responseProps,
@@ -702,14 +168,13 @@ export function OpenOrderTable({
       pagination: { total, page_no, page_size },
     },
   } = responseProps;
-
   const { account_id, page, limit } = queriesProps;
 
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
-  const [thCount, setThCount] = React.useState<number>();
+  const [thCount, setThCount] = useState<number>();
 
   const { control, handleSubmit, watch, setValue } =
     useForm<OpenOrderSearchValues>({
@@ -742,7 +207,6 @@ export function OpenOrderTable({
 
   useEffect(() => {
     if (!list.length && theadRef.current) {
-      // theadRef.current.querySelectorAll('th')를 사용
       const thElements = theadRef.current.querySelectorAll('th');
       setThCount(thElements.length);
     }
@@ -754,7 +218,6 @@ export function OpenOrderTable({
     }
   }, [limit]);
 
-  // 페이지네이션 버튼 클릭 핸들러
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', String($page));
@@ -762,7 +225,7 @@ export function OpenOrderTable({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
@@ -850,7 +313,7 @@ export function OpenOrderTable({
                       name={name}
                       placeholder={name}
                       value={value}
-                      onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
+                      onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"
                       slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -945,7 +408,7 @@ export function OpenOrderTable({
                       name={name}
                       placeholder={name}
                       value={value ?? limit}
-                      onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
+                      onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"
                       slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -1020,7 +483,9 @@ export function OpenOrderTable({
                   checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? list.map((row) => row.order_id) : [],
+                      event.target.checked
+                        ? list.map((row) => row.order_id)
+                        : [],
                     );
                   }}
                   color={
@@ -1196,8 +661,8 @@ export function OpenOrderTable({
                               event.target.checked
                                 ? ids.concat(row.order_id)
                                 : ids.filter(
-                                  (itemId) => itemId !== row.order_id,
-                                ),
+                                    (itemId) => itemId !== row.order_id,
+                                  ),
                             );
                           }}
                           slotProps={{
@@ -1217,19 +682,14 @@ export function OpenOrderTable({
                             alignItems: 'center',
                           }}
                         >
-                          {/* <Link level="body-xs" component="button">
-                          Download
-                          </Link> */
-                            // <RowMenu
-                            // fetcher={fetcher}
-                            // order_id={row.order_id}
-                            // account_id={row.account_id}
-                            // symbol={row.symbol}
-                            // page={page}
-                            // limit={limit}
-                            // />
-                          }
-
+                          <RowMenu
+                            fetcher={fetcher}
+                            order_id={row.order_id}
+                            account_id={row.account_id}
+                            symbol={row.symbol}
+                            page={page}
+                            limit={limit}
+                          />
                         </Box>
                       </td>
                       <td>
@@ -1255,80 +715,75 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {sideText[row.side]}
-                          [{row.side}]
+                          {sideText[row.side]}[{row.side}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.order_type]}
-                          [{row.order_type}]
+                          {orderTypeText[row.order_type]}[{row.order_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {createTypeText[row.create_type]}
-                          [{row.create_type}]
+                          {createTypeText[row.create_type]}[{row.create_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {cancelTypeText[row.cancel_type]}
-                          [{row.cancel_type}]
+                          {cancelTypeText[row.cancel_type]}[{row.cancel_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {stopOrderTypeText[row.stop_order_type]}
-                          [{row.stop_order_type}]
+                          {stopOrderTypeText[row.stop_order_type]}[
+                          {row.stop_order_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {contractTypeText[row.contract_type]}
-                          [{row.contract_type}]
+                          {contractTypeText[row.contract_type]}[
+                          {row.contract_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.is_cancel_amend]}
-                          [{row.is_cancel_amend}]
+                          {flagValueText[row.is_cancel_amend]}[
+                          {row.is_cancel_amend}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderStatusText[row.order_status]}
-                          [{row.order_status}]
+                          {orderStatusText[row.order_status]}[{row.order_status}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.cxl_rej_reason_cd]}
-                          [{row.cxl_rej_reason_cd}]
+                          {flagValueText[row.cxl_rej_reason_cd]}[
+                          {row.cxl_rej_reason_cd}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {timeInForceText[row.time_in_force]}
-                          [{row.time_in_force}]
+                          {timeInForceText[row.time_in_force]}[
+                          {row.time_in_force}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {positionModeText[row.position_mode]}
-                          [{row.position_mode}]
+                          {positionModeText[row.position_mode]}[
+                          {row.position_mode}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.reduce_only]}
-                          [{row.reduce_only}]
+                          {flagValueText[row.reduce_only]}[{row.reduce_only}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.close_on_trigger]}
-                          [{row.close_on_trigger}]
+                          {flagValueText[row.close_on_trigger]}[
+                          {row.close_on_trigger}]
                         </Typography>
                       </td>
                       <td>
@@ -1368,8 +823,7 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.trigger_by]}
-                          [{row.trigger_by}]
+                          {triggerByText[row.trigger_by]}[{row.trigger_by}]
                         </Typography>
                       </td>
                       <td>
@@ -1384,20 +838,19 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {tpslModeText[row.tpsl_mode]}
-                          [{row.tpsl_mode}]
+                          {tpslModeText[row.tpsl_mode]}[{row.tpsl_mode}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.tp_order_type]}
-                          [{row.tp_order_type}]
+                          {orderTypeText[row.tp_order_type]}[{row.tp_order_type}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.sl_order_type]}
-                          [{row.sl_order_type}]
+                          {orderTypeText[row.sl_order_type]}[{row.sl_order_type}
+                          ]
                         </Typography>
                       </td>
                       <td>
@@ -1412,14 +865,14 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.tp_trigger_by]}
-                          [{row.tp_trigger_by}]
+                          {triggerByText[row.tp_trigger_by]}[{row.tp_trigger_by}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.sl_trigger_by]}
-                          [{row.sl_trigger_by}]
+                          {triggerByText[row.sl_trigger_by]}[{row.sl_trigger_by}
+                          ]
                         </Typography>
                       </td>
                       <td>
@@ -1572,21 +1025,11 @@ export function OpenOrderTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
+              variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
               sx={{
                 backgroundColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.1)'
-                    : 'transparent',
-                color:
-                  pageNumber === currentPage
-                    ? 'white'
-                    : 'rgba(255, 255, 255, 0.7)',
-                borderColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.3)'
-                    : 'rgba(255, 255, 255, 0.2)',
+                  currentPage === pageNumber ? '#D5DCDE' : 'transparent',
               }}
               onClick={() => handlePagination(pageNumber)}
             >
@@ -1610,6 +1053,6 @@ export function OpenOrderTable({
           )}
         </Box>
       </Form>
-    </React.Fragment>
+    </Fragment>
   );
 }

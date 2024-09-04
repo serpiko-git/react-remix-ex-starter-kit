@@ -1,5 +1,2 @@
-export * from '~/features/dashboard-common/components/ColorSchemeToggle';
-export * from '~/features/dashboard-common/components/Header';
-export * from '~/features/dashboard-common/components/MuiLogo';
-export * from './components/DashboardTransaction';
-export * from './components/TransactionTable';
+export * from './components';
+export * from './models/transaction.model';

@@ -1,9 +1,6 @@
-import * as React from 'react';
-
-// import MenuIcon from '@mui/icons-material/Menu';
 import { GlobalStyles, IconButton, Sheet } from '@mui/joy';
 
-import { toggleSidebar } from '../../side-bar/libs/utils';
+import { toggleSidebar } from '~/features/side-bar';
 
 export function Header() {
   return (
@@ -39,9 +36,7 @@ export function Header() {
         variant="outlined"
         color="neutral"
         size="sm"
-      >
-        {/* <MenuIcon /> */}
-      </IconButton>
+      ></IconButton>
     </Sheet>
   );
 }

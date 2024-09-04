@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -41,8 +40,11 @@ import {
 import { ColorPaletteProp } from '@mui/joy/styles';
 import { useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
+
 import { ResponsiveModal } from '~/features/modal';
-import { SymbolResponse, symbolOrderType } from '../models/symbol.model';
+
+import { SymbolResponse } from '../models/symbol.model';
+
 import { DetailForm } from './DetailForm';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -94,15 +96,15 @@ export function SymbolTable(props: SymbolResponse) {
     data: { list },
   } = props;
 
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState(false);
   const [symbolId, setSymbolId] = useState<string>('');
   const [symbolName, setSymbolName] = useState<string>('');
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const renderFilters = () => (
-    <React.Fragment>
+    <Fragment>
       <FormControl size="sm">
         <FormLabel>Status</FormLabel>
         <Select
@@ -137,7 +139,7 @@ export function SymbolTable(props: SymbolResponse) {
           <Option value="jay">Jay Hoper</Option>
         </Select>
       </FormControl>
-    </React.Fragment>
+    </Fragment>
   );
 
   const handleTrClick = ($symbolId: string, $symbolName: string) => {
@@ -152,7 +154,7 @@ export function SymbolTable(props: SymbolResponse) {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       {Boolean(symbolId && modalOpen) && (
         <>
           <ResponsiveModal
@@ -254,28 +256,7 @@ export function SymbolTable(props: SymbolResponse) {
             <tr>
               <th
                 style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
-              >
-                {
-                  // <Checkbox
-                  //   size="sm"
-                  //   indeterminate={
-                  //     selected.length > 0 && selected.length !== rows.length
-                  //   }
-                  //   checked={selected.length === rows.length}
-                  //   onChange={(event) => {
-                  //     setSelected(
-                  //       event.target.checked ? rows.map((row) => row.id) : [],
-                  //     );
-                  //   }}
-                  //   color={
-                  //     selected.length > 0 || selected.length === rows.length
-                  //       ? 'primary'
-                  //       : undefined
-                  //   }
-                  //   sx={{ verticalAlign: 'text-bottom' }}                  
-                  // />
-                }
-              </th>
+              ></th>
               <th style={{ width: 120, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -398,9 +379,6 @@ export function SymbolTable(props: SymbolResponse) {
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    {/* <Link level="body-xs" component="button">
-                        Download
-                      </Link> */}
                     <RowMenu />
                   </Box>
                 </td>
@@ -452,6 +430,6 @@ export function SymbolTable(props: SymbolResponse) {
           Next
         </Button>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 }

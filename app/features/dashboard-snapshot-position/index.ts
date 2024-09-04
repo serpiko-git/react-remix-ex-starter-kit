@@ -1,5 +1,6 @@
 /** Models */
 export * from './models/snapshot-position.model';
+
 /** Services */
 
 /** Components */

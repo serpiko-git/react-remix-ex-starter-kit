@@ -1,27 +1,20 @@
-import * as React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
-  AutorenewRounded as AutorenewRoundedIcon,
-  Block as BlockIcon,
-  CheckRounded as CheckRoundedIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
   MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
-  Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
   WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Chip,
   Divider,
   Dropdown,
   FormLabel,
@@ -46,15 +39,18 @@ import {
   Stack,
   FormControl,
 } from '@mui/joy';
-
-import { Pagination } from '~/common/libs/pagination';
 import {
-  ClosedPositionPnl,
-  ClosedPositionPnlCombineProps,
-} from '..';
-import { ClosedOrderPnlSearchValues } from '~/features/dashboard-closed-order-pnl';
+  FetcherWithComponents,
+  useFetcher,
+  useNavigate,
+  useSearchParams,
+} from '@remix-run/react';
 import { Controller, Form, useForm } from 'react-hook-form';
-import { FetcherWithComponents, useFetcher, useNavigate, useSearchParams } from '@remix-run/react';
+
+import { Pagination } from '~/common/libs';
+import { ClosedOrderPnlSearchValues } from '~/features/dashboard-closed-order-pnl';
+
+import { ClosedPositionPnl, ClosedPositionPnlCombineProps } from '..';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -95,7 +91,7 @@ function RowMenu({
   page: number;
   limit: number;
 }) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const handleDeleteClick = () => {
     setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
@@ -122,7 +118,7 @@ function RowMenu({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Dropdown>
         <MenuButton
           slots={{ root: IconButton }}
@@ -164,7 +160,7 @@ function RowMenu({
           </DialogActions>
         </ModalDialog>
       </Modal>
-    </React.Fragment>
+    </Fragment>
   );
 }
 export function ClosedPositionPnlTable({
@@ -173,25 +169,27 @@ export function ClosedPositionPnlTable({
 }: ClosedPositionPnlCombineProps) {
   const {
     data: {
-      pagination: {
-        total,
-        page_no,
-        page_size
-      },
-      list
-    }
+      pagination: { total, page_no, page_size },
+      list,
+    },
   } = responseProps;
 
   const { account_id, page, limit } = queriesProps;
 
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
-  const [thCount, setThCount] = React.useState<number>();
+  const [thCount, setThCount] = useState<number>();
 
   const { control, handleSubmit, watch } = useForm<ClosedOrderPnlSearchValues>({
-    defaultValues: { account_id,  symbol:"", order_id:"", client_order_id:"",limit},
+    defaultValues: {
+      account_id,
+      symbol: '',
+      order_id: '',
+      client_order_id: '',
+      limit,
+    },
   });
 
   const fetcher = useFetcher();
@@ -228,11 +226,11 @@ export function ClosedPositionPnlTable({
   };
 
   const renderFilters = () => (
-    <React.Fragment>
+    <Fragment>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
         <Controller
-          name='symbol'
+          name="symbol"
           control={control}
           render={({ field }) => (
             <Select
@@ -242,7 +240,9 @@ export function ClosedPositionPnlTable({
               placeholder="Select by category"
               slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
             >
-              <Option value="closed_pnl_position_id">closed_pnl_position_id</Option>
+              <Option value="closed_pnl_position_id">
+                closed_pnl_position_id
+              </Option>
               <Option value="account_id">account_id</Option>
               <Option value="symbol">symbol</Option>
               <Option value="category">category</Option>
@@ -273,11 +273,11 @@ export function ClosedPositionPnlTable({
           )}
         />
       </FormControl>
-    </React.Fragment>
+    </Fragment>
   );
 
   return (
-    <React.Fragment>
+    <Fragment>
       {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
@@ -327,8 +327,8 @@ export function ClosedPositionPnlTable({
             '& > *': {
               minWidth: { xs: '120px', md: '160px' },
             },
-          }}>
-
+          }}
+        >
           <Stack direction="row" alignItems="flex-end" spacing={1}>
             <FormControl size="sm" sx={{ flex: 1 }}>
               <FormLabel>account_id</FormLabel>
@@ -358,7 +358,7 @@ export function ClosedPositionPnlTable({
             <FormControl sx={{ flex: 1 }} size="sm">
               <FormLabel>Input for category</FormLabel>
               <Controller
-                name='account_id'
+                name="account_id"
                 control={control}
                 render={({ field }) => (
                   <Input
@@ -454,7 +454,9 @@ export function ClosedPositionPnlTable({
                   checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? list.map((row) => row.closed_pnl_position_id) : [],
+                      event.target.checked
+                        ? list.map((row) => row.closed_pnl_position_id)
+                        : [],
                     );
                   }}
                   color={
@@ -488,7 +490,7 @@ export function ClosedPositionPnlTable({
                   ]}
                 >
                   closed_pnl_position_id
-                </Link>                
+                </Link>
               </th>
               <th style={{ width: 140, padding: '12px 6px' }}>account_id</th>
               <th style={{ width: 140, padding: '12px 6px' }}>symbol</th>
@@ -502,8 +504,12 @@ export function ClosedPositionPnlTable({
               <th style={{ width: 140, padding: '12px 6px' }}>position_qty</th>
               <th style={{ width: 140, padding: '12px 6px' }}>entry_amount</th>
               <th style={{ width: 140, padding: '12px 6px' }}>exit_amount</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>avg_entry_price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>avg_exit_price</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                avg_entry_price
+              </th>
+              <th style={{ width: 140, padding: '12px 6px' }}>
+                avg_exit_price
+              </th>
               <th style={{ width: 140, padding: '12px 6px' }}>closed_pnl</th>
               <th style={{ width: 140, padding: '12px 6px' }}>opening_fee</th>
               <th style={{ width: 140, padding: '12px 6px' }}>closing_fee</th>
@@ -553,7 +559,9 @@ export function ClosedPositionPnlTable({
                       <td style={{ textAlign: 'center', width: 120 }}>
                         <Checkbox
                           size="sm"
-                          checked={selected.includes(row.closed_pnl_position_id)}
+                          checked={selected.includes(
+                            row.closed_pnl_position_id,
+                          )}
                           color={
                             selected.includes(row.closed_pnl_position_id)
                               ? 'primary'
@@ -565,8 +573,9 @@ export function ClosedPositionPnlTable({
                               event.target.checked
                                 ? ids.concat(row.closed_pnl_position_id)
                                 : ids.filter(
-                                  (itemId) => itemId !== row.closed_pnl_position_id,
-                                ),
+                                    (itemId) =>
+                                      itemId !== row.closed_pnl_position_id,
+                                  ),
                             );
                           }}
                           slotProps={{
@@ -589,14 +598,10 @@ export function ClosedPositionPnlTable({
                         </Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.symbol}
-                        </Typography>
+                        <Typography level="body-xs">{row.symbol}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.category}
-                        </Typography>
+                        <Typography level="body-xs">{row.category}</Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
@@ -614,19 +619,13 @@ export function ClosedPositionPnlTable({
                         </Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.side}
-                        </Typography>
+                        <Typography level="body-xs">{row.side}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.leverage}
-                        </Typography>
+                        <Typography level="body-xs">{row.leverage}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.quantity}
-                        </Typography>
+                        <Typography level="body-xs">{row.quantity}</Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
@@ -674,14 +673,10 @@ export function ClosedPositionPnlTable({
                         </Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.open_ts}
-                        </Typography>
+                        <Typography level="body-xs">{row.open_ts}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.open_time}
-                        </Typography>
+                        <Typography level="body-xs">{row.open_time}</Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
@@ -694,31 +689,24 @@ export function ClosedPositionPnlTable({
                         </Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.balance}
-                        </Typography>
+                        <Typography level="body-xs">{row.balance}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.is_close}
-                        </Typography>
+                        <Typography level="body-xs">{row.is_close}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.ts_id}
-                        </Typography>
+                        <Typography level="body-xs">{row.ts_id}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">
-                          {row.trade_ts}
-                        </Typography>
+                        <Typography level="body-xs">{row.trade_ts}</Typography>
                       </td>
                       <td>
-                        <Box sx={{
-                          display: 'flex',
-                          gap: 2,
-                          alignItems: 'center',
-                        }}
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: 2,
+                            alignItems: 'center',
+                          }}
                         >
                           {/* <Link level="body-xs" component="button">
                           Download
@@ -772,7 +760,6 @@ export function ClosedPositionPnlTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
               color="neutral"
               sx={{
                 backgroundColor:
@@ -810,6 +797,6 @@ export function ClosedPositionPnlTable({
           )}
         </Box>
       </Form>
-    </React.Fragment>
+    </Fragment>
   );
 }

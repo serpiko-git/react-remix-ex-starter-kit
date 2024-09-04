@@ -14,7 +14,7 @@ export const loader: LoaderFunction = async ({
 
 export default function index() {
   const data: SymbolResponse = useLoaderData<typeof loader>();
-  console.log("symbol: ", JSON.stringify(data))
+  console.log('symbol: ', JSON.stringify(data));
   return (
     <div>
       <DashboardSymbol {...data} />

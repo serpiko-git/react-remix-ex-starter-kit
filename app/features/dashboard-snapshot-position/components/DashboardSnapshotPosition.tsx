@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ChevronRightRounded,
@@ -15,13 +15,11 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
-import {
-  SnapshotPositionCombineProps,
-} from '../models/snapshot-position.model';
+import { SnapshotPositionCombineProps } from '../models/snapshot-position.model';
 
-import { Header } from '~/features/dashboard-common/components/Header';
 import { SnapshotPositionTable } from './SnapshotPositionTable';
 
 export function DashboardSnapshotPosition({
@@ -29,7 +27,7 @@ export function DashboardSnapshotPosition({
   queriesProps,
 }: SnapshotPositionCombineProps) {
   const { code, msg, time_now, data } = responseProps;
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(true);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -46,13 +44,15 @@ export function DashboardSnapshotPosition({
               <Button
                 variant="solid"
                 color="danger"
-                onClick={() => setOpen(false)}>
+                onClick={() => setOpen(false)}
+              >
                 Discard notes
               </Button>
               <Button
                 variant="plain"
                 color="neutral"
-                onClick={() => setOpen(false)}>
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
             </DialogActions>
@@ -80,30 +80,35 @@ export function DashboardSnapshotPosition({
             minWidth: 0,
             height: '100dvh',
             gap: 1,
-          }}>
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Breadcrumbs
               size="sm"
               aria-label="breadcrumbs"
               separator={<ChevronRightRounded fontSize="small" />}
-              sx={{ pl: 0 }}>
+              sx={{ pl: 0 }}
+            >
               <Link
                 underline="none"
                 color="neutral"
                 href="#some-link"
-                aria-label="Home">
+                aria-label="Home"
+              >
                 <HomeRounded />
               </Link>
               <Link
                 underline="hover"
                 color="neutral"
                 href="#some-link"
-                sx={{ fontSize: 12, fontWeight: 500 }}>
+                sx={{ fontSize: 12, fontWeight: 500 }}
+              >
                 Dashboard
               </Link>
               <Typography
                 color="primary"
-                sx={{ fontWeight: 500, fontSize: 12 }}>
+                sx={{ fontWeight: 500, fontSize: 12 }}
+              >
                 Open-Order
               </Typography>
             </Breadcrumbs>
@@ -117,14 +122,16 @@ export function DashboardSnapshotPosition({
               alignItems: { xs: 'start', sm: 'center' },
               flexWrap: 'wrap',
               justifyContent: 'space-between',
-            }}>
+            }}
+          >
             <Typography level="h2" component="h1">
               Open-Order
             </Typography>
             <Button
               color="primary"
               startDecorator={<DownloadRounded />}
-              size="sm">
+              size="sm"
+            >
               Download PDF
             </Button>
           </Box>
@@ -136,5 +143,5 @@ export function DashboardSnapshotPosition({
         </Box>
       </Box>
     </CssVarsProvider>
-  )
+  );
 }

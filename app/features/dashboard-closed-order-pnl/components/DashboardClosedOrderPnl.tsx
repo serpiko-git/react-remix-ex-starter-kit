@@ -1,11 +1,10 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ChevronRightRounded,
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import DeleteForever from '@mui/icons-material/DeleteForever';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import DialogActions from '@mui/joy/DialogActions';
@@ -16,16 +15,11 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
-import {
-  ClosedOrderPnlCombinProps,
-  ClosedOrderPnlResponse
-} from '../models/closed-order-pnl';
+import { ClosedOrderPnlCombinProps } from '../models/closed-order-pnl';
 
-
-import { Header } from '~/features/dashboard-common/components/Header';
-// import {  } from './ClosedOrderPnlList';
 import { ClosedOrderPnlTable } from './ClosedOrderPnlTable';
 
 export function DashboardClosedOrderPnl({
@@ -33,9 +27,8 @@ export function DashboardClosedOrderPnl({
   queriesProps,
 }: ClosedOrderPnlCombinProps) {
   const { code, msg, time_now, data } = responseProps;
-  const { account_id, limit, page } = queriesProps;
 
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(true);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -67,7 +60,6 @@ export function DashboardClosedOrderPnl({
           </ModalDialog>
         </Modal>
       )}
-
 
       <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
         <Header />
@@ -148,13 +140,9 @@ export function DashboardClosedOrderPnl({
             responseProps={responseProps}
             queriesProps={queriesProps}
           />
-          {/* mobile */
-            // <OpenOrderList />
-          }          
+          {}
         </Box>
       </Box>
     </CssVarsProvider>
   );
 }
-
-

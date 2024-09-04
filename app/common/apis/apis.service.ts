@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
   InternalAxiosRequestConfig,
+  isCancel,
 } from 'axios';
 
 import { accountHost, apiHost_v1 } from '~/consts';
@@ -123,7 +124,7 @@ const handleInterceptorResult = (
 const handleInterceptorResultError = (
   error: AxiosError | Error,
 ): Promise<AxiosError> => {
-  if (axios.isCancel(error)) {
+  if (isCancel(error)) {
     throw error;
   }
   return Promise.reject(error);

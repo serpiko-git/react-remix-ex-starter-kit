@@ -1,4 +1,4 @@
-import { BaseResponseList, BaseResponsePaging } from '~/features/models/common.model';
+import { BaseResponseList } from '~/features/models/common.model';
 
 // TODO: 추후 언더스코어로 변경될 예정
 // interface SymbolResponseData {
@@ -84,6 +84,5 @@ export interface ISymbol {
   UpdatedAt: string;
   CreatedAt: string;
 }
-
 
 export interface SymbolResponse extends BaseResponseList<ISymbol> {}

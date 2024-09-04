@@ -1,19 +1,3 @@
 export const DEFAULT_OPEN_ORDER_PAGE = 1;
-// export const DEFAULT_OPEN_ORDER_LIMIT = 20;
-// export const DEFAULT_OPEN_ORDER_PAGINATION_LINK_PER_VIEW = 10;
-
-// TODO make as common
-
 export const DEFAULT_OPEN_ORDER_LIMIT = 30;
 export const DEFAULT_OPEN_ORDER_PAGINATION_LINK_PER_VIEW = 10;
-export const DEFAULT_START_TIME = 2;
-export const DEFAULT_END_TIME = 9999999999;
-export const DEFAULT_SYMBOL_LIST = {
-  BTCUSDT: 'BTCUSDT',
-  ETHUSDT: 'ETHUSDT',
-  XRPUSDT: 'XRPUSDT',
-};
-
-export const DEFAULT_EMPTY = '';
-
-
