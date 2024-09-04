@@ -66,10 +66,8 @@ ARG CI_SERVER_HOST
 COPY . /opt/derivatives-admin-debug
 WORKDIR /opt/derivatives-admin-debug/
 RUN set -eux; \
-    git clean -ffdx -e derivatives-admin-debug -e node_modules && \
     ./build-scripts/docker-build.sh
-# && \
-    # rm -rf ./.git/;
+    # git clean -ffdx -e derivatives-admin-debug -e node_modules && \
     
 FROM node:22.5.1-bookworm
 
