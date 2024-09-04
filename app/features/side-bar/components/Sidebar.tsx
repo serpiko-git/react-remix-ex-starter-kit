@@ -1,90 +1,43 @@
-import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
-  AssignmentRounded as AssignmentRoundedIcon,
-  CloseRounded as CloseRoundedIcon,
   DashboardRounded as DashboardRoundedIcon,
-  GroupRounded as GroupRoundedIcon,
-  HomeRounded as HomeRoundedIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
-  LogoutRounded as LogoutRoundedIcon,
-  QuestionAnswerRounded as QuestionAnswerRoundedIcon,
-  SearchRounded as SearchRoundedIcon,
-  SettingsRounded as SettingsRoundedIcon,
-  ShoppingCartRounded as ShoppingCartRoundedIcon,
-  SupportRounded as SupportRoundedIcon,
+  FormatListBulleted as ListIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
-  Button,
-  Card,
-  Chip,
-  Divider,
   GlobalStyles,
-  IconButton,
-  Input,
-  LinearProgress,
   List,
   ListItem,
   ListItemButton,
   listItemButtonClasses,
   ListItemContent,
   Sheet,
-  Stack,
   Typography,
   useColorScheme,
 } from '@mui/joy';
 import { useLocation, useNavigate } from '@remix-run/react';
 
+import logo from '~/assets/logo.svg';
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
 
 import { closeSidebar } from '../libs/utils';
-import { PathNavigateTypes } from '../models/sidebar.model';
+import { DashboardPathNavigateTypes } from '../models/sidebar.model';
 
-function Toggler({
-  defaultExpanded = false,
-  renderToggle,
-  children,
-}: {
-  defaultExpanded?: boolean;
-  children: React.ReactNode;
-  renderToggle: (params: {
-    open: boolean;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  }) => React.ReactNode;
-}) {
-  const [open, setOpen] = React.useState(defaultExpanded);
-  return (
-    <React.Fragment>
-      {renderToggle({ open, setOpen })}
-      <Box
-        sx={[
-          {
-            display: 'grid',
-            transition: '0.2s ease',
-            '& > *': {
-              overflow: 'hidden',
-            },
-          },
-          open ? { gridTemplateRows: '1fr' } : { gridTemplateRows: '0fr' },
-        ]}
-      >
-        {children}
-      </Box>
-    </React.Fragment>
-  );
-}
+import { Toggler } from './Toggler';
 
 export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
   const { mode, setMode } = useColorScheme();
+  const [currentDashboardMenu, setCurrentDashboardMenu] =
+    useState<DashboardPathNavigateTypes>(currentPath);
 
-  const handleSideClick = (path: PathNavigateTypes) => {
+  const handleSideClick = (path: DashboardPathNavigateTypes) => {
     navigate(path);
+    setCurrentDashboardMenu(path);
   };
 
   useEffect(() => {
@@ -103,7 +56,7 @@ export function Sidebar() {
           md: 'none',
         },
         transition: 'transform 0.4s, width 0.4s',
-        zIndex: 1,
+        zIndex: 999,
         height: '100dvh',
         width: 'var(--Sidebar-width)',
         top: 0,
@@ -130,7 +83,7 @@ export function Sidebar() {
         className="Sidebar-overlay"
         sx={{
           position: 'fixed',
-          zIndex: 9998,
+          zIndex: 999,
           top: 0,
           left: 0,
           width: '100vw',
@@ -145,14 +98,15 @@ export function Sidebar() {
         }}
         onClick={() => closeSidebar()}
       />
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Typography level="title-lg">Julybit Admin</Typography>
-      </Box>
-      <Input
-        size="sm"
-        startDecorator={<SearchRoundedIcon />}
-        placeholder="Search"
+      <Box
+        sx={{
+          width: 97,
+          height: 21,
+          margin: '14px 0 6px',
+          backgroundImage: `url(${logo})`,
+        }}
       />
+
       <Box
         sx={{
           minHeight: 0,
@@ -173,121 +127,16 @@ export function Sidebar() {
             '--ListItem-radius': (theme) => theme.vars.radius.sm,
           }}
         >
-          <ListItem>
-            <ListItemButton>
-              <HomeRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Home</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton>
-              <DashboardRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Dashboard</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE['open-order'],
-              )}
-              onClick={() =>
-                handleSideClick(DEFAULT_PATH_NAVIGATE['open-order'])
-              }
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Open-Order</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE['closed-order-pnl'],
-              )}
-              onClick={() =>
-                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-order-pnl'])
-              }
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Closed-Order-P&L</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE['closed-position-pnl'],
-              )}
-              onClick={() =>
-                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-position-pnl'])
-              }
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Closed-Position-P&L</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE.transaction,
-              )}
-              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.transaction)}
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Transaction</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(
-                DEFAULT_PATH_NAVIGATE['snapshot-position'],
-              )}
-              onClick={() =>
-                handleSideClick(DEFAULT_PATH_NAVIGATE['snapshot-position'])
-              }
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">SnapshotPosition</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
-          <ListItem>
-            <ListItemButton
-              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
-              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.symbols)}
-            >
-              <ShoppingCartRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Symbols</Typography>
-              </ListItemContent>
-            </ListItemButton>
-          </ListItem>
-
           <ListItem nested>
             <Toggler
+              defaultExpanded={Object.values(
+                DEFAULT_PATH_NAVIGATE.dashboard,
+              ).includes(currentDashboardMenu)}
               renderToggle={({ open, setOpen }) => (
                 <ListItemButton onClick={() => setOpen(!open)}>
-                  <AssignmentRoundedIcon />
+                  <DashboardRoundedIcon />
                   <ListItemContent>
-                    <Typography level="title-sm">Tasks</Typography>
+                    <Typography level="title-sm">Dashboard</Typography>
                   </ListItemContent>
                   <KeyboardArrowDownIcon
                     sx={[
@@ -304,145 +153,117 @@ export function Sidebar() {
               )}
             >
               <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
-                  <ListItemButton>All tasks</ListItemButton>
-                </ListItem>
                 <ListItem>
-                  <ListItemButton>Backlog</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>In progress</ListItemButton>
-                </ListItem>
-                <ListItem>
-                  <ListItemButton>Done</ListItemButton>
-                </ListItem>
-              </List>
-            </Toggler>
-          </ListItem>
-          <ListItem>
-            <ListItemButton
-              role="menuitem"
-              component="a"
-              href="/joy-ui/getting-started/templates/messages/"
-            >
-              <QuestionAnswerRoundedIcon />
-              <ListItemContent>
-                <Typography level="title-sm">Messages</Typography>
-              </ListItemContent>
-              <Chip size="sm" color="primary" variant="solid">
-                4
-              </Chip>
-            </ListItemButton>
-          </ListItem>
-          <ListItem nested>
-            <Toggler
-              renderToggle={({ open, setOpen }) => (
-                <ListItemButton onClick={() => setOpen(!open)}>
-                  <GroupRoundedIcon />
-                  <ListItemContent>
-                    <Typography level="title-sm">Users</Typography>
-                  </ListItemContent>
-                  <KeyboardArrowDownIcon
-                    sx={[
-                      open
-                        ? {
-                            transform: 'rotate(180deg)',
-                          }
-                        : {
-                            transform: 'none',
-                          },
-                    ]}
-                  />
-                </ListItemButton>
-              )}
-            >
-              <List sx={{ gap: 0.5 }}>
-                <ListItem sx={{ mt: 0.5 }}>
                   <ListItemButton
-                    role="menuitem"
-                    component="a"
-                    href="/joy-ui/getting-started/templates/profile-dashboard/"
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.openOrder,
+                    )}
+                    onClick={() =>
+                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.openOrder)
+                    }
                   >
-                    My profile
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Open Order</Typography>
+                    </ListItemContent>
                   </ListItemButton>
                 </ListItem>
+
                 <ListItem>
-                  <ListItemButton>Create a new user</ListItemButton>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.closedOrderPnl,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.closedOrderPnl,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Closed Order P&L</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
                 </ListItem>
+
                 <ListItem>
-                  <ListItemButton>Roles & permission</ListItemButton>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">
+                        Closed Position P&L
+                      </Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.transaction,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.transaction,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Transaction</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.snapshotPosition,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.snapshotPosition,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">
+                        Snapshot Position
+                      </Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.symbols,
+                    )}
+                    onClick={() =>
+                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.symbols)
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Symbols</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
                 </ListItem>
               </List>
             </Toggler>
           </ListItem>
         </List>
-        <List
-          size="sm"
-          sx={{
-            mt: 'auto',
-            flexGrow: 0,
-            '--ListItem-radius': (theme) => theme.vars.radius.sm,
-            '--List-gap': '8px',
-            mb: 2,
-          }}
-        >
-          <ListItem>
-            <ListItemButton>
-              <SupportRoundedIcon />
-              Support
-            </ListItemButton>
-          </ListItem>
-          <ListItem>
-            <ListItemButton>
-              <SettingsRoundedIcon />
-              Settings
-            </ListItemButton>
-          </ListItem>
-        </List>
-        <Card
-          invertedColors
-          variant="soft"
-          color="warning"
-          size="sm"
-          sx={{ boxShadow: 'none' }}
-        >
-          <Stack
-            direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <Typography level="title-sm">Used space</Typography>
-            <IconButton size="sm">
-              <CloseRoundedIcon />
-            </IconButton>
-          </Stack>
-          <Typography level="body-xs">
-            Your team has used 80% of your available space. Need more?
-          </Typography>
-          <LinearProgress
-            variant="outlined"
-            value={80}
-            determinate
-            sx={{ my: 1 }}
-          />
-          <Button size="sm" variant="solid">
-            Upgrade plan
-          </Button>
-        </Card>
-      </Box>
-      <Divider />
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <Avatar
-          variant="outlined"
-          size="sm"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-        />
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography level="title-sm">Siriwat K.</Typography>
-          <Typography level="body-xs">siriwatk@test.com</Typography>
-        </Box>
-        <IconButton size="sm" variant="plain" color="neutral">
-          <LogoutRoundedIcon />
-        </IconButton>
       </Box>
     </Sheet>
   );

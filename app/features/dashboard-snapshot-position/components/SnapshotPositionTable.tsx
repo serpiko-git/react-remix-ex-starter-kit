@@ -54,6 +54,7 @@ import {
 
 export function SnapshotPositionTable({
   responseProps,
+  queriesProps,
 }: SnapshotPositionCombineProps) {
   const {
     data: {
@@ -61,6 +62,8 @@ export function SnapshotPositionTable({
       pagination: { total, page_no, page_size },
     },
   } = responseProps;
+  const { account_id, page, limit } = queriesProps;
+
   const [order, setOrder] = useState<Order>('desc');
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [open, setOpen] = useState(false);
@@ -171,7 +174,10 @@ export function SnapshotPositionTable({
       {/* search desktop */}
       <Sheet
         className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: 'none', sm: 'block' } }}
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          backgroundColor: 'transparent',
+        }}
       >
         <Form method="get" action="./">
           <Box
@@ -201,27 +207,6 @@ export function SnapshotPositionTable({
                       size="sm"
                       placeholder="Search"
                       startDecorator={<AccountCircleIcon />}
-                    />
-                  )}
-                />
-              </FormControl>
-            </Stack>
-
-            <Stack direction="row" alignItems="flex-end" spacing={1}>
-              <FormControl size="sm" sx={{ flex: 1 }}>
-                <FormLabel>account_id</FormLabel>
-                <Controller
-                  name="account_id"
-                  control={control}
-                  render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Input
-                      name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      size="sm"
-                      startDecorator={<SearchIcon />}
                     />
                   )}
                 />
@@ -389,7 +374,7 @@ export function SnapshotPositionTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -618,21 +603,15 @@ export function SnapshotPositionTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
+              variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
-              sx={{
+              sx={(theme) => ({
+                color: currentPage === pageNumber ? 'white' : 'inherit',
                 backgroundColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.1)'
+                  currentPage === pageNumber
+                    ? theme.palette.primary.solidBg
                     : 'transparent',
-                color:
-                  pageNumber === currentPage
-                    ? 'white'
-                    : 'rgba(255, 255, 255, 0.7)',
-                borderColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.3)'
-                    : 'rgba(255, 255, 255, 0.2)',
-              }}
+              })}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}

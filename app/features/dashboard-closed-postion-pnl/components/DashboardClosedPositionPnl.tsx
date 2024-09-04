@@ -110,7 +110,7 @@ export function DashbaordClosedPositionPnl({
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Open-Order
+                Closed Position P&L
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -126,7 +126,7 @@ export function DashbaordClosedPositionPnl({
             }}
           >
             <Typography level="h2" component="h1">
-              Open-Order
+              Closed Position P&L
             </Typography>
             <Button
               color="primary"

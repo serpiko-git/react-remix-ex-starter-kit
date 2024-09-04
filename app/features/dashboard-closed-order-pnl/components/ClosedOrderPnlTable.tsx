@@ -258,7 +258,10 @@ export function ClosedOrderPnlTable({
       {/* search desktop */}
       <Sheet
         className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: 'none', sm: 'block' } }}
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          backgroundColor: 'transparent',
+        }}
       >
         <Form method="get" action="./">
           <Box
@@ -469,10 +472,8 @@ export function ClosedOrderPnlTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>
-                추가/수정/취소
-              </th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
+              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -806,22 +807,15 @@ export function ClosedOrderPnlTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
+              variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
-              // sx={{
-              //   backgroundColor:
-              //     pageNumber === currentPage
-              //       ? 'rgba(255, 255, 255, 0.1)'
-              //       : 'transparent',
-              //   color:
-              //     pageNumber === currentPage
-              //       ? 'white'
-              //       : 'rgba(255, 255, 255, 0.7)',
-              //   borderColor:
-              //     pageNumber === currentPage
-              //       ? 'rgba(255, 255, 255, 0.3)'
-              //       : 'rgba(255, 255, 255, 0.2)',
-              // }}
+              sx={(theme) => ({
+                color: currentPage === pageNumber ? 'white' : 'inherit',
+                backgroundColor:
+                  currentPage === pageNumber
+                    ? theme.palette.primary.solidBg
+                    : 'transparent',
+              })}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}

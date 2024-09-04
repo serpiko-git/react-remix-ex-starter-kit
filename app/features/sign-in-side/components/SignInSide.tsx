@@ -36,7 +36,7 @@ export function SignInSide() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    navigate(DEFAULT_PATH_NAVIGATE.symbols);
+    navigate(DEFAULT_PATH_NAVIGATE.dashboard.symbols);
   };
   return (
     <CssVarsProvider disableTransitionOnChange>

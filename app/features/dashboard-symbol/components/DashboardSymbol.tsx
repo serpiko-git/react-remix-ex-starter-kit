@@ -68,7 +68,7 @@ export function DashboardSymbol(props: SymbolResponse) {
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Orders
+                Symbols
               </Typography>
             </Breadcrumbs>
           </Box>

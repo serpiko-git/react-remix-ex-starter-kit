@@ -110,7 +110,7 @@ export function DashboardTransaction({
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Open-Order
+                Transaction
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -126,7 +126,7 @@ export function DashboardTransaction({
             }}
           >
             <Typography level="h2" component="h1">
-              Open-Order
+              Transaction
             </Typography>
             <Button
               color="primary"

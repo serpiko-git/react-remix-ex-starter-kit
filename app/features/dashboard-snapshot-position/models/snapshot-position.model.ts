@@ -28,11 +28,10 @@ export interface SnapshotPositionResponse
 
 export interface SnapshotPositionQueries {
   account_id: string;
-  transaction_id: string;
-  page_no: number;
-  page_size: number;
-  start_time: number;
-  end_time: number;
+  page: string;
+  limit: string;
+  category_key?: string;
+  category_value?: string;
 }
 
 export interface SnapshotPositionCombineProps {

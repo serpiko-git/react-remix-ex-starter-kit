@@ -278,7 +278,7 @@ export function SymbolTable(props: SymbolResponse) {
                       : { '& svg': { transform: 'rotate(180deg)' } },
                   ]}
                 >
-                  SymbolId
+                  symbol_id
                 </Link>
               </th>
               <th style={{ width: 140, padding: '12px 6px' }}>symbol_alias</th>
