@@ -67,7 +67,6 @@ COPY . /opt/derivatives-admin-debug
 WORKDIR /opt/derivatives-admin-debug/
 RUN set -eux; \
     ./build-scripts/docker-build.sh
-    # git clean -ffdx -e derivatives-admin-debug -e node_modules && \
     
 FROM node:22.5.1-bookworm
 
