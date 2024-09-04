@@ -1,4 +1,4 @@
-import { DEFAULT_PATH_NAVIGATE } from '~/consts';
+import { DEFAULT_DASHBOARD_PATH } from '~/consts';
 
-export type PathNavigateTypes =
-  (typeof DEFAULT_PATH_NAVIGATE)[keyof typeof DEFAULT_PATH_NAVIGATE];
+export type DashboardPathNavigateTypes =
+  (typeof DEFAULT_DASHBOARD_PATH)[keyof typeof DEFAULT_DASHBOARD_PATH];

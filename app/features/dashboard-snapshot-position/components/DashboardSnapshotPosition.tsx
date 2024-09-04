@@ -109,7 +109,7 @@ export function DashboardSnapshotPosition({
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Open-Order
+                Snapshot Position
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -125,7 +125,7 @@ export function DashboardSnapshotPosition({
             }}
           >
             <Typography level="h2" component="h1">
-              Open-Order
+              Snapshot Position
             </Typography>
             <Button
               color="primary"

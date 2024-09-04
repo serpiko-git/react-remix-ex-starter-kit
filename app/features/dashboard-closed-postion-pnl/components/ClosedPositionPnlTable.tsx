@@ -41,16 +41,20 @@ import {
 } from '@mui/joy';
 import {
   FetcherWithComponents,
+  Form,
   useFetcher,
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import { Controller, Form, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs';
 import { ClosedOrderPnlSearchValues } from '~/features/dashboard-closed-order-pnl';
 
-import { ClosedPositionPnl, ClosedPositionPnlCombineProps } from '..';
+import {
+  ClosedPositionPnl,
+  ClosedPositionPnlCombineProps,
+} from '../models/closed-position-pnl.model';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -467,7 +471,7 @@ export function ClosedPositionPnlTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -760,21 +764,15 @@ export function ClosedPositionPnlTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
+              variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
-              sx={{
+              sx={(theme) => ({
+                color: currentPage === pageNumber ? 'white' : 'inherit',
                 backgroundColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.1)'
+                  currentPage === pageNumber
+                    ? theme.palette.primary.solidBg
                     : 'transparent',
-                color:
-                  pageNumber === currentPage
-                    ? 'white'
-                    : 'rgba(255, 255, 255, 0.7)',
-                borderColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.3)'
-                    : 'rgba(255, 255, 255, 0.2)',
-              }}
+              })}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}

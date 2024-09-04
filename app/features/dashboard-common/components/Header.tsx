@@ -1,4 +1,5 @@
-import { GlobalStyles, IconButton, Sheet } from '@mui/joy';
+import { Menu as MenuIcon } from '@mui/icons-material';
+import { Box, GlobalStyles, IconButton, Sheet, Typography } from '@mui/joy';
 
 import { toggleSidebar } from '~/features/side-bar';
 
@@ -8,7 +9,6 @@ export function Header() {
       sx={{
         display: { xs: 'flex', md: 'none' },
         alignItems: 'center',
-        justifyContent: 'space-between',
         position: 'fixed',
         top: 0,
         width: '100vw',
@@ -36,7 +36,12 @@ export function Header() {
         variant="outlined"
         color="neutral"
         size="sm"
-      ></IconButton>
+      >
+        <MenuIcon />
+      </IconButton>
+      <Box>
+        <Typography level="title-lg">Julybit</Typography>
+      </Box>
     </Sheet>
   );
 }

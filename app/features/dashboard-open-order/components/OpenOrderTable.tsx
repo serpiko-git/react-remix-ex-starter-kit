@@ -266,7 +266,10 @@ export function OpenOrderTable({
       {/* search desktop */}
       <Sheet
         className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: 'none', sm: 'block' } }}
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          backgroundColor: 'transparent',
+        }}
       >
         <Form method="get" action="./">
           <Box
@@ -323,11 +326,9 @@ export function OpenOrderTable({
                           keyof typeof DEFAULT_SYMBOL_LIST
                         >
                       ).map((key) => (
-                        <>
-                          <Option value={DEFAULT_SYMBOL_LIST[key]}>
-                            {DEFAULT_SYMBOL_LIST[key]}
-                          </Option>
-                        </>
+                        <Option key={key} value={DEFAULT_SYMBOL_LIST[key]}>
+                          {DEFAULT_SYMBOL_LIST[key]}
+                        </Option>
                       ))}
                     </Select>
                   )}
@@ -496,10 +497,8 @@ export function OpenOrderTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>
-                추가/수정/취소
-              </th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
+              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -1027,10 +1026,13 @@ export function OpenOrderTable({
               size="sm"
               variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
-              sx={{
+              sx={(theme) => ({
+                color: currentPage === pageNumber ? 'white' : 'inherit',
                 backgroundColor:
-                  currentPage === pageNumber ? '#D5DCDE' : 'transparent',
-              }}
+                  currentPage === pageNumber
+                    ? theme.palette.primary.solidBg
+                    : 'transparent',
+              })}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}

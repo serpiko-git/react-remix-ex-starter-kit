@@ -10,7 +10,6 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 import {
   apiHost_v1,
   apiAccount_id,
-  apiAdminHost_v1,
   DEFAULT_EMPTY,
   DEFAULT_PAGINATION_LIMIT,
   DEFAULT_PAGINATION_PAGE,
@@ -74,7 +73,7 @@ export const action: ActionFunction = async ({
 
     console.log(symbol, order_id);
 
-    const response = await fetch(`${apiAdminHost_v1}/acs/etcd/service/list`, {
+    const response = await fetch(`${apiHost_v1}/acs/etcd/service/list`, {
       method: 'POST',
       body: JSON.stringify({
         symbol,

@@ -1,9 +1,13 @@
+export const DEFAULT_DASHBOARD_PATH = {
+  symbols: '/dashboard/symbol',
+  openOrder: '/dashboard/open-order',
+  closedOrderPnl: '/dashboard/closed-order-pnl',
+  closedPositionPnl: '/dashboard/closed-position-pnl',
+  transaction: '/dashboard/transaction',
+  snapshotPosition: '/dashboard/snapshot-position',
+};
+
 export const DEFAULT_PATH_NAVIGATE = {
   index: '/',
-  symbols: '/dashboard/symbol',
-  'open-order': '/dashboard/open-order',
-  'closed-order-pnl': '/dashboard/closed-order-pnl',
-  'closed-position-pnl': '/dashboard/closed-position-pnl',
-  transaction: '/dashboard/transaction',
-  'snapshot-position': '/dashboard/snapshot-position',
+  dashboard: DEFAULT_DASHBOARD_PATH,
 } as const;

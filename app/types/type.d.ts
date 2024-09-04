@@ -1,7 +1,6 @@
 export interface Config {
   accountHost: string;
   apiHost_v1: string;
-  apiAdminHost_v1: string;
   apiAccount_id: string;
 }
 
