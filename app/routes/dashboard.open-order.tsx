@@ -3,18 +3,19 @@ import {
   ActionFunctionArgs,
   LoaderFunction,
   LoaderFunctionArgs,
-  json,
   redirect,
 } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 
-import { apiHost_v1, apiAccount_id } from '~/consts';
 import {
+  apiHost_v1,
+  apiAccount_id,
+  apiAdminHost_v1,
   DEFAULT_EMPTY,
-  DEFAULT_OPEN_ORDER_LIMIT,
-  DEFAULT_OPEN_ORDER_PAGE,
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_PAGINATION_PAGE,
   DEFAULT_SYMBOL_LIST,
-} from '~/consts/open-order';
+} from '~/consts';
 import {
   DashboardOpenOrder,
   OpenOrderCombineProps,
@@ -23,7 +24,6 @@ import {
 
 export const loader: LoaderFunction = async ({
   request,
-  params,
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
@@ -32,8 +32,8 @@ export const loader: LoaderFunction = async ({
   const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
   const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
   const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
-  const page = searchParams.get('page') || String(DEFAULT_OPEN_ORDER_PAGE);
-  const limit = searchParams.get('limit') || String(DEFAULT_OPEN_ORDER_LIMIT);
+  const page = searchParams.get('page') || String(DEFAULT_PAGINATION_PAGE);
+  const limit = searchParams.get('limit') || String(DEFAULT_PAGINATION_LIMIT);
 
   searchParams.set('account_id', account_id);
   searchParams.set('symbol', symbol);
@@ -47,11 +47,11 @@ export const loader: LoaderFunction = async ({
   console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
 
-  const openOrderResponseProps: OpenOrderResponse = await response.json();
-  console.log({ openOrderResponseProps });
+  const responseProps: OpenOrderResponse = await response.json();
+  console.log({ responseProps });
 
-  const openOrderQueriesProps = { account_id, page, limit };
-  const openOrderCombine = { openOrderResponseProps, openOrderQueriesProps };
+  const queriesProps = { account_id, page, limit };
+  const openOrderCombine = { responseProps, queriesProps };
 
   console.groupEnd();
 
@@ -73,7 +73,8 @@ export const action: ActionFunction = async ({
     const limit = formData.get('limit');
 
     console.log(symbol, order_id);
-    const response = await fetch(`${apiHost_v1}/acs/order/cancel`, {
+
+    const response = await fetch(`${apiAdminHost_v1}/acs/etcd/service/list`, {
       method: 'POST',
       body: JSON.stringify({
         symbol,
@@ -86,7 +87,6 @@ export const action: ActionFunction = async ({
 
     const data = await response.json();
     console.log('action delete', data);
-    // return json(data);
 
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);
@@ -101,14 +101,11 @@ export const action: ActionFunction = async ({
 };
 
 export default function index() {
-  const openOrderCombineProps: OpenOrderCombineProps =
-    useLoaderData<typeof loader>();
-  const { openOrderResponseProps, openOrderQueriesProps } =
-    openOrderCombineProps;
+  const combineProps: OpenOrderCombineProps = useLoaderData<typeof loader>();
+  const { responseProps, queriesProps } = combineProps;
 
-  const { account_id, limit, page } = openOrderQueriesProps;
+  const { account_id, limit, page } = queriesProps;
   console.log(typeof limit, limit);
-
   const fetcher = useFetcher();
   const fetcherData = fetcher.data;
   if (fetcherData) {
@@ -118,8 +115,8 @@ export default function index() {
   return (
     <div>
       <DashboardOpenOrder
-        openOrderResponseProps={openOrderResponseProps}
-        openOrderQueriesProps={openOrderQueriesProps}
+        responseProps={responseProps}
+        queriesProps={queriesProps}
       />
     </div>
   );

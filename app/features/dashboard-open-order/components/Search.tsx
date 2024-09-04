@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
@@ -7,7 +5,7 @@ import Input from '@mui/joy/Input';
 import Stack from '@mui/joy/Stack';
 import Typography from '@mui/joy/Typography';
 
-export default function Search() {
+export function Search() {
   return (
     <div>
       <Stack spacing={1} direction="row" sx={{ mb: 2 }}>

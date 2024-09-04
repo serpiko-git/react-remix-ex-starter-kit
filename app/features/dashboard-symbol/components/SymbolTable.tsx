@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -48,29 +47,6 @@ import { SymbolResponse } from '../models/symbol.model';
 
 import { DetailForm } from './DetailForm';
 
-const rows = [
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-];
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -116,20 +92,19 @@ function RowMenu() {
 }
 export function SymbolTable(props: SymbolResponse) {
   const fetcher = useFetcher();
-
   const {
     data: { list },
   } = props;
 
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState(false);
   const [symbolId, setSymbolId] = useState<string>('');
   const [symbolName, setSymbolName] = useState<string>('');
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const renderFilters = () => (
-    <React.Fragment>
+    <Fragment>
       <FormControl size="sm">
         <FormLabel>Status</FormLabel>
         <Select
@@ -164,7 +139,7 @@ export function SymbolTable(props: SymbolResponse) {
           <Option value="jay">Jay Hoper</Option>
         </Select>
       </FormControl>
-    </React.Fragment>
+    </Fragment>
   );
 
   const handleTrClick = ($symbolId: string, $symbolName: string) => {
@@ -179,7 +154,7 @@ export function SymbolTable(props: SymbolResponse) {
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       {Boolean(symbolId && modalOpen) && (
         <>
           <ResponsiveModal
@@ -281,26 +256,7 @@ export function SymbolTable(props: SymbolResponse) {
             <tr>
               <th
                 style={{ width: 48, textAlign: 'center', padding: '12px 6px' }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
-                  }
-                  checked={selected.length === rows.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === rows.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
-              </th>
+              ></th>
               <th style={{ width: 120, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -423,9 +379,6 @@ export function SymbolTable(props: SymbolResponse) {
                 </td>
                 <td>
                   <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                    {/* <Link level="body-xs" component="button">
-                        Download
-                      </Link> */}
                     <RowMenu />
                   </Box>
                 </td>
@@ -477,6 +430,6 @@ export function SymbolTable(props: SymbolResponse) {
           Next
         </Button>
       </Box>
-    </React.Fragment>
+    </Fragment>
   );
 }

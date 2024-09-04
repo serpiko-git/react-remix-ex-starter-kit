@@ -1,11 +1,10 @@
-import * as React from 'react';
+import { useState } from 'react';
 
 import {
   ChevronRightRounded,
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import DeleteForever from '@mui/icons-material/DeleteForever';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import DialogActions from '@mui/joy/DialogActions';
@@ -16,25 +15,20 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
-import {
-  OpenOrderCombineProps,
-  OpenOrderResponse,
-} from '../models/open-order.model';
+import { OpenOrderCombineProps } from '../models/open-order.model';
 
-import { Header } from './Header';
-import { OpenOrderList } from './OpenOrderList';
 import { OpenOrderTable } from './OpenOrderTable';
 
 export function DashboardOpenOrder({
-  openOrderResponseProps,
-  openOrderQueriesProps,
+  responseProps,
+  queriesProps,
 }: OpenOrderCombineProps) {
-  const { code, msg, time_now, data } = openOrderResponseProps;
-  const { account_id, limit, page } = openOrderQueriesProps;
+  const { code, msg } = responseProps;
 
-  const [open, setOpen] = React.useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(true);
 
   return (
     <CssVarsProvider disableTransitionOnChange>
@@ -144,11 +138,9 @@ export function DashboardOpenOrder({
           </Box>
 
           <OpenOrderTable
-            openOrderResponseProps={openOrderResponseProps}
-            openOrderQueriesProps={openOrderQueriesProps}
+            responseProps={responseProps}
+            queriesProps={queriesProps}
           />
-          {/* mobile */}
-          <OpenOrderList />
         </Box>
       </Box>
     </CssVarsProvider>

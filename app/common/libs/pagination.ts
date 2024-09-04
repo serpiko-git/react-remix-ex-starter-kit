@@ -1,7 +1,7 @@
 import {
   DEFAULT_OPEN_ORDER_LIMIT,
   DEFAULT_OPEN_ORDER_PAGINATION_LINK_PER_VIEW,
-} from '~/consts/open-order';
+} from '~/consts';
 
 interface PaginationType<T> {
   $current_page: number;
@@ -64,18 +64,6 @@ export const Pagination = <T>({
       previous_page = null;
     }
   }
-
-  // 페이지 넘버링 (사용 예)
-  // const pages = [];
-  // for (let i = first_link; i <= last_link; i += 1) {
-  //   if (page === i) {
-  //     const is_active = true;
-  //     const page_number = i;
-  //   } else {
-  //     const is_active = false;
-  //     const page_number = i;
-  //   }
-  // }
 
   // 다음 페이지
   let next_page = null;

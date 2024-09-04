@@ -1,16 +1,4 @@
-interface BaseResponse<T> {
-  code: number;
-  data: {
-    list: T[];
-    pagination: {
-      total: 0;
-      page_no: 1;
-      page_size: 20;
-    };
-  };
-  msg: string;
-  time_now: string;
-}
+import { BaseResponsePaging } from '~/features/models/common.model';
 
 export const positionMode = {
   /** one-way mode */
@@ -23,9 +11,12 @@ export const positionMode = {
 export type PositionModeTypes =
   (typeof positionMode)[keyof typeof positionMode];
 export const positionModeText = {
-  0: 'both', // one-way mode
-  1: 'buy', // hedge mode Buy/Long
-  2: 'sell', // hedge mode Sell/Short
+  /** one-way mode */
+  0: 'both',
+  /** hedge mode Buy/Long */
+  1: 'buy',
+  /** hedge mode Sell/Short */
+  2: 'sell',
 };
 
 /** order side */
@@ -212,10 +203,14 @@ export const timeInForce = {
 } as const;
 export type TimeInForceTypes = (typeof timeInForce)[keyof typeof timeInForce];
 export const timeInForceText = {
-  0: 'GTC', // Good-Till-Canceled
-  1: 'IOC', // Immediate-Or-Cancel
-  2: 'FOK', // Fill-Or-Kill
-  3: 'POST_ONLY', // Post Only
+  /** Good-Till-Canceled */
+  0: 'GTC',
+  /** Immediate-Or-Cancel */
+  1: 'IOC',
+  /** Fill-Or-Kill */
+  2: 'FOK',
+  /** Post Only */
+  3: 'POST_ONLY',
 };
 
 export const placeOrderPositionMode = {
@@ -323,7 +318,7 @@ export interface OpenOrder {
   created_ts: string;
 }
 
-export interface OpenOrderResponse extends BaseResponse<OpenOrder> {}
+export interface OpenOrderResponse extends BaseResponsePaging<OpenOrder> {}
 
 export interface OpenOrderQueries {
   account_id: string;
@@ -334,8 +329,8 @@ export interface OpenOrderQueries {
 }
 
 export interface OpenOrderCombineProps {
-  openOrderResponseProps: OpenOrderResponse;
-  openOrderQueriesProps: OpenOrderQueries;
+  responseProps: OpenOrderResponse;
+  queriesProps: OpenOrderQueries;
 }
 
 export interface OpenOrderSearchValues {

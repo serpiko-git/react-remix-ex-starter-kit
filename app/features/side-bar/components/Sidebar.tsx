@@ -1,8 +1,8 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import {
   AssignmentRounded as AssignmentRoundedIcon,
-  BrightnessAutoRounded as BrightnessAutoRoundedIcon,
   CloseRounded as CloseRoundedIcon,
   DashboardRounded as DashboardRoundedIcon,
   GroupRounded as GroupRoundedIcon,
@@ -34,15 +34,14 @@ import {
   Sheet,
   Stack,
   Typography,
+  useColorScheme,
 } from '@mui/joy';
-import { useLocation, useMatches, useNavigate } from '@remix-run/react';
+import { useLocation, useNavigate } from '@remix-run/react';
 
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
 
 import { closeSidebar } from '../libs/utils';
 import { PathNavigateTypes } from '../models/sidebar.model';
-
-import { ColorSchemeToggle } from './ColorSchemeToggle';
 
 function Toggler({
   defaultExpanded = false,
@@ -82,10 +81,17 @@ export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const currentPath = location.pathname;
+  const { mode, setMode } = useColorScheme();
 
   const handleSideClick = (path: PathNavigateTypes) => {
     navigate(path);
   };
+
+  useEffect(() => {
+    if (mode !== 'light') {
+      setMode('light');
+    }
+  }, []);
 
   return (
     <Sheet
@@ -140,11 +146,7 @@ export function Sidebar() {
         onClick={() => closeSidebar()}
       />
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <IconButton variant="soft" color="primary" size="sm">
-          <BrightnessAutoRoundedIcon />
-        </IconButton>
-        <Typography level="title-lg">Admin Debug</Typography>
-        <ColorSchemeToggle sx={{ ml: 'auto' }} />
+        <Typography level="title-lg">Julybit Admin</Typography>
       </Box>
       <Input
         size="sm"
@@ -207,24 +209,74 @@ export function Sidebar() {
 
           <ListItem>
             <ListItemButton
-              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
-              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.symbols)}
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['closed-order-pnl'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-order-pnl'])
+              }
             >
               <ShoppingCartRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Symbols</Typography>
+                <Typography level="title-sm">Closed-Order-P&L</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
 
           <ListItem>
             <ListItemButton
-              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.orders)}
-              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.orders)}
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['closed-position-pnl'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['closed-position-pnl'])
+              }
             >
               <ShoppingCartRoundedIcon />
               <ListItemContent>
-                <Typography level="title-sm">Orders</Typography>
+                <Typography level="title-sm">Closed-Position-P&L</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE.transaction,
+              )}
+              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.transaction)}
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Transaction</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(
+                DEFAULT_PATH_NAVIGATE['snapshot-position'],
+              )}
+              onClick={() =>
+                handleSideClick(DEFAULT_PATH_NAVIGATE['snapshot-position'])
+              }
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">SnapshotPosition</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem>
+            <ListItemButton
+              selected={currentPath.startsWith(DEFAULT_PATH_NAVIGATE.symbols)}
+              onClick={() => handleSideClick(DEFAULT_PATH_NAVIGATE.symbols)}
+            >
+              <ShoppingCartRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Symbols</Typography>
               </ListItemContent>
             </ListItemButton>
           </ListItem>
