@@ -228,6 +228,22 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.trade,
+                    )}
+                    onClick={() =>
+                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.trade)
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Trade</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
                       DEFAULT_PATH_NAVIGATE.dashboard.snapshotPosition,
                     )}
                     onClick={() =>

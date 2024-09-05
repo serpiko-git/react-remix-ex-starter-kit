@@ -29,8 +29,8 @@ export interface TransactionResponse extends BaseResponsePaging<Transaction> {}
 
 export interface TransactionQueries {
   account_id: string;
-  page: string;
-  limit: string;
+  page_no: string;
+  page_size: string;
   category_key?: string;
   category_value?: string;
 }
@@ -42,9 +42,9 @@ export interface TransactionCombineProps {
 
 export interface TransactionSearchValues {
   account_id: string;
-  symbol: string;
-  order_id: string;
-  client_order_id: string;
   transaction_id: string;
-  limit: string;
+  order_id: string;
+  symbol: string;
+  page_no: number;
+  page_size: number;
 }

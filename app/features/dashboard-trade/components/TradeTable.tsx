@@ -52,10 +52,10 @@ import { Pagination } from '~/common/libs';
 import { DEFAULT_SYMBOL_LIST } from '~/consts';
 
 import {
-  Transaction,
-  TransactionCombineProps,
-  TransactionSearchValues,
-} from '../models/transaction.model';
+  Trade,
+  TradeCombineProps,
+  TradeSearchValues,
+} from '../models/trade.model';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -81,98 +81,7 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page_no,
-  page_size,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page_no: string;
-  page_size: string;
-}) {
-  const [openConfirm, setOpenConfirm] = useState(false);
-
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
-
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page_no,
-        page_size,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
-
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
-
-  return (
-    <Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </Fragment>
-  );
-}
-
-export function TransactionTable({
-  responseProps,
-  queriesProps,
-}: TransactionCombineProps) {
+export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
   const {
     data: {
       list,
@@ -180,7 +89,7 @@ export function TransactionTable({
     },
   } = responseProps;
 
-  const { account_id } = queriesProps;
+  const { account_id, order_id } = queriesProps;
 
   const [order, setOrder] = useState<Order>('desc');
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -188,17 +97,17 @@ export function TransactionTable({
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
   const [thCount, setThCount] = useState<number>();
 
-  const { control, handleSubmit, watch, setValue } =
-    useForm<TransactionSearchValues>({
+  const { control, handleSubmit, watch, setValue } = useForm<TradeSearchValues>(
+    {
       defaultValues: {
-        account_id: '',
-        transaction_id: '',
-        symbol: '',
-        order_id: '',
-        page_no: 1,
-        page_size: 30,
+        account_id,
+        order_id,
+        trade_id: 0,
+        page_size,
+        client_order_id: 0,
       },
-    });
+    },
+  );
 
   const fetcher = useFetcher();
   const [searchParams] = useSearchParams();
@@ -211,15 +120,16 @@ export function TransactionTable({
     pageNumbers,
     next_page,
     result_data,
-  } = Pagination<Transaction>({
-    $current_page: Number(page_no),
+  } = Pagination({
+    $current_page: Number(queriesProps.page_no),
     $num_records: Number(total),
     $record_data: list,
-    $num_records_per_page: Number(page_size),
+    $num_records_per_page: Number(queriesProps.page_size),
   });
 
   useEffect(() => {
     if (!list.length && theadRef.current) {
+      // theadRef.current.querySelectorAll('th')를 사용
       const thElements = theadRef.current.querySelectorAll('th');
       setThCount(thElements.length);
     }
@@ -235,7 +145,6 @@ export function TransactionTable({
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page_no', String($page));
-    params.set('page_size', String(page_size));
     navigate(`./?${params.toString()}`);
   };
 
@@ -319,40 +228,6 @@ export function TransactionTable({
                 />
               </FormControl>
             </Stack>
-
-            <Stack direction="row" alignItems="flex-end" spacing={1}>
-              <FormControl size="sm" sx={{ flex: 1 }}>
-                <FormLabel>symbol</FormLabel>
-                <Controller
-                  name="symbol"
-                  control={control}
-                  render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Select
-                      name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
-                      onBlur={onBlur}
-                      size="sm"
-                      slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-                    >
-                      {(
-                        Object.keys(DEFAULT_SYMBOL_LIST) as Array<
-                          keyof typeof DEFAULT_SYMBOL_LIST
-                        >
-                      ).map((key) => (
-                        <>
-                          <Option value={DEFAULT_SYMBOL_LIST[key]}>
-                            {DEFAULT_SYMBOL_LIST[key]}
-                          </Option>
-                        </>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            </Stack>
-
             <Stack
               direction="row"
               alignItems="flex-end"
@@ -360,47 +235,28 @@ export function TransactionTable({
               sx={{ flex: 1 }}
             >
               <FormControl sx={{ flex: 1 }} size="sm">
+                <FormLabel>trade_id</FormLabel>
+                <Controller
+                  name="trade_id"
+                  control={control}
+                  render={({ field: { name, value, onChange, onBlur } }) => (
+                    <Input
+                      name={name}
+                      placeholder={name}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      size="sm"
+                      startDecorator={<SearchIcon />}
+                    />
+                  )}
+                />
+              </FormControl>
+
+              <FormControl sx={{ flex: 1 }} size="sm">
                 <FormLabel>order_id</FormLabel>
                 <Controller
                   name="order_id"
-                  control={control}
-                  render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Input
-                      name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      size="sm"
-                      startDecorator={<SearchIcon />}
-                    />
-                  )}
-                />
-              </FormControl>
-
-              <FormControl sx={{ flex: 1 }} size="sm">
-                <FormLabel>transaction_id</FormLabel>
-                <Controller
-                  name="transaction_id"
-                  control={control}
-                  render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Input
-                      name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      size="sm"
-                      startDecorator={<SearchIcon />}
-                    />
-                  )}
-                />
-              </FormControl>
-
-              <FormControl sx={{ flex: 1 }} size="sm">
-                <FormLabel>transaction_id</FormLabel>
-                <Controller
-                  name="transaction_id"
                   control={control}
                   render={({ field: { name, value, onChange, onBlur } }) => (
                     <Input
@@ -499,7 +355,7 @@ export function TransactionTable({
                   onChange={(event) => {
                     setSelected(
                       event.target.checked
-                        ? list.map((row) => row.order_id)
+                        ? list.map((row) => row.order_id.toString())
                         : [],
                     );
                   }}
@@ -512,7 +368,6 @@ export function TransactionTable({
                 />
               </th>
               <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -534,44 +389,38 @@ export function TransactionTable({
                       : { '& svg': { transform: 'rotate(180deg)' } },
                   ]}
                 >
-                  transaction_id
+                  trade_id
                 </Link>
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> account_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> symbol </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> BaseAsset </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> QuoteAsset </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
+              <th style={{ width: 190, padding: '12px 6px' }}> order_id </th>
+              <th style={{ width: 190, padding: '12px 6px' }}>
                 {' '}
-                transaction_type{' '}
+                client_order_id{' '}
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> direction </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> qty </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
+              <th style={{ width: 190, padding: '12px 6px' }}> account_id </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> category </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> base_asset </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> quote_asset </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> symbol </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> side </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> order_type </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> exec_type </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> leverage </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> quantity </th>
+              <th style={{ width: 190, padding: '12px 6px' }}>
                 {' '}
-                position_size{' '}
+                org_quantity{' '}
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> funding </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> fee </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> cash_flow </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> change </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> balance </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> exec_price </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> fee_rate </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> order_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                from_transfer_account_id{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                to_transfer_account_id{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> ts_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> created_ts </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                transaction_time{' '}
+              <th style={{ width: 190, padding: '12px 6px' }}> price </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> exec_price </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> fee_rate </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> opening_fee </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> closing_fee </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> funding_fee </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> is_isolated </th>
+              <th style={{ width: 190, padding: '12px 6px' }}> is_maker </th>
+              <th style={{ width: 190, padding: '12px 6px' }}>
+                transaction_id
               </th>
             </tr>
           </thead>
@@ -603,179 +452,87 @@ export function TransactionTable({
           {!!list.length && (
             <tbody>
               {[...list]
-                .sort(getComparator(order, 'transaction_id'))
+                .sort(getComparator(order, 'trade_id'))
                 .map((row, i) => (
-                  <tr key={row.transaction_id}>
-                    <td style={{ textAlign: 'center', width: 120 }}>
-                      <Checkbox
-                        size="sm"
-                        checked={selected.includes(row.transaction_id)}
-                        color={
-                          selected.includes(row.transaction_id)
-                            ? 'primary'
-                            : undefined
-                        }
-                        onChange={(event) => {
-                          // eslint-disable-next-line no-confusing-arrow
-                          setSelected((ids) =>
-                            event.target.checked
-                              ? ids.concat(row.transaction_id)
-                              : ids.filter(
-                                  (itemId) => itemId !== row.transaction_id,
-                                ),
-                          );
-                        }}
-                        slotProps={{
-                          checkbox: { sx: { textAlign: 'left' } },
-                        }}
-                        sx={{ verticalAlign: 'text-bottom' }}
-                      />
-                    </td>
+                  <tr key={row.trade_id}>
+                    <td style={{ textAlign: 'center', width: 120 }}></td>
                     <td>
                       <Typography level="body-xs">{no + i}</Typography>
                     </td>
                     <td>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          gap: 2,
-                          alignItems: 'center',
-                        }}
-                      >
-                        {/* <Link level="body-xs" component="button">
-                          Download
-                          </Link> */}
-                        <RowMenu
-                          fetcher={fetcher}
-                          order_id={row.transaction_id}
-                          account_id={row.account_id}
-                          symbol={row.symbol}
-                          page_no={String(page_no)}
-                          page_size={String(page_size)}
-                        />
-                      </Box>
+                      <Typography level="body-xs">{row.trade_id}</Typography>
                     </td>
                     <td>
-                      {' '}
+                      <Typography level="body-xs">{row.order_id}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">
+                        {row.client_order_id}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.account_id}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.category}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.base_asset}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.quote_asset}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.symbol}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.side}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.order_type}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.exec_type}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.leverage}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.quantity}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">
+                        {row.org_quantity}
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.price}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.exec_price}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.fee_rate}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.opening_fee}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.closing_fee}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.funding_fee}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.is_isolated}</Typography>
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{row.is_maker}</Typography>
+                    </td>
+                    <td>
                       <Typography level="body-xs">
                         {row.transaction_id}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.account_id}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">{row.symbol}</Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.BaseAsset}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.QuoteAsset}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.transaction_type}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.direction}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">{row.qty}</Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.position_size}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.funding}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">{row.fee}</Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.cash_flow}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">{row.change}</Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.balance}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.exec_price}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.fee_rate}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.order_id}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.from_transfer_account_id}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.to_transfer_account_id}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">{row.ts_id}</Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.created_ts}
-                      </Typography>{' '}
-                    </td>
-                    <td>
-                      {' '}
-                      <Typography level="body-xs">
-                        {row.transaction_time}
-                      </Typography>{' '}
+                      </Typography>
                     </td>
                   </tr>
                 ))}
@@ -815,7 +572,7 @@ export function TransactionTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              variant={page_no ? 'outlined' : 'plain'}
+              variant={Number(page_no) ? 'outlined' : 'plain'}
               color="neutral"
               sx={(theme) => ({
                 color: currentPage === pageNumber ? 'white' : 'inherit',

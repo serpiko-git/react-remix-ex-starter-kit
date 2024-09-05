@@ -4,6 +4,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   closedOrderPnl: '/dashboard/closed-order-pnl',
   closedPositionPnl: '/dashboard/closed-position-pnl',
   transaction: '/dashboard/transaction',
+  trade: '/dashboard/trade',
   snapshotPosition: '/dashboard/snapshot-position',
 };
 

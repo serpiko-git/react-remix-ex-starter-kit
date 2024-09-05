@@ -36,10 +36,6 @@ export function ResponsiveModal(props: ModalProps) {
     }
   };
 
-  const handleConfirm = () => {
-    alert('!!!');
-  };
-
   return (
     <React.Fragment>
       <CssVarsProvider disableTransitionOnChange>
@@ -103,18 +99,6 @@ export function ResponsiveModal(props: ModalProps) {
                   alignItems: 'center',
                 }}
               >
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant="solid"
-                    color="primary"
-                    onClick={handleConfirm}
-                  >
-                    Modify
-                  </Button>
-                  <Button color="danger" onClick={handleConfirm}>
-                    Delete
-                  </Button>
-                </Box>
                 <Button
                   variant="outlined"
                   color="neutral"

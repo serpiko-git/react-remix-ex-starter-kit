@@ -23,24 +23,40 @@ export const loader: LoaderFunction = async ({
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
 
-  const account_id = searchParams.get('account_id') || apiAccount_id;
-  const symbol = searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT;
-  const client_order_id = searchParams.get('client_order_id') || DEFAULT_EMPTY;
-  const transaction_id = searchParams.get('transaction_id') || DEFAULT_EMPTY;
-  const page = searchParams.get('page') || String(DEFAULT_PAGINATION_PAGE);
-  const limit = searchParams.get('limit') || String(DEFAULT_PAGINATION_LIMIT);
   // to number
-  const startTime = searchParams.get('start_time') || DEFAULT_START_TIME;
-  const endTime = searchParams.get('end_time') || DEFAULT_END_TIME;
 
-  searchParams.set('account_id', account_id);
-  searchParams.set('symbol', symbol);
-  searchParams.set('client_order_id', client_order_id);
-  searchParams.set('transaction_id', transaction_id);
-  searchParams.set('page', page.toString());
-  searchParams.set('limit', limit.toString());
-  searchParams.set('start_time', startTime.toString());
-  searchParams.set('end_time', endTime.toString());
+  searchParams.set(
+    'account_id',
+    searchParams.get('account_id') || DEFAULT_EMPTY,
+  );
+  searchParams.set(
+    'symbol',
+    searchParams.get('symbol') || DEFAULT_SYMBOL_LIST.BTCUSDT,
+  );
+  searchParams.set(
+    'client_order_id',
+    searchParams.get('client_order_id') || DEFAULT_EMPTY,
+  );
+  searchParams.set(
+    'transaction_id',
+    searchParams.get('transaction_id') || DEFAULT_EMPTY,
+  );
+  searchParams.set(
+    'page_no',
+    searchParams.get('page_no') || String(DEFAULT_PAGINATION_PAGE),
+  );
+  searchParams.set(
+    'page_size',
+    searchParams.get('page_size') || String(DEFAULT_PAGINATION_LIMIT),
+  );
+  searchParams.set(
+    'start_time',
+    searchParams.get('start_time') || String(DEFAULT_START_TIME),
+  );
+  searchParams.set(
+    'end_time',
+    searchParams.get('end_time') || String(DEFAULT_END_TIME),
+  );
 
   console.group('Remix: loader');
   const fetchUrl = `${apiHost_v1}/transaction/list?${searchParams.toString()}`;
@@ -50,7 +66,11 @@ export const loader: LoaderFunction = async ({
   const responseProps: TransactionResponse = await response.json();
   console.log({ responseProps });
 
-  const queriesProps = { account_id, page, limit };
+  const queriesProps = {
+    account_id: searchParams.get('account_id') || apiAccount_id,
+    page: searchParams.get('page_no') || String(DEFAULT_PAGINATION_PAGE),
+    limit: searchParams.get('page_size') || String(DEFAULT_PAGINATION_LIMIT),
+  };
   const transactionCombine = { responseProps, queriesProps };
 
   console.groupEnd();
@@ -63,8 +83,7 @@ export default function index() {
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = transactionCombineProps;
 
-  const { account_id, limit, page } = queriesProps;
-  console.log(typeof limit, limit);
+  const { account_id, page_size, page_no } = queriesProps;
   const fetcher = useFetcher();
   const fetcherData = fetcher.data;
   if (fetcherData) {
