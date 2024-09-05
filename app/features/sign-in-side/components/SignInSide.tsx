@@ -8,18 +8,16 @@ import {
   FormControl,
   FormLabel,
   GlobalStyles,
-  IconButton,
   Input,
   Link,
   Stack,
   Typography,
 } from '@mui/joy';
-import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
+import { CssVarsProvider } from '@mui/joy/styles';
 import { useNavigate } from '@remix-run/react';
 
+import logo from '~/assets/logo.svg';
 import { DEFAULT_PATH_NAVIGATE } from '~/consts';
-
-import { GoogleIcon } from './GoogleIcon';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -29,8 +27,6 @@ interface FormElements extends HTMLFormControlsCollection {
 interface SignInFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
-
-const customTheme = extendTheme();
 
 export function SignInSide() {
   const navigate = useNavigate();
@@ -77,9 +73,13 @@ export function SignInSide() {
             component="header"
             sx={{ py: 3, display: 'flex', justifyContent: 'space-between' }}
           >
-            <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-              <Typography level="title-lg">Julybit Admin</Typography>
-            </Box>
+            <Box
+              sx={{
+                width: 97,
+                height: 21,
+                backgroundImage: `url(${logo})`,
+              }}
+            />
           </Box>
           <Box
             component="main"
@@ -116,14 +116,6 @@ export function SignInSide() {
                   </Link>
                 </Typography>
               </Stack>
-              <Button
-                variant="soft"
-                color="neutral"
-                fullWidth
-                startDecorator={<GoogleIcon />}
-              >
-                Continue with Google
-              </Button>
             </Stack>
             <Divider
               sx={(theme) => ({
@@ -178,7 +170,7 @@ export function SignInSide() {
           </Box>
           <Box component="footer" sx={{ py: 3 }}>
             <Typography level="body-xs" sx={{ textAlign: 'center' }}>
-              © Your company {new Date().getFullYear()}
+              © Julybit {new Date().getFullYear()}
             </Typography>
           </Box>
         </Box>
