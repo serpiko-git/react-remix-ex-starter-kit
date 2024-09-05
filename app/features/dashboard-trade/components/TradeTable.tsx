@@ -333,8 +333,6 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
-            '--TableRow-hoverBackground':
-              'var(--joy-palette-background-level1)',
             '--TableCell-paddingY': '4px',
             '--TableCell-paddingX': '8px',
           }}

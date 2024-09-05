@@ -86,15 +86,15 @@ function RowMenu({
   order_id,
   account_id,
   symbol,
-  page,
-  limit,
+  page_no,
+  page_size,
 }: {
   fetcher: FetcherWithComponents<unknown>;
   symbol: string;
   order_id: string;
   account_id: string;
-  page: string;
-  limit: string;
+  page_no: string;
+  page_size: string;
 }) {
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -110,8 +110,8 @@ function RowMenu({
         symbol,
         order_id,
         account_id,
-        page,
-        limit,
+        page_no,
+        page_size,
       },
       { method: 'post', action: './' },
     );
@@ -180,7 +180,7 @@ export function TransactionTable({
     },
   } = responseProps;
 
-  const { account_id, page, limit } = queriesProps;
+  const { account_id } = queriesProps;
 
   const [order, setOrder] = useState<Order>('desc');
   const [selected, setSelected] = useState<readonly string[]>([]);
@@ -191,11 +191,12 @@ export function TransactionTable({
   const { control, handleSubmit, watch, setValue } =
     useForm<TransactionSearchValues>({
       defaultValues: {
-        account_id,
+        account_id: '',
+        transaction_id: '',
         symbol: '',
         order_id: '',
-        client_order_id: '',
-        limit,
+        page_no: 1,
+        page_size: 30,
       },
     });
 
@@ -211,30 +212,30 @@ export function TransactionTable({
     next_page,
     result_data,
   } = Pagination<Transaction>({
-    $current_page: Number(page),
+    $current_page: Number(page_no),
     $num_records: Number(total),
     $record_data: list,
-    $num_records_per_page: Number(limit),
+    $num_records_per_page: Number(page_size),
   });
 
   useEffect(() => {
     if (!list.length && theadRef.current) {
-      // theadRef.current.querySelectorAll('th')를 사용
       const thElements = theadRef.current.querySelectorAll('th');
       setThCount(thElements.length);
     }
   }, [list]);
 
   useEffect(() => {
-    if (limit) {
-      setValue('limit', limit);
+    if (page_size) {
+      setValue('page_size', page_size);
     }
-  }, [limit]);
+  }, [page_size]);
 
   // 페이지네이션 버튼 클릭 핸들러
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
-    params.set('page', String($page));
+    params.set('page_no', String($page));
+    params.set('page_size', String(page_size));
     navigate(`./?${params.toString()}`);
   };
 
@@ -378,9 +379,9 @@ export function TransactionTable({
               </FormControl>
 
               <FormControl sx={{ flex: 1 }} size="sm">
-                <FormLabel>client_order_id</FormLabel>
+                <FormLabel>transaction_id</FormLabel>
                 <Controller
-                  name="client_order_id"
+                  name="transaction_id"
                   control={control}
                   render={({ field: { name, value, onChange, onBlur } }) => (
                     <Input
@@ -418,13 +419,13 @@ export function TransactionTable({
               <FormControl size="sm">
                 <FormLabel>Category</FormLabel>
                 <Controller
-                  name="limit"
+                  name="page_size"
                   control={control}
                   render={({ field: { name, value, onChange, onBlur } }) => (
                     <Select
                       name={name}
                       placeholder={name}
-                      value={value ?? limit}
+                      value={value ?? page_size}
                       onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
                       onBlur={onBlur}
                       size="sm"
@@ -476,8 +477,6 @@ export function TransactionTable({
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
-            '--TableRow-hoverBackground':
-              'var(--joy-palette-background-level1)',
             '--TableCell-paddingY': '4px',
             '--TableCell-paddingX': '8px',
           }}
@@ -602,193 +601,185 @@ export function TransactionTable({
 
           {/* data render */}
           {!!list.length && (
-            <>
-              <tbody>
-                {[...list]
-                  .sort(getComparator(order, 'transaction_id'))
-                  .map((row, i) => (
-                    <tr key={row.transaction_id}>
-                      <td style={{ textAlign: 'center', width: 120 }}>
-                        <Checkbox
-                          size="sm"
-                          checked={selected.includes(row.transaction_id)}
-                          color={
-                            selected.includes(row.transaction_id)
-                              ? 'primary'
-                              : undefined
-                          }
-                          onChange={(event) => {
-                            // eslint-disable-next-line no-confusing-arrow
-                            setSelected((ids) =>
-                              event.target.checked
-                                ? ids.concat(row.transaction_id)
-                                : ids.filter(
-                                    (itemId) => itemId !== row.transaction_id,
-                                  ),
-                            );
-                          }}
-                          slotProps={{
-                            checkbox: { sx: { textAlign: 'left' } },
-                          }}
-                          sx={{ verticalAlign: 'text-bottom' }}
-                        />
-                      </td>
-                      <td>
-                        <Typography level="body-xs">{no + i}</Typography>
-                      </td>
-                      <td>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            gap: 2,
-                            alignItems: 'center',
-                          }}
-                        >
-                          {/* <Link level="body-xs" component="button">
+            <tbody>
+              {[...list]
+                .sort(getComparator(order, 'transaction_id'))
+                .map((row, i) => (
+                  <tr key={row.transaction_id}>
+                    <td style={{ textAlign: 'center', width: 120 }}>
+                      <Checkbox
+                        size="sm"
+                        checked={selected.includes(row.transaction_id)}
+                        color={
+                          selected.includes(row.transaction_id)
+                            ? 'primary'
+                            : undefined
+                        }
+                        onChange={(event) => {
+                          // eslint-disable-next-line no-confusing-arrow
+                          setSelected((ids) =>
+                            event.target.checked
+                              ? ids.concat(row.transaction_id)
+                              : ids.filter(
+                                  (itemId) => itemId !== row.transaction_id,
+                                ),
+                          );
+                        }}
+                        slotProps={{
+                          checkbox: { sx: { textAlign: 'left' } },
+                        }}
+                        sx={{ verticalAlign: 'text-bottom' }}
+                      />
+                    </td>
+                    <td>
+                      <Typography level="body-xs">{no + i}</Typography>
+                    </td>
+                    <td>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          gap: 2,
+                          alignItems: 'center',
+                        }}
+                      >
+                        {/* <Link level="body-xs" component="button">
                           Download
                           </Link> */}
-                          <RowMenu
-                            fetcher={fetcher}
-                            order_id={row.transaction_id}
-                            account_id={row.account_id}
-                            symbol={row.symbol}
-                            page={page}
-                            limit={limit}
-                          />
-                        </Box>
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.transaction_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.account_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.symbol}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.BaseAsset}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.QuoteAsset}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.transaction_type}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.direction}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">{row.qty}</Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.position_size}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.funding}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">{row.fee}</Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.cash_flow}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.change}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.balance}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.exec_price}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.fee_rate}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.order_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.from_transfer_account_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.to_transfer_account_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.ts_id}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.created_ts}
-                        </Typography>{' '}
-                      </td>
-                      <td>
-                        {' '}
-                        <Typography level="body-xs">
-                          {row.transaction_time}
-                        </Typography>{' '}
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </>
+                        <RowMenu
+                          fetcher={fetcher}
+                          order_id={row.transaction_id}
+                          account_id={row.account_id}
+                          symbol={row.symbol}
+                          page_no={String(page_no)}
+                          page_size={String(page_size)}
+                        />
+                      </Box>
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.transaction_id}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.account_id}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">{row.symbol}</Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.BaseAsset}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.QuoteAsset}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.transaction_type}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.direction}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">{row.qty}</Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.position_size}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.funding}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">{row.fee}</Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.cash_flow}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">{row.change}</Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.balance}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.exec_price}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.fee_rate}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.order_id}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.from_transfer_account_id}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.to_transfer_account_id}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">{row.ts_id}</Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.created_ts}
+                      </Typography>{' '}
+                    </td>
+                    <td>
+                      {' '}
+                      <Typography level="body-xs">
+                        {row.transaction_time}
+                      </Typography>{' '}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
           )}
         </Table>
       </Sheet>
@@ -824,7 +815,7 @@ export function TransactionTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              variant={Number(page) ? 'outlined' : 'plain'}
+              variant={page_no ? 'outlined' : 'plain'}
               color="neutral"
               sx={(theme) => ({
                 color: currentPage === pageNumber ? 'white' : 'inherit',
