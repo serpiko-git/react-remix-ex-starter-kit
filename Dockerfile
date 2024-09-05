@@ -5,23 +5,23 @@ ENV TINI_VERSION v0.18.0
 RUN set -eux; \
     \
     keyservers=' \
-        ha.pool.sks-keyservers.net \
-        hkp://p80.pool.sks-keyservers.net:80 \
-        keyserver.ubuntu.com \
-        hkp://keyserver.ubuntu.com:80 \
-        pgp.mit.edu \
+    ha.pool.sks-keyservers.net \
+    hkp://p80.pool.sks-keyservers.net:80 \
+    keyserver.ubuntu.com \
+    hkp://keyserver.ubuntu.com:80 \
+    pgp.mit.edu \
     '; \
     export GNUPGHOME="$(mktemp -d)"; \
     \
     # Install dependencies
     tempDeps=' \
-        gnupg \
-        dirmngr \
-        wget \
+    gnupg \
+    dirmngr \
+    wget \
     '; \
     pkgs=' \
-        ca-certificates \
-        neovim \
+    ca-certificates \
+    neovim \
     '; \
     apt-get update; \
     apt-get install -y --no-install-recommends $pkgs $tempDeps; \
@@ -33,7 +33,7 @@ RUN set -eux; \
     wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
     # Verify the signature
     for keyserver in $(shuf -e $keyservers) ; do \
-        gpg --no-tty --keyserver "$keyserver" --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && break || : ; \
+    gpg --no-tty --keyserver "$keyserver" --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && break || : ; \
     done; \
     gpg --no-tty --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
     chmod +x /usr/local/bin/gosu; \
@@ -45,7 +45,7 @@ RUN set -eux; \
     wget -O /usr/local/bin/tini.asc "https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini.asc"; \
     # Verify the signature
     for keyserver in $(shuf -e $keyservers) ; do \
-        gpg --no-tty --keyserver "$keyserver" --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 && break || : ; \
+    gpg --no-tty --keyserver "$keyserver" --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 && break || : ; \
     done; \
     gpg --no-tty --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini; \
     chmod +x /usr/local/bin/tini; \
@@ -66,10 +66,8 @@ ARG CI_SERVER_HOST
 COPY . /opt/derivatives-admin-debug
 WORKDIR /opt/derivatives-admin-debug/
 RUN set -eux; \
-    git clean -ffdx -e derivatives-admin-debug -e node_modules; \
-    ./build-scripts/docker-build.sh; \
-    rm -rf ./.git/;
-
+    ./build-scripts/docker-build.sh
+    
 FROM node:22.5.1-bookworm
 
 RUN set -eux; \
@@ -82,10 +80,10 @@ RUN set -eux; \
 RUN groupadd -r coin && useradd -r -d /tmp -m -g coin coin
 
 COPY --from=builder \
-    /usr/local/bin/gosu \
-    /usr/local/bin/tini \
-    /opt/derivatives-admin-debug/build-scripts/docker-entrypoint.sh \
-    /usr/local/bin/
+     /usr/local/bin/gosu \
+     /usr/local/bin/tini \
+     /opt/derivatives-admin-debug/build-scripts/docker-entrypoint.sh \
+     /usr/local/bin/
 
 COPY --chown=coin:coin --from=builder /opt/derivatives-admin-debug /opt/derivatives-admin-debug
 

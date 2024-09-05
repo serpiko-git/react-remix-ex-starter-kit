@@ -13,7 +13,6 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 
-// import Layout from './layout/mui/Layout';
 import ClientStyleContext from './common/mui/common/ClientStyleContext';
 import { getMuiLinks } from './common/mui/getMuiLinks';
 import { MuiDocument } from './common/mui/MuiDocument';
@@ -115,12 +114,10 @@ export function ErrorBoundary() {
 
     return (
       <Document title={`${error.status} ${error.statusText}`}>
-        {/* <Layout> */}
         <h1>
           {error.status}: {error.statusText}
         </h1>
         {message}
-        {/* </Layout> */}
       </Document>
     );
   }
@@ -129,7 +126,6 @@ export function ErrorBoundary() {
     console.error(error);
     return (
       <Document title="Error!">
-        {/* <Layout> */}
         <div>
           <h1>There was an error</h1>
           <p>{error.message}</p>
@@ -139,7 +135,6 @@ export function ErrorBoundary() {
             users to see.
           </p>
         </div>
-        {/* </Layout> */}
       </Document>
     );
   }

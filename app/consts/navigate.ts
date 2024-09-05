@@ -1,6 +1,13 @@
+export const DEFAULT_DASHBOARD_PATH = {
+  symbols: '/dashboard/symbol',
+  openOrder: '/dashboard/open-order',
+  closedOrderPnl: '/dashboard/closed-order-pnl',
+  closedPositionPnl: '/dashboard/closed-position-pnl',
+  transaction: '/dashboard/transaction',
+  snapshotPosition: '/dashboard/snapshot-position',
+};
+
 export const DEFAULT_PATH_NAVIGATE = {
   index: '/',
-  'open-order': '/dashboard/open-order',
-  symbols: '/dashboard/symbol',
-  orders: '/dashboard/order',
+  dashboard: DEFAULT_DASHBOARD_PATH,
 } as const;

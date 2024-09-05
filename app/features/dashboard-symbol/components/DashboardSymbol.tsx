@@ -8,11 +8,11 @@ import {
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
 import { CssVarsProvider } from '@mui/joy/styles';
 
+import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
 
 import { SymbolResponse } from '../models/symbol.model';
 
-import { Header } from './Header';
 import { SymbolList } from './SymbolList';
 import { SymbolTable } from './SymbolTable';
 
@@ -68,7 +68,7 @@ export function DashboardSymbol(props: SymbolResponse) {
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Orders
+                Symbols
               </Typography>
             </Breadcrumbs>
           </Box>

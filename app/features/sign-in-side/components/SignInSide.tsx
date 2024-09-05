@@ -1,11 +1,5 @@
-import * as React from 'react';
+import React from 'react';
 
-// MUI Icons
-import {
-  BadgeRounded as BadgeRoundedIcon,
-  DarkModeRounded as DarkModeRoundedIcon,
-  LightModeRounded as LightModeRoundedIcon,
-} from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -15,16 +9,15 @@ import {
   FormLabel,
   GlobalStyles,
   IconButton,
-  IconButtonProps,
   Input,
   Link,
   Stack,
   Typography,
 } from '@mui/joy';
-import { CssVarsProvider, extendTheme, useColorScheme } from '@mui/joy/styles';
+import { CssVarsProvider, extendTheme } from '@mui/joy/styles';
 import { useNavigate } from '@remix-run/react';
 
-import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
+import { DEFAULT_PATH_NAVIGATE } from '~/consts';
 
 import { GoogleIcon } from './GoogleIcon';
 
@@ -37,40 +30,16 @@ interface SignInFormElement extends HTMLFormElement {
   readonly elements: FormElements;
 }
 
-export function ColorSchemeToggle(props: IconButtonProps) {
-  const { onClick, ...other } = props;
-  const { mode, setMode } = useColorScheme();
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => setMounted(true), []);
-
-  return (
-    <IconButton
-      aria-label="toggle light/dark mode"
-      size="sm"
-      variant="outlined"
-      disabled={!mounted}
-      onClick={(event) => {
-        setMode(mode === 'light' ? 'dark' : 'light');
-        onClick?.(event);
-      }}
-      {...other}
-    >
-      {mode === 'light' ? <DarkModeRoundedIcon /> : <LightModeRoundedIcon />}
-    </IconButton>
-  );
-}
-
 const customTheme = extendTheme();
 
 export function SignInSide() {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    navigate(DEFAULT_PATH_NAVIGATE.symbols);
+    navigate(DEFAULT_PATH_NAVIGATE.dashboard.symbols);
   };
   return (
-    <CssVarsProvider theme={customTheme} disableTransitionOnChange>
+    <CssVarsProvider disableTransitionOnChange>
       <GlobalStyles
         styles={{
           ':root': {
@@ -109,12 +78,8 @@ export function SignInSide() {
             sx={{ py: 3, display: 'flex', justifyContent: 'space-between' }}
           >
             <Box sx={{ gap: 2, display: 'flex', alignItems: 'center' }}>
-              <IconButton variant="soft" color="primary" size="sm">
-                <BadgeRoundedIcon />
-              </IconButton>
-              <Typography level="title-lg">Company logo</Typography>
+              <Typography level="title-lg">Julybit Admin</Typography>
             </Box>
-            <ColorSchemeToggle />
           </Box>
           <Box
             component="main"
@@ -179,6 +144,7 @@ export function SignInSide() {
                     password: formElements.password.value,
                     persistent: formElements.persistent.checked,
                   };
+                  // eslint-disable-next-line no-alert
                   alert(JSON.stringify(data, null, 2));
                 }}
               >

@@ -1,27 +1,20 @@
-import * as React from 'react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
-  AutorenewRounded as AutorenewRoundedIcon,
-  Block as BlockIcon,
-  CheckRounded as CheckRoundedIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
   MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
-  Close as CloseIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
   WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Chip,
   Divider,
   Dropdown,
   FormControl,
@@ -41,13 +34,11 @@ import {
   Table,
   Typography,
   iconButtonClasses,
-  Alert,
   Stack,
   DialogContent,
   DialogTitle,
   DialogActions,
 } from '@mui/joy';
-import { ColorPaletteProp } from '@mui/joy/styles';
 import {
   FetcherWithComponents,
   Form,
@@ -58,13 +49,13 @@ import {
 import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 
-import { Pagination } from '~/common/libs/pagination';
-import { DEFAULT_SYMBOL_LIST } from '~/consts/open-order';
+import { Pagination } from '~/common/libs';
+import { DEFAULT_SYMBOL_LIST } from '~/consts/consts';
+import { getComparator, Order } from '~/utils/ordering';
 
 import {
   OpenOrder,
   OpenOrderCombineProps,
-  OpenOrderResponse,
   OpenOrderSearchValues,
   cancelTypeText,
   contractTypeText,
@@ -78,54 +69,7 @@ import {
   timeInForceText,
   tpslModeText,
   triggerByText,
-} from '..';
-
-const rows = [
-  {
-    id: 'INV-1234',
-    date: 'Feb 3, 2023',
-    status: 'Refunded',
-    customer: {
-      initial: 'O',
-      name: 'Olivia Ryhe',
-      email: 'olivia@email.com',
-    },
-  },
-  {
-    id: 'INV-1233',
-    date: 'Feb 3, 2023',
-    status: 'Paid',
-    customer: {
-      initial: 'S',
-      name: 'Steve Hampton',
-      email: 'steve.hamp@email.com',
-    },
-  },
-];
-
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
+} from '../models/open-order.model';
 
 function RowMenu({
   fetcher,
@@ -142,14 +86,13 @@ function RowMenu({
   page: string;
   limit: string;
 }) {
-  const [openConfirm, setOpenConfirm] = React.useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
+    setOpenConfirm(true);
   };
 
   const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
     fetcher.submit(
       {
         action: 'delete',
@@ -159,17 +102,17 @@ function RowMenu({
         page,
         limit,
       },
-      { method: 'post', action: './' },
+      { method: 'POST', action: './' },
     );
-    setOpenConfirm(false); // 모달 닫기
+    setOpenConfirm(false);
   };
 
   const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
+    setOpenConfirm(false);
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       <Dropdown>
         <MenuButton
           slots={{ root: IconButton }}
@@ -211,28 +154,27 @@ function RowMenu({
           </DialogActions>
         </ModalDialog>
       </Modal>
-    </React.Fragment>
+    </Fragment>
   );
 }
 
 export function OpenOrderTable({
-  openOrderResponseProps,
-  openOrderQueriesProps,
+  responseProps,
+  queriesProps,
 }: OpenOrderCombineProps) {
   const {
     data: {
       list,
       pagination: { total, page_no, page_size },
     },
-  } = openOrderResponseProps;
+  } = responseProps;
+  const { account_id, page, limit } = queriesProps;
 
-  const { account_id, page, limit } = openOrderQueriesProps;
-
-  const [order, setOrder] = React.useState<Order>('desc');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
-  const [open, setOpen] = React.useState<boolean>(false);
+  const [order, setOrder] = useState<Order>('desc');
+  const [selected, setSelected] = useState<readonly string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
-  const [thCount, setThCount] = React.useState<number>();
+  const [thCount, setThCount] = useState<number>();
 
   const { control, handleSubmit, watch, setValue } =
     useForm<OpenOrderSearchValues>({
@@ -265,7 +207,6 @@ export function OpenOrderTable({
 
   useEffect(() => {
     if (!list.length && theadRef.current) {
-      // theadRef.current.querySelectorAll('th')를 사용
       const thElements = theadRef.current.querySelectorAll('th');
       setThCount(thElements.length);
     }
@@ -277,7 +218,6 @@ export function OpenOrderTable({
     }
   }, [limit]);
 
-  // 페이지네이션 버튼 클릭 핸들러
   const handlePagination = ($page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set('page', String($page));
@@ -285,7 +225,7 @@ export function OpenOrderTable({
   };
 
   return (
-    <React.Fragment>
+    <Fragment>
       {/* search mobile */}
       <Sheet
         className="SearchAndFilters-mobile"
@@ -326,7 +266,10 @@ export function OpenOrderTable({
       {/* search desktop */}
       <Sheet
         className="SearchAndFilters-tabletUp"
-        sx={{ display: { xs: 'none', sm: 'block' } }}
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          backgroundColor: 'transparent',
+        }}
       >
         <Form method="get" action="./">
           <Box
@@ -373,7 +316,7 @@ export function OpenOrderTable({
                       name={name}
                       placeholder={name}
                       value={value}
-                      onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
+                      onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"
                       slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -383,11 +326,9 @@ export function OpenOrderTable({
                           keyof typeof DEFAULT_SYMBOL_LIST
                         >
                       ).map((key) => (
-                        <>
-                          <Option value={DEFAULT_SYMBOL_LIST[key]}>
-                            {DEFAULT_SYMBOL_LIST[key]}
-                          </Option>
-                        </>
+                        <Option key={key} value={DEFAULT_SYMBOL_LIST[key]}>
+                          {DEFAULT_SYMBOL_LIST[key]}
+                        </Option>
                       ))}
                     </Select>
                   )}
@@ -468,7 +409,7 @@ export function OpenOrderTable({
                       name={name}
                       placeholder={name}
                       value={value ?? limit}
-                      onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
+                      onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"
                       slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
@@ -538,26 +479,26 @@ export function OpenOrderTable({
                 <Checkbox
                   size="sm"
                   indeterminate={
-                    selected.length > 0 && selected.length !== rows.length
+                    selected.length > 0 && selected.length !== list.length
                   }
-                  checked={selected.length === rows.length}
+                  checked={selected.length === list.length}
                   onChange={(event) => {
                     setSelected(
-                      event.target.checked ? rows.map((row) => row.id) : [],
+                      event.target.checked
+                        ? list.map((row) => row.order_id)
+                        : [],
                     );
                   }}
                   color={
-                    selected.length > 0 || selected.length === rows.length
+                    selected.length > 0 || selected.length === list.length
                       ? 'primary'
                       : undefined
                   }
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>no.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>
-                추가/수정/취소
-              </th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
+              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
               <th style={{ width: 190, padding: '12px 6px' }}>
                 <Link
                   underline="none"
@@ -740,9 +681,6 @@ export function OpenOrderTable({
                             alignItems: 'center',
                           }}
                         >
-                          {/* <Link level="body-xs" component="button">
-                            Download
-                          </Link> */}
                           <RowMenu
                             fetcher={fetcher}
                             order_id={row.order_id}
@@ -776,67 +714,75 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {sideText[row.side]}
+                          {sideText[row.side]}[{row.side}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.order_type]}
+                          {orderTypeText[row.order_type]}[{row.order_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {createTypeText[row.create_type]}
+                          {createTypeText[row.create_type]}[{row.create_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {cancelTypeText[row.cancel_type]}
+                          {cancelTypeText[row.cancel_type]}[{row.cancel_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {stopOrderTypeText[row.stop_order_type]}
+                          {stopOrderTypeText[row.stop_order_type]}[
+                          {row.stop_order_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {contractTypeText[row.contract_type]}
+                          {contractTypeText[row.contract_type]}[
+                          {row.contract_type}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.is_cancel_amend]}
+                          {flagValueText[row.is_cancel_amend]}[
+                          {row.is_cancel_amend}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderStatusText[row.order_status]}
+                          {orderStatusText[row.order_status]}[{row.order_status}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.cxl_rej_reason_cd]}
+                          {flagValueText[row.cxl_rej_reason_cd]}[
+                          {row.cxl_rej_reason_cd}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {timeInForceText[row.time_in_force]}
+                          {timeInForceText[row.time_in_force]}[
+                          {row.time_in_force}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {positionModeText[row.position_mode]}
+                          {positionModeText[row.position_mode]}[
+                          {row.position_mode}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.reduce_only]}
+                          {flagValueText[row.reduce_only]}[{row.reduce_only}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {flagValueText[row.close_on_trigger]}
+                          {flagValueText[row.close_on_trigger]}[
+                          {row.close_on_trigger}]
                         </Typography>
                       </td>
                       <td>
@@ -876,7 +822,7 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.trigger_by]}
+                          {triggerByText[row.trigger_by]}[{row.trigger_by}]
                         </Typography>
                       </td>
                       <td>
@@ -891,17 +837,19 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {tpslModeText[row.tpsl_mode]}
+                          {tpslModeText[row.tpsl_mode]}[{row.tpsl_mode}]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.tp_order_type]}
+                          {orderTypeText[row.tp_order_type]}[{row.tp_order_type}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {orderTypeText[row.sl_order_type]}
+                          {orderTypeText[row.sl_order_type]}[{row.sl_order_type}
+                          ]
                         </Typography>
                       </td>
                       <td>
@@ -916,12 +864,14 @@ export function OpenOrderTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.tp_trigger_by]}
+                          {triggerByText[row.tp_trigger_by]}[{row.tp_trigger_by}
+                          ]
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {triggerByText[row.sl_trigger_by]}
+                          {triggerByText[row.sl_trigger_by]}[{row.sl_trigger_by}
+                          ]
                         </Typography>
                       </td>
                       <td>
@@ -1074,22 +1024,15 @@ export function OpenOrderTable({
             <IconButton
               key={`pageNumber${pageNumber}`}
               size="sm"
-              // variant={pageNumber === currentPage ? 'outlined' : 'plain'}
+              variant={Number(page) ? 'outlined' : 'plain'}
               color="neutral"
-              sx={{
+              sx={(theme) => ({
+                color: currentPage === pageNumber ? 'white' : 'inherit',
                 backgroundColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.1)'
+                  currentPage === pageNumber
+                    ? theme.palette.primary.solidBg
                     : 'transparent',
-                color:
-                  pageNumber === currentPage
-                    ? 'white'
-                    : 'rgba(255, 255, 255, 0.7)',
-                borderColor:
-                  pageNumber === currentPage
-                    ? 'rgba(255, 255, 255, 0.3)'
-                    : 'rgba(255, 255, 255, 0.2)',
-              }}
+              })}
               onClick={() => handlePagination(pageNumber)}
             >
               {pageNumber}
@@ -1112,6 +1055,6 @@ export function OpenOrderTable({
           )}
         </Box>
       </Form>
-    </React.Fragment>
+    </Fragment>
   );
 }

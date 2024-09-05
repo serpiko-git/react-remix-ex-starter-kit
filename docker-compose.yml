@@ -1,0 +1,10 @@
+services:
+  admin-perp-front:
+    image: admin-perp-front:latest
+    container_name: admin-perp-front
+    environment:
+      - PORT=4000
+      - REACT_APP_API_HOST_V1=http://127.0.0.1:81/api/v1
+    ports:
+      - 4000:4000
+

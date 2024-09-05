@@ -13,6 +13,7 @@ declare namespace NodeJS {
     REACT_APP_PNL_HOST: string;
     /** version list */
     REACT_APP_API_HOST_V1: string;
+    REACT_APP_API_ADMIN_HOST_V1: string;
     REACT_APP_PUBLIC_WEBSOCKET_HOST_V1: string;
     REACT_APP_PRIVATE_WEBSOCKET_HOST_V1: string;
   }

@@ -11,3 +11,4 @@ export * from './components';
 /** Store */
 
 /** Libs */
+export * from './libs/utils';
