@@ -10,7 +10,6 @@ export async function getTanstack() {
 export async function getSymbol(symbolId: string): Promise<SymbolResponse> {
   const url = new URL(`${apiHost_v1}/symbol`);
   const params = new URLSearchParams({ symbol_id: symbolId });
-  console.log('getSymbol : ', url.toString());
 
   url.search = params.toString();
   const response = await fetch(url.toString());

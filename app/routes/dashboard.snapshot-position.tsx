@@ -35,18 +35,11 @@ export const loader: LoaderFunction = async ({
   searchParams.set('page_no', pageNo.toString());
   searchParams.set('page_size', pageSize.toString());
 
-  console.group('Remix: loader');
   const fetchUrl = `${apiHost_v1}/snapshot/position/list?${searchParams.toString()}`;
-  console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
-
   const responseProps: SnapshotPositionResponse = await response.json();
-  console.log({ responseProps });
-
   const queriesProps = { account_id: accountId, page: pageNo, limit: pageSize };
   const snapshotPositionCombined = { responseProps, queriesProps };
-
-  console.groupEnd();
 
   return snapshotPositionCombined;
 };
