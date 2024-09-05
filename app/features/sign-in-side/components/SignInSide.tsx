@@ -141,12 +141,17 @@ export function SignInSide() {
                 }}
               >
                 <FormControl required>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel id="email">Email</FormLabel>
                   <Input type="email" name="email" />
                 </FormControl>
                 <FormControl required>
                   <FormLabel>Password</FormLabel>
-                  <Input type="password" name="password" />
+                  <Input
+                    id="password"
+                    type="password"
+                    name="password"
+                    autoComplete="on"
+                  />
                 </FormControl>
                 <Stack sx={{ gap: 4, mt: 2 }}>
                   <Box
