@@ -19,8 +19,8 @@ import {
 } from '@mui/joy';
 import { useLocation, useNavigate } from '@remix-run/react';
 
-import logo from '~/assets/logo.svg';
 import { DEFAULT_PATH_NAVIGATE } from '~/consts/navigate';
+import { Logo } from '~/features/dashboard-common';
 
 import { closeSidebar } from '../libs/utils';
 import { DashboardPathNavigateTypes } from '../models/sidebar.model';
@@ -100,12 +100,12 @@ export function Sidebar() {
       />
       <Box
         sx={{
-          width: 97,
-          height: 21,
-          margin: '14px 0 6px',
-          backgroundImage: `url(${logo})`,
+          display: 'flex',
+          margin: '14px 0 0',
         }}
-      />
+      >
+        <Logo />
+      </Box>
 
       <Box
         sx={{
@@ -257,6 +257,24 @@ export function Sidebar() {
                       <Typography level="title-sm">
                         Snapshot Position
                       </Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.etcdService,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.etcdService,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Etcd Service</Typography>
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>

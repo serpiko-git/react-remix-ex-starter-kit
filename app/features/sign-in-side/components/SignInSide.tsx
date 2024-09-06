@@ -16,8 +16,8 @@ import {
 import { CssVarsProvider } from '@mui/joy/styles';
 import { useNavigate } from '@remix-run/react';
 
-import logo from '~/assets/logo.svg';
 import { DEFAULT_PATH_NAVIGATE } from '~/consts';
+import { Logo } from '~/features/dashboard-common';
 
 interface FormElements extends HTMLFormControlsCollection {
   email: HTMLInputElement;
@@ -75,11 +75,12 @@ export function SignInSide() {
           >
             <Box
               sx={{
-                width: 97,
-                height: 21,
-                backgroundImage: `url(${logo})`,
+                display: 'flex',
+                margin: '14px 0 0',
               }}
-            />
+            >
+              <Logo />
+            </Box>
           </Box>
           <Box
             component="main"
