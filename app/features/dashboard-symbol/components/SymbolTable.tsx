@@ -149,8 +149,7 @@ export function SymbolTable(props: SymbolResponse) {
   };
 
   const handleNextPage = () => {
-    const a = fetcher.load('/');
-    console.log(a);
+    fetcher.load('/');
   };
 
   return (

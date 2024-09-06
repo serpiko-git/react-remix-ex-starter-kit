@@ -1,5 +1,5 @@
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useFetcher, useLoaderData } from '@remix-run/react';
 
 import { apiHost_v1 } from '~/consts';
 import { DashboardSymbol, SymbolResponse } from '~/features/dashboard-symbol';
@@ -14,7 +14,14 @@ export const loader: LoaderFunction = async ({
 
 export default function index() {
   const data: SymbolResponse = useLoaderData<typeof loader>();
-  console.log('symbol: ', JSON.stringify(data));
+
+  /** sample code (useFetcher 사용 방법) */
+  const fetcher = useFetcher();
+  const fetcherData = fetcher.data;
+  if (fetcherData) {
+    console.log('fetcherData', fetcherData);
+  }
+
   return (
     <div>
       <DashboardSymbol {...data} />

@@ -432,15 +432,15 @@ export function ClosedOrderPnlTable({
           aria-labelledby="tableTitle"
           stickyHeader
           hoverRow
-          // sx={{
-          //   '--TableCell-headBackground':
-          //     'var(--joy-palette-background-level1)',
-          //   '--Table-headerUnderlineThickness': '1px',
-          //   '--TableRow-hoverBackground':
-          //     'var(--joy-palette-background-level1)',
-          //   '--TableCell-paddingY': '4px',
-          //   '--TableCell-paddingX': '8px',
-          // }}
+          sx={{
+            '--TableCell-headBackground':
+              'var(--joy-palette-background-level1)',
+            '--Table-headerUnderlineThickness': '1px',
+            '--TableRow-hoverBackground':
+              'var(--joy-palette-background-level1)',
+            '--TableCell-paddingY': '4px',
+            '--TableCell-paddingX': '8px',
+          }}
         >
           <thead ref={theadRef}>
             <tr>

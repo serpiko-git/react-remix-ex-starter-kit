@@ -6,6 +6,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   transaction: '/dashboard/transaction',
   trade: '/dashboard/trade',
   snapshotPosition: '/dashboard/snapshot-position',
+  etcdService: '/dashboard/etcd-service',
 };
 
 export const DEFAULT_PATH_NAVIGATE = {

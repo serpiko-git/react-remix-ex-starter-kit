@@ -5,7 +5,7 @@ import {
   LoaderFunctionArgs,
   redirect,
 } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 
 import {
   apiHost_v1,
@@ -41,18 +41,11 @@ export const loader: LoaderFunction = async ({
   searchParams.set('page', page.toString());
   searchParams.set('limit', limit.toString());
 
-  console.group('Remix: loader');
   const fetchUrl = `${apiHost_v1}/open-order/list?${searchParams.toString()}`;
-  console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
-
   const responseProps: OpenOrderResponse = await response.json();
-  console.log({ responseProps });
-
   const queriesProps = { account_id, page, limit };
   const openOrderCombine = { responseProps, queriesProps };
-
-  console.groupEnd();
 
   return openOrderCombine;
 };
@@ -70,9 +63,6 @@ export const action: ActionFunction = async ({
     const account_id = formData.get('account_id');
     const page = formData.get('page');
     const limit = formData.get('limit');
-
-    console.log(symbol, order_id);
-
     const response = await fetch(`${apiHost_v1}/acs/etcd/service/list`, {
       method: 'POST',
       body: JSON.stringify({
@@ -102,14 +92,6 @@ export const action: ActionFunction = async ({
 export default function index() {
   const combineProps: OpenOrderCombineProps = useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = combineProps;
-
-  const { account_id, limit, page } = queriesProps;
-  console.log(typeof limit, limit);
-  const fetcher = useFetcher();
-  const fetcherData = fetcher.data;
-  if (fetcherData) {
-    console.log('fetcherData', fetcherData);
-  }
 
   return (
     <div>

@@ -1,5 +1,5 @@
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 
 import {
   apiHost_v1,
@@ -58,13 +58,9 @@ export const loader: LoaderFunction = async ({
     searchParams.get('end_time') || String(DEFAULT_END_TIME),
   );
 
-  console.group('Remix: loader');
   const fetchUrl = `${apiHost_v1}/transaction/list?${searchParams.toString()}`;
-  console.log({ fetchUrl });
   const response = await fetch(fetchUrl);
-
   const responseProps: TransactionResponse = await response.json();
-  console.log({ responseProps });
 
   const queriesProps = {
     account_id: searchParams.get('account_id') || apiAccount_id,
@@ -73,8 +69,6 @@ export const loader: LoaderFunction = async ({
   };
   const transactionCombine = { responseProps, queriesProps };
 
-  console.groupEnd();
-
   return transactionCombine;
 };
 
@@ -82,13 +76,6 @@ export default function index() {
   const transactionCombineProps: TransactionCombineProps =
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = transactionCombineProps;
-
-  const { account_id, page_size, page_no } = queriesProps;
-  const fetcher = useFetcher();
-  const fetcherData = fetcher.data;
-  if (fetcherData) {
-    console.log('fetcherData', fetcherData);
-  }
 
   return (
     <div>
