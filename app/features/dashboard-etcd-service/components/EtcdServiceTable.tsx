@@ -153,6 +153,9 @@ export function EtcdServiceTable({
                   onBlur={onBlur}
                   slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
                 >
+                  <Option value="">
+                    <em>service_name</em>
+                  </Option>
                   {Object.values(etcdServiceName).map((item) => (
                     <Option key={item} value={item}>
                       {item}
@@ -352,16 +355,11 @@ export function EtcdServiceTable({
                           defaultValue={row.service_status}
                           onChange={handleModifyServiceStatus}
                         >
-                          <>
-                            <Option value="">
-                              <em>service_status</em>
+                          {Object.keys(etcdServiceStatus).map((item) => (
+                            <Option key={item} value={Number(item)}>
+                              {etcdServiceStatus[item]}({item})
                             </Option>
-                            {Object.keys(etcdServiceStatus).map((item) => (
-                              <Option key={item} value={Number(item)}>
-                                {etcdServiceStatus[item]}({item})
-                              </Option>
-                            ))}
-                          </>
+                          ))}
                         </Select>
                       </fetcher.Form>
                     ) : (

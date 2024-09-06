@@ -1,12 +1,10 @@
 import {
   ActionFunction,
   ActionFunctionArgs,
-  json,
   LoaderFunction,
   LoaderFunctionArgs,
-  redirect,
 } from '@remix-run/node';
-import { useActionData, useFetcher, useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 
 import { apiHost_v1 } from '~/consts';
 import {
@@ -22,7 +20,6 @@ export const loader: LoaderFunction = async ({
 }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const searchParams = new URLSearchParams(url.search);
-
   const service_id = searchParams.get('service_id');
   const service_name = searchParams.get('service_name');
   const active = searchParams.get('active');
