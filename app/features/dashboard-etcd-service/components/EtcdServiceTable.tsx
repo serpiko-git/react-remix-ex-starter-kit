@@ -5,6 +5,7 @@ import {
   Warning as WarningIcon,
   EditNote as EditIcon,
   CheckCircle as CheckIcon,
+  Monitor as MonitorIcon,
 } from '@mui/icons-material';
 import {
   Box,
@@ -21,12 +22,13 @@ import {
   Table,
   Typography,
 } from '@mui/joy';
+import { StepIcon, SvgIcon } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, set, useForm } from 'react-hook-form';
 
 import { BaseError } from '~/common/apis/apis.model';
-import { timeInForce } from '~/features/dashboard-open-order';
+import { ResponsiveModal } from '~/features/modal';
 
 import {
   EtcdService,
@@ -37,6 +39,9 @@ import {
   etcdServiceStatus,
   EtcdServiceStatusTypes,
 } from '../models/etcd-service.model';
+
+import { AcsDetailForm } from './AcsDetailForm';
+
 export function EtcdServiceTable({
   responseProps,
   queriesProps,
@@ -53,6 +58,8 @@ export function EtcdServiceTable({
   const [errorMsg, setErrorMsg] = useState<BaseError | null>(null);
   const [isOpenFailAlert, setIsOpenFailAlert] = useState(false);
   const [isOpenSuccessAlert, setIsOpenSuccessAlert] = useState(false);
+  const [serviceId, setServiceId] = useState<string>('');
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { control } = useForm<EtcdServiceSearchValues>({});
 
@@ -66,6 +73,11 @@ export function EtcdServiceTable({
     } else {
       setSelected((ids) => ids.filter((itemId) => itemId !== id));
     }
+  };
+
+  const handleMonitorService = (item: EtcdService) => {
+    setServiceId(item.service_id);
+    setModalOpen(true);
   };
 
   const handleClickEditButton = (item: EtcdService) => {
@@ -214,7 +226,15 @@ export function EtcdServiceTable({
           </Button>
         </Box>
       </Form>
-
+      {Boolean(modalOpen) && (
+        <>
+          <AcsDetailForm
+            serviceId={serviceId}
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+          />
+        </>
+      )}
       <Sheet
         className="OrderTableContainer"
         variant="outlined"
@@ -272,6 +292,7 @@ export function EtcdServiceTable({
               </th>
               <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_name</th>
+              <th style={{ width: 140, padding: '12px 6px' }}>service_desc</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_group</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_host</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_id</th>
@@ -331,6 +352,26 @@ export function EtcdServiceTable({
                   </td>
                   <td>
                     <Typography level="body-xs">{row.service_name}</Typography>
+                  </td>
+                  <td>
+                    {row.service_name === 'acs' ? (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <IconButton
+                          sx={{ '--Icon-fontSize': '22px' }}
+                          onClick={() => handleMonitorService(row)}
+                        >
+                          <MonitorIcon />
+                        </IconButton>
+                      </Box>
+                    ) : (
+                      <Typography level="body-xs">{'Not Supported'}</Typography>
+                    )}
                   </td>
                   <td>
                     <Typography level="body-xs">{row.service_group}</Typography>

@@ -1,5 +1,5 @@
 import { BaseError } from '~/common/apis/apis.model';
-import { BaseResponseList } from '~/features/models/common.model';
+import { BaseResponse, BaseResponseList } from '~/features/models/common.model';
 
 export const etcdServiceStatus = {
   /** 서비스가 시작 중인 상태입니다. 초기화 작업이 진행 중이며, 아직 요청을 처리할 준비가 되지 않은 상태입니다. */
@@ -90,3 +90,11 @@ export interface EtcdServiceCombineProps {
 }
 
 export interface EtcdServiceSearchValues extends EtcdServiceQueries {}
+
+export interface EtcdServiceAcsPayload {
+  worker_size: number;
+  [key: string]: object | number;
+}
+
+export interface EtcdServiceAcsResponse
+  extends BaseResponse<EtcdServiceAcsPayload> {}

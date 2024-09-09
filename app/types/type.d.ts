@@ -1,6 +1,7 @@
 export interface Config {
   accountHost: string;
   apiHost_v1: string;
+  apiGateway_v1: string;
   apiAccount_id: string;
 }
 
