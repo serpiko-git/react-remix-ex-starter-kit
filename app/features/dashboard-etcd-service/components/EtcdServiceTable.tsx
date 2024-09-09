@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
 
 import { BaseError } from '~/common/apis/apis.model';
+import { timeInForce } from '~/features/dashboard-open-order';
 
 import {
   EtcdService,
@@ -104,6 +105,19 @@ export function EtcdServiceTable({
       }
     }
   }, [fetcher]);
+
+  const calculateTimeDifference = (rowCreatedAt: Date) => {
+    const now = Date.now();
+    const createdAtMillis = dayjs(rowCreatedAt).valueOf();
+    const differenceInMillis = now - createdAtMillis;
+
+    const hours = Math.floor(differenceInMillis / (1000 * 60 * 60));
+    const minutes = Math.floor(
+      (differenceInMillis % (1000 * 60 * 60)) / (1000 * 60),
+    );
+
+    return `${hours} hours, ${minutes} minutes`;
+  };
 
   return (
     <>
@@ -257,7 +271,6 @@ export function EtcdServiceTable({
                 />
               </th>
               <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>pod_name</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_name</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_group</th>
               <th style={{ width: 140, padding: '12px 6px' }}>service_host</th>
@@ -271,9 +284,9 @@ export function EtcdServiceTable({
               <th style={{ width: 140, padding: '12px 6px' }}>
                 service_version
               </th>
+              <th style={{ width: 140, padding: '12px 6px' }}>uptime</th>
               <th style={{ width: 140, padding: '12px 6px' }}>created_at</th>
               <th style={{ width: 140, padding: '12px 6px' }}>updated_at</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>lease_id</th>
             </tr>
           </thead>
           {!list.length && (
@@ -315,9 +328,6 @@ export function EtcdServiceTable({
                   </td>
                   <td>
                     <Typography level="body-xs">{i + 1}</Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{row.pod_name}</Typography>
                   </td>
                   <td>
                     <Typography level="body-xs">{row.service_name}</Typography>
@@ -390,6 +400,11 @@ export function EtcdServiceTable({
                   </td>
                   <td>
                     <Typography level="body-xs">
+                      {calculateTimeDifference(row.created_at)}
+                    </Typography>
+                  </td>
+                  <td>
+                    <Typography level="body-xs">
                       {dayjs(row.created_at).format('YYYY-MM-DD HH:mm:ss')}
                     </Typography>
                   </td>
@@ -397,9 +412,6 @@ export function EtcdServiceTable({
                     <Typography level="body-xs">
                       {dayjs(row.updated_at).format('YYYY-MM-DD HH:mm:ss')}
                     </Typography>
-                  </td>
-                  <td>
-                    <Typography level="body-xs">{row.lease_id}</Typography>
                   </td>
                 </tr>
               ))}
