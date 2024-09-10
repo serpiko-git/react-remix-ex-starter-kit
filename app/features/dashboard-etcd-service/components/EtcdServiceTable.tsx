@@ -236,7 +236,7 @@ export function EtcdServiceTable({
         </>
       )}
       <Sheet
-        className="OrderTableContainer"
+        className="EtcdServiceTableContainer"
         variant="outlined"
         sx={{
           display: { xs: 'none', sm: 'initial' },

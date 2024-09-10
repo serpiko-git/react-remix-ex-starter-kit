@@ -7,6 +7,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   trade: '/dashboard/trade',
   snapshotPosition: '/dashboard/snapshot-position',
   etcdService: '/dashboard/etcd-service',
+  matchingEngine: '/dashboard/matching-engine',
 };
 
 export const DEFAULT_PATH_NAVIGATE = {

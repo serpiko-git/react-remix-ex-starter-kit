@@ -1,13 +1,22 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
-import { Box, Modal, Typography, Textarea, IconButton } from '@mui/joy';
+import {
+  Box,
+  Modal,
+  Typography,
+  Textarea,
+  IconButton,
+  Sheet,
+  Table,
+} from '@mui/joy';
 
 import { apiHost_v1, apiGateway_v1 } from '~/consts';
 
 import {
   EtcdServiceAcsResponse,
   EtcdServiceAcsPayload,
+  EtcdTraceWorker,
 } from '../models/etcd-service.model';
 
 export interface AcsDetailFormArg {
@@ -66,30 +75,138 @@ export function AcsDetailForm({
   }
   const { code, msg, data } = response;
 
+  // loop data keys
+  if (code !== 0) {
+    return (
+      <tbody>
+        <tr>
+          <td colSpan={10}>
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              sx={{ padding: 2 }} // 패딩 추가
+            >
+              <IconButton
+                variant="plain"
+                color="danger"
+                sx={{ mr: 1 }}
+              ></IconButton>
+              <Typography color="danger" fontWeight="md">
+                {msg}
+              </Typography>
+            </Box>
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+  const keys = Object.keys(data);
+  const rows = keys.map((key, index) => {
+    if (key !== 'worker_size') {
+      const item = data[key] as EtcdTraceWorker;
+      return (
+        <tr key={key}>
+          <td style={{ textAlign: 'center' }}>
+            <IconButton variant="plain" color="primary"></IconButton>
+          </td>
+          <td>{index + 1}</td>
+          <td>{key}</td>
+          <td>{item.buffer}</td>
+          <td>{item.count}</td>
+          <td>{String(item.currCommand)}</td>
+          <td>{item.currCommandName}</td>
+          <td>{item.currJobDone}</td>
+          <td>{item.currJobTotal}</td>
+          <td>{item.elapsedMS}</td>
+          <td>{item.latestDurationMS}</td>
+          <td>{String(item.locked)}</td>
+          <td>{item.priority_queue_size}</td>
+          <td>{item.queue_size}</td>
+        </tr>
+      );
+    }
+    const item = data[key] as number;
+    return (
+      <tr key={key}>
+        <td style={{ textAlign: 'center' }}>
+          <IconButton variant="plain" color="primary"></IconButton>
+        </td>
+        <td>{index + 1}</td>
+        <td>{key}</td>
+        <td colSpan={11}>{item}</td>
+      </tr>
+    );
+  });
+
   return (
     <React.Fragment>
       <Modal open={isOpen} onClose={onClose}>
-        <Textarea
-          placeholder={JSON.stringify(response.data, null, '\t')}
-          minRows={2}
+        <Sheet
+          className="AcsDetailFormContainer"
+          variant="outlined"
           sx={{
-            // add scrollbar
-            // add border
-            alignContent: 'center',
+            display: { xs: 'none', sm: 'initial' },
+            width: '80%',
+            borderRadius: 'sm',
+            flexShrink: 1,
             overflow: 'auto',
-            scrollSnapType: 'x mandatory',
-            '&::-webkit-scrollbar': { display: 'show' },
-            '--Textarea-focusedInset': 'var(--any, )',
-            '--Textarea-focusedThickness': '0.25rem',
-            '--Textarea-focusedHighlight': 'rgba(13,110,253,.25)',
-            '&::before': {
-              transition: 'box-shadow .15s ease-in-out',
-            },
-            '&:focus-within': {
-              borderColor: '#86b7fe',
-            },
+            minHeight: 0,
           }}
-        ></Textarea>
+        >
+          <Table
+            aria-labelledby="tableTitle"
+            stickyHeader
+            hoverRow
+            sx={{
+              '--TableCell-headBackground':
+                'var(--joy-palette-background-level1)',
+              '--Table-headerUnderlineThickness': '1px',
+              '--TableRow-hoverBackground':
+                'var(--joy-palette-background-level1)',
+              '--TableCell-paddingY': '4px',
+              '--TableCell-paddingX': '8px',
+            }}
+          >
+            <thead>
+              <tr>
+                <th
+                  style={{
+                    width: 48,
+                    textAlign: 'center',
+                    padding: '12px 6px',
+                  }}
+                ></th>
+                <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>worker_name</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>buffer</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>count</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  curr_command
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  curr_command_name
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  curr_job_done
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  curr_job_total
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>elapsed_ms</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  latest_duration_ms
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>locked</th>
+                <th style={{ width: 140, padding: '12px 6px' }}>
+                  priority_queue_size
+                </th>
+                <th style={{ width: 140, padding: '12px 6px' }}>queue_size</th>
+              </tr>
+            </thead>
+            <tbody>{rows}</tbody>
+          </Table>
+        </Sheet>
       </Modal>
     </React.Fragment>
   );

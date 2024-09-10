@@ -156,6 +156,22 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.symbols,
+                    )}
+                    onClick={() =>
+                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.symbols)
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Symbols</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
                       DEFAULT_PATH_NAVIGATE.dashboard.openOrder,
                     )}
                     onClick={() =>
@@ -282,15 +298,17 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
-                      DEFAULT_PATH_NAVIGATE.dashboard.symbols,
+                      DEFAULT_PATH_NAVIGATE.dashboard.matchingEngine,
                     )}
                     onClick={() =>
-                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.symbols)
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.matchingEngine,
+                      )
                     }
                   >
                     <ListIcon />
                     <ListItemContent>
-                      <Typography level="title-sm">Symbols</Typography>
+                      <Typography level="title-sm">Matching Engine</Typography>
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>

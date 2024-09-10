@@ -91,9 +91,23 @@ export interface EtcdServiceCombineProps {
 
 export interface EtcdServiceSearchValues extends EtcdServiceQueries {}
 
+export interface EtcdTraceWorker {
+  buffer: number;
+  count: number;
+  currCommand: object;
+  currCommandName: string;
+  currJobDone: number;
+  currJobTotal: number;
+  elapsedMS: number;
+  latestDurationMS: number;
+  locked: boolean;
+  priority_queue_size: number;
+  queue_size: number;
+}
+
 export interface EtcdServiceAcsPayload {
   worker_size: number;
-  [key: string]: object | number;
+  [key: string]: EtcdTraceWorker | number;
 }
 
 export interface EtcdServiceAcsResponse
