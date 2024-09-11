@@ -8,34 +8,8 @@ import {
   CheckCircle as CheckIcon,
   Monitor as MonitorIcon,
 } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Divider,
-  FormControl,
-  FormLabel,
-  IconButton,
-  Input,
-  ModalClose,
-  ModalDialog,
-  Option,
-  Select,
-  Sheet,
-  Snackbar,
-  Stack,
-  Table,
-  Textarea,
-  Typography,
-} from '@mui/joy';
-import {
-  DialogContent,
-  DialogTitle,
-  Modal,
-  Paper,
-  StepIcon,
-  SvgIcon,
-} from '@mui/material';
+import { Button, ModalDialog, Sheet, Table, Textarea } from '@mui/joy';
+import { DialogTitle, Modal } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
 import { Controller, set, useForm } from 'react-hook-form';
@@ -44,6 +18,7 @@ import { BaseError } from '~/common/apis/apis.model';
 import {
   apiMatchingEngine_v1,
   apiMatchingRecon_v1,
+  apiProxy_v1,
   apiAccount_id,
 } from '~/consts';
 import { ResponsiveModal } from '~/features/modal';
@@ -64,38 +39,38 @@ const TraceFunctions: TraceFunction[] = [
   {
     trace_name: 'trace_me_core',
     trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/core`,
+    params: new URLSearchParams(''),
   },
   {
     trace_name: 'trace_me_snapshot',
     trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/snapshot`,
+    params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_orderbook_b',
     trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
+    params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_reset',
     trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/reset_me`,
+    params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_recon_reset',
     trace_group: 'trace_recon',
-    url: `${apiMatchingRecon_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
+    params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_mmserver',
     trace_group: 'trace_mmserver',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/mm`,
-    params: new URLSearchParams(),
+    url: `${apiProxy_v1}/futures/api/v1/debug/trace/mm`,
+    params: new URLSearchParams('op=stat'),
   },
 ];
 

@@ -5,6 +5,7 @@ export interface Config {
   apiAccount_id: string;
   apiMatchingEngine_v1: string;
   apiMatchingRecon_v1: string;
+  apiProxy_v1: string;
 }
 
 /** `'Timeout' 형식은 'number' 형식에 할당할 수 없습니다` 를 해결하기 위한 선언 */
