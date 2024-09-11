@@ -1,6 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import {
+  ArrowDropDown as ArrowDropDownIcon,
+  AutorenewRounded as AutorenewRoundedIcon,
+  Block as BlockIcon,
+  CheckRounded as CheckRoundedIcon,
+  FilterAlt as FilterAltIcon,
+  KeyboardArrowLeft as KeyboardArrowLeftIcon,
+  KeyboardArrowRight as KeyboardArrowRightIcon,
+  MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
   Warning as WarningIcon,
   EditNote as EditIcon,
@@ -11,6 +19,8 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
+  ColorPaletteProp,
   FormControl,
   FormLabel,
   IconButton,
@@ -59,6 +69,8 @@ export function EtcdServiceTable({
   const [isOpenFailAlert, setIsOpenFailAlert] = useState(false);
   const [isOpenSuccessAlert, setIsOpenSuccessAlert] = useState(false);
   const [serviceId, setServiceId] = useState<string>('');
+  const [serviceName, setServiceName] = useState<string>('');
+  const [serviceHost, setServiceHost] = useState<string>('');
   const [modalOpen, setModalOpen] = useState(false);
 
   const { control } = useForm<EtcdServiceSearchValues>({});
@@ -77,6 +89,8 @@ export function EtcdServiceTable({
 
   const handleMonitorService = (item: EtcdService) => {
     setServiceId(item.service_id);
+    setServiceName(item.service_name);
+    setServiceHost(item.service_host);
     setModalOpen(true);
   };
 
@@ -228,11 +242,14 @@ export function EtcdServiceTable({
       </Form>
       {Boolean(modalOpen) && (
         <>
-          <AcsDetailForm
-            serviceId={serviceId}
-            isOpen={modalOpen}
-            onClose={() => setModalOpen(false)}
-          />
+          <ResponsiveModal
+            title={serviceName}
+            header={serviceHost}
+            onOpen={modalOpen}
+            onSetOpen={setModalOpen}
+          >
+            <AcsDetailForm serviceId={serviceId} />
+          </ResponsiveModal>
         </>
       )}
       <Sheet
@@ -355,22 +372,46 @@ export function EtcdServiceTable({
                   </td>
                   <td>
                     {row.service_name === 'acs' ? (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                        }}
+                      <Chip
+                        variant="soft"
+                        startDecorator={
+                          {
+                            1: <MonitorIcon />,
+                            2: <AutorenewRoundedIcon />,
+                            3: <BlockIcon />,
+                          }[1]
+                        }
+                        color={
+                          {
+                            1: 'success',
+                            2: 'neutral',
+                            3: 'danger',
+                          }[1] as ColorPaletteProp
+                        }
+                        onClick={() => handleMonitorService(row)}
                       >
-                        <IconButton
-                          sx={{ '--Icon-fontSize': '22px' }}
-                          onClick={() => handleMonitorService(row)}
-                        >
-                          <MonitorIcon />
-                        </IconButton>
-                      </Box>
+                        Show Details
+                      </Chip>
                     ) : (
-                      <Typography level="body-xs">{'Not Supported'}</Typography>
+                      <Chip
+                        variant="soft"
+                        startDecorator={
+                          {
+                            1: <CheckRoundedIcon />,
+                            2: <AutorenewRoundedIcon />,
+                            3: <BlockIcon />,
+                          }[3]
+                        }
+                        color={
+                          {
+                            1: 'success',
+                            2: 'neutral',
+                            3: 'danger',
+                          }[3] as ColorPaletteProp
+                        }
+                      >
+                        Not Supported
+                      </Chip>
                     )}
                   </td>
                   <td>
