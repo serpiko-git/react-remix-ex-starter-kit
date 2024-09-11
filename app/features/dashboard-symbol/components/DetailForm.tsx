@@ -921,7 +921,6 @@ export function DetailForm(props: DetailFormProps) {
           )}
         </Stack>
       </div>
-
       <CardOverflow
         sx={{ borderTop: '1px solid', borderColor: 'divider' }}
       ></CardOverflow>

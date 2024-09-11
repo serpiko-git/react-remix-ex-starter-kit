@@ -8,6 +8,7 @@ export const configs: Config = {
   apiAccount_id: process.env.REACT_APP_API_ACCOUNT_ID,
   apiMatchingEngine_v1: process.env.REACT_APP_API_MATCHING_ENGINE_V1,
   apiMatchingRecon_v1: process.env.REACT_APP_API_MATCHING_RECON_V1,
+  apiProxy_v1: process.env.REACT_APP_API_PROXY_V1,
 };
 
 /** @constant {boolean} */
@@ -21,4 +22,5 @@ export const {
   apiAccount_id,
   apiMatchingEngine_v1,
   apiMatchingRecon_v1,
+  apiProxy_v1,
 } = configs;

@@ -45,13 +45,20 @@ import { Header } from '~/features/dashboard-common';
 import { ResponsiveModal } from '~/features/modal';
 import { Sidebar } from '~/features/side-bar';
 
+import { TraceFunctionDetailForm } from './DetailForm';
 import { MatchingEngineTable } from './MatchingEngineTable';
 
 export function DashboardMatchingEngine() {
   const [open, setOpen] = useState<boolean>(true);
   return (
     <CssVarsProvider disableTransitionOnChange>
-      <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
+      <Box
+        sx={{
+          backgroundColor: 'transparent',
+          display: 'flex',
+          minHeight: '100dvh',
+        }}
+      >
         <Header />
         <Sidebar />
         <Box
@@ -118,13 +125,7 @@ export function DashboardMatchingEngine() {
             <Typography level="h2" component="h1">
               Matching Engine
             </Typography>
-            <Button
-              color="primary"
-              startDecorator={<DownloadRounded />}
-              size="sm"
-            >
-              Download PDF
-            </Button>
+
             <MatchingEngineTable />
           </Box>
         </Box>
