@@ -1,6 +1,8 @@
 import { createRequestHandler } from '@remix-run/express';
 import compression from 'compression';
+import cors from 'cors';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import morgan from 'morgan';
 
 // eslint-disable-next-line import/extensions
@@ -25,6 +27,23 @@ const remixHandler = createRequestHandler({
 const app = express();
 
 app.use(compression());
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  }),
+);
+
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: 'https://matching-me.dev.julybit.com',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': '/futures/api/v1/debug/trace/me/core',
+    },
+  }),
+);
 
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
 app.disable('x-powered-by');

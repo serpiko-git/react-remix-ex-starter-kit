@@ -27,15 +27,15 @@ export function TraceFunctionDetailForm({
   open,
   setOpen,
 }: TraceFunctionDetailFormProps) {
-  // const [response, setResponse] = useState<
-  //   | TraceMMserverResponse
-  //   | TraceMeCoreResponse
-  //   | TraceMeOrderbookBResponse
-  //   | TraceMeResetResponse
-  //   | TraceMeSnapshotResponse
-  //   | TraceReconResetResponse
-  //   | null
-  // >(null);
+  const [response, setResponse] = useState<
+    | TraceMMserverResponse
+    | TraceMeCoreResponse
+    | TraceMeOrderbookBResponse
+    | TraceMeResetResponse
+    | TraceMeSnapshotResponse
+    | TraceReconResetResponse
+    | null
+  >(null);
 
   console.log('traceFunction:', traceFunction);
   if (traceFunction === undefined || traceFunction === null) {
@@ -49,20 +49,38 @@ export function TraceFunctionDetailForm({
   }
 
   const requestUrl = `${traceFunction.url}?${traceFunction.params.toString()}`;
-  console.log('reuqestUrl:', requestUrl);
-  const responseData = fetch(requestUrl, { mode: 'no-cors' })
-    .then((resp) => resp.text())
+  console.log('requestUrl:', requestUrl);
+  fetch(requestUrl, { mode: 'cors' })
+    .then((resp) => {
+      console.log('resp:', JSON.stringify(resp));
+      if (resp.ok) {
+        return resp.text();
+      }
+      throw new Error('Network response was not ok.');
+    })
     .then((data) => {
-      console.log('data:', data);
-      return data;
+      console.log('Data received:', data);
+      setResponse(data);
+    })
+    .catch((error) => {
+      console.error('Error fetching data:', error);
+      setResponse(null);
     });
 
-  console.log('responseData:', responseData);
+  console.log('response:', response);
+
+  if (!traceFunction) {
+    return (
+      <Sheet>
+        <Textarea value="Undefined or null traceFunction" />
+      </Sheet>
+    );
+  }
 
   return (
     <React.Fragment>
       <Sheet>
-        <Textarea value={String(responseData)} />
+        <Textarea value={JSON.stringify(response)} />
       </Sheet>
     </React.Fragment>
   );
