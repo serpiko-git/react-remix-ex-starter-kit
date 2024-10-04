@@ -433,6 +433,8 @@ export function ClosedOrderPnlTable({
           stickyHeader
           hoverRow
           sx={{
+            width: 'auto',
+            tableLayout: 'auto',
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
@@ -446,9 +448,7 @@ export function ClosedOrderPnlTable({
             <tr>
               <th
                 style={{
-                  width: 48,
                   textAlign: 'center',
-                  padding: '12px 6px',
                 }}
               >
                 <Checkbox
@@ -472,9 +472,9 @@ export function ClosedOrderPnlTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
+              <th>No.</th>
+              <th>Action</th>
+              <th>
                 <Link
                   underline="none"
                   color="primary"
@@ -498,38 +498,31 @@ export function ClosedOrderPnlTable({
                   closed_pnl_order_id
                 </Link>
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>order_id</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                client_order_id
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>account_id</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>category</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>base_asset</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>quote_asset</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>symbol</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>side</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>leverage</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>quantity</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>position_qty</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>exit_amount</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>entry_amount</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                avg_entry_price
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                avg_exit_price
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>closed_pnl</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>opening_fee</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>closing_fee</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>funding_fee</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>exec_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>is_close</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>ts_id</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>trade_ts</th>
+              <th>order_id</th>
+              <th>client_order_id</th>
+              <th>account_id</th>
+              <th>category</th>
+              <th>base_asset</th>
+              <th>quote_asset</th>
+              <th>symbol</th>
+              <th>side</th>
+              <th>leverage</th>
+              <th>quantity</th>
+              <th>position_qty</th>
+              <th>exit_amount</th>
+              <th>entry_amount</th>
+              <th>avg_entry_price</th>
+              <th>avg_exit_price</th>
+              <th>closed_pnl</th>
+              <th>opening_fee</th>
+              <th>closing_fee</th>
+              <th>funding_fee</th>
+              <th>exec_type</th>
+              <th>is_close</th>
+              <th>ts_id</th>
+              <th>trade_ts</th>
             </tr>
           </thead>
-
           {/* nodata */}
           {!list.length && (
             <tbody>
@@ -552,7 +545,6 @@ export function ClosedOrderPnlTable({
               </tr>
             </tbody>
           )}
-
           {/* data render */}
           {!!list.length && (
             <>
