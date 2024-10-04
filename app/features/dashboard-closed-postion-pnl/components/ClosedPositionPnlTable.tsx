@@ -317,7 +317,7 @@ export function ClosedPositionPnlTable({
           </ModalDialog>
         </Modal>
       </Sheet>
-      <Form method="post" action="./">
+      <Form method="get" action="./">
         {/* search desktop */}
         <Box
           className="SearchAndFilters-tabletUp"
@@ -506,7 +506,7 @@ export function ClosedPositionPnlTable({
               <th style={{ width: 140, padding: '12px 6px' }}>leverage</th>
               <th style={{ width: 140, padding: '12px 6px' }}>quantity</th>
               <th style={{ width: 140, padding: '12px 6px' }}>position_qty</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>entry_amount</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>entry_amount</th>
               <th style={{ width: 140, padding: '12px 6px' }}>exit_amount</th>
               <th style={{ width: 140, padding: '12px 6px' }}>
                 avg_entry_price
@@ -514,17 +514,17 @@ export function ClosedPositionPnlTable({
               <th style={{ width: 140, padding: '12px 6px' }}>
                 avg_exit_price
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>closed_pnl</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>closed_pnl</th>
               <th style={{ width: 140, padding: '12px 6px' }}>opening_fee</th>
               <th style={{ width: 140, padding: '12px 6px' }}>closing_fee</th>
               <th style={{ width: 140, padding: '12px 6px' }}>funding_fee</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>open_ts</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>open_time</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>close_time</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>open_ts</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>open_time</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>close_time</th>
               <th style={{ width: 140, padding: '12px 6px' }}>open_duration</th>
               <th style={{ width: 140, padding: '12px 6px' }}>balance</th>
               <th style={{ width: 140, padding: '12px 6px' }}>is_close</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>ts_id</th>
+              <th style={{ width: 180, padding: '12px 6px' }}>ts_id</th>
               <th style={{ width: 140, padding: '12px 6px' }}>trade_ts</th>
             </tr>
           </thead>
