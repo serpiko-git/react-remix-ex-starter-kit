@@ -1,4 +1,10 @@
-import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
+import {
+  ActionFunction,
+  ActionFunctionArgs,
+  LoaderFunction,
+  LoaderFunctionArgs,
+  redirect,
+} from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
 import { apiHost_v1, apiAccount_id } from '~/consts';
@@ -26,8 +32,27 @@ export const loader: LoaderFunction = async ({
   const startTime = url.searchParams.get('start_time') || '2';
   const endTime = url.searchParams.get('end_time') || '999999999999';
   const fetchUrl = `${apiHost_v1}/closed-pnl-position/list?account_id=${account_id}&page=${page}&limit=${limit}&category=${category}&start_time=${startTime}&end_time=${endTime}`;
+
+  console.log(`request url: ${fetchUrl}`);
   const response = await fetch(fetchUrl);
   const responseProps: ClosedPositionPnlResponse = await response.json();
+
+  if (responseProps.code !== 0) {
+    return {
+      responseProps: {
+        code: responseProps.code,
+        message: responseProps.msg,
+        data: [],
+        total: 0,
+      },
+      queriesProps: {
+        account_id,
+        page,
+        limit,
+      },
+    };
+  }
+
   const queriesProps: ClosedPositionPnlQueries = {
     account_id,
     page,
@@ -36,6 +61,15 @@ export const loader: LoaderFunction = async ({
   const combinedProps = { responseProps, queriesProps };
 
   return combinedProps;
+};
+
+export const action: ActionFunction = async ({
+  request,
+}: ActionFunctionArgs) => {
+  const formData = await request.formData();
+  const actionType = formData.get('action');
+
+  return null;
 };
 
 export default function index() {
