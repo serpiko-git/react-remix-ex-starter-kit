@@ -397,25 +397,6 @@ export function TransactionTable({
                 />
               </FormControl>
 
-              <FormControl sx={{ flex: 1 }} size="sm">
-                <FormLabel>transaction_id</FormLabel>
-                <Controller
-                  name="transaction_id"
-                  control={control}
-                  render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Input
-                      name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={onChange}
-                      onBlur={onBlur}
-                      size="sm"
-                      startDecorator={<SearchIcon />}
-                    />
-                  )}
-                />
-              </FormControl>
-
               <FormControl size="sm">
                 <FormLabel>Category</FormLabel>
                 <Controller
@@ -474,22 +455,20 @@ export function TransactionTable({
           stickyHeader
           hoverRow
           sx={{
+            width: 'auto',
+            tableLayout: 'auto',
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
+            '--TableRow-hoverBackground':
+              'var(--joy-palette-background-level1)',
             '--TableCell-paddingY': '4px',
             '--TableCell-paddingX': '8px',
           }}
         >
           <thead ref={theadRef}>
             <tr>
-              <th
-                style={{
-                  width: 48,
-                  textAlign: 'center',
-                  padding: '12px 6px',
-                }}
-              >
+              <th>
                 <Checkbox
                   size="sm"
                   indeterminate={
@@ -511,9 +490,9 @@ export function TransactionTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
+              <th>No.</th>
+              <th>Action</th>
+              <th>
                 <Link
                   underline="none"
                   color="primary"
@@ -537,42 +516,27 @@ export function TransactionTable({
                   transaction_id
                 </Link>
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> account_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> symbol </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> BaseAsset </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> QuoteAsset </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                transaction_type{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> direction </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> qty </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                position_size{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> funding </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> fee </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> cash_flow </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> change </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> balance </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> exec_price </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> fee_rate </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> order_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                from_transfer_account_id{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                to_transfer_account_id{' '}
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> ts_id </th>
-              <th style={{ width: 140, padding: '12px 6px' }}> created_ts </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                {' '}
-                transaction_time{' '}
-              </th>
+              <th> account_id </th>
+              <th> symbol </th>
+              <th> BaseAsset </th>
+              <th> QuoteAsset </th>
+              <th> transaction_type </th>
+              <th> direction </th>
+              <th> qty </th>
+              <th> position_size </th>
+              <th> funding </th>
+              <th> fee </th>
+              <th> cash_flow </th>
+              <th> change </th>
+              <th> balance </th>
+              <th> exec_price </th>
+              <th> fee_rate </th>
+              <th> order_id </th>
+              <th> from_transfer_account_id </th>
+              <th> to_transfer_account_id </th>
+              <th> ts_id </th>
+              <th> created_ts </th>
+              <th> transaction_time </th>
             </tr>
           </thead>
 

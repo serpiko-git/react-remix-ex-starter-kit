@@ -330,6 +330,8 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
           stickyHeader
           hoverRow
           sx={{
+            width: 'auto',
+            tableLayout: 'auto',
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
@@ -341,9 +343,7 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
             <tr>
               <th
                 style={{
-                  width: 48,
                   textAlign: 'center',
-                  padding: '12px 6px',
                 }}
               >
                 <Checkbox
@@ -367,8 +367,8 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
+              <th>No.</th>
+              <th>
                 <Link
                   underline="none"
                   color="primary"
@@ -392,36 +392,28 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
                   trade_id
                 </Link>
               </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> order_id </th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
-                {' '}
-                client_order_id{' '}
-              </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> account_id </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> category </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> base_asset </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> quote_asset </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> symbol </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> side </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> order_type </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> exec_type </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> leverage </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> quantity </th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
-                {' '}
-                org_quantity{' '}
-              </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> price </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> exec_price </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> fee_rate </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> opening_fee </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> closing_fee </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> funding_fee </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> is_isolated </th>
-              <th style={{ width: 190, padding: '12px 6px' }}> is_maker </th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
-                transaction_id
-              </th>
+              <th> order_id </th>
+              <th> client_order_id </th>
+              <th> account_id </th>
+              <th> category </th>
+              <th> base_asset </th>
+              <th> quote_asset </th>
+              <th> symbol </th>
+              <th> side </th>
+              <th> order_type </th>
+              <th> exec_type </th>
+              <th> leverage </th>
+              <th> quantity </th>
+              <th> org_quantity </th>
+              <th> price </th>
+              <th> exec_price </th>
+              <th> fee_rate </th>
+              <th> opening_fee </th>
+              <th> closing_fee </th>
+              <th> funding_fee </th>
+              <th> is_isolated </th>
+              <th> is_maker </th>
+              <th>transaction_id</th>
             </tr>
           </thead>
 

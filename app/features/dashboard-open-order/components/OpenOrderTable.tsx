@@ -458,6 +458,8 @@ export function OpenOrderTable({
           stickyHeader
           hoverRow
           sx={{
+            width: 'auto',
+            tableLayout: 'auto',
             '--TableCell-headBackground':
               'var(--joy-palette-background-level1)',
             '--Table-headerUnderlineThickness': '1px',
@@ -469,13 +471,7 @@ export function OpenOrderTable({
         >
           <thead ref={theadRef}>
             <tr>
-              <th
-                style={{
-                  width: 48,
-                  textAlign: 'center',
-                  padding: '12px 6px',
-                }}
-              >
+              <th>
                 <Checkbox
                   size="sm"
                   indeterminate={
@@ -497,9 +493,9 @@ export function OpenOrderTable({
                   sx={{ verticalAlign: 'text-bottom' }}
                 />
               </th>
-              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 100, padding: '12px 6px' }}>Action</th>
-              <th style={{ width: 190, padding: '12px 6px' }}>
+              <th>No.</th>
+              <th>Action</th>
+              <th>
                 <Link
                   underline="none"
                   color="primary"
@@ -523,94 +519,64 @@ export function OpenOrderTable({
                   order_id
                 </Link>
               </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                parent_order_id
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>account_id</th>
+              <th>parent_order_id</th>
+              <th>account_id</th>
 
-              <th style={{ width: 180, padding: '12px 6px' }}>
-                client_order_id
-              </th>
+              <th>client_order_id</th>
 
-              <th style={{ width: 140, padding: '12px 6px' }}>symbol</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>side</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>order_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>create_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>cancel_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                stop_order_type
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>contract_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                is_cancel_amend
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>order_status</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                cxl_rej_reason_cd
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>time_in_force</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>position_mode</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>reduce_only</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                close_on_trigger
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>quantity</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>org_quantity</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>amount</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>trigger_price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>trail_value</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>active_price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>trigger_by</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>take_profit</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>stop_loss</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>tpsl_mode</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>tp_order_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>sl_order_type</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>tp_limit</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>sl_limit</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>tp_trigger_by</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>sl_trigger_by</th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                last_exec_price
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>cum_exec_qty</th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_exec_open_qty
-              </th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_exec_close_qty
-              </th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_exec_amount
-              </th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_exec_open_amount
-              </th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_exec_close_amount
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>cum_exec_fee</th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_close_pos_open_fee
-              </th>
-              <th style={{ width: 170, padding: '12px 6px' }}>
-                cum_close_pos_close_fee
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>cum_open_pnl</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>cum_close_pnl</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>
-                cum_entry_amount
-              </th>
-              <th style={{ width: 140, padding: '12px 6px' }}>i_margin</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>margin</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>bkrc_price</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>liq_price</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>updated_at</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>created_at</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>asset</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>ts_id</th>
-              <th style={{ width: 140, padding: '12px 6px' }}>created_ts</th>
+              <th>symbol</th>
+              <th>side</th>
+              <th>order_type</th>
+              <th>create_type</th>
+              <th>cancel_type</th>
+              <th>stop_order_type</th>
+              <th>contract_type</th>
+              <th>is_cancel_amend</th>
+              <th>order_status</th>
+              <th>cxl_rej_reason_cd</th>
+              <th>time_in_force</th>
+              <th>position_mode</th>
+              <th>reduce_only</th>
+              <th>close_on_trigger</th>
+              <th>quantity</th>
+              <th>org_quantity</th>
+              <th>price</th>
+              <th>amount</th>
+              <th>trigger_price</th>
+              <th>trail_value</th>
+              <th>active_price</th>
+              <th>trigger_by</th>
+              <th>take_profit</th>
+              <th>stop_loss</th>
+              <th>tpsl_mode</th>
+              <th>tp_order_type</th>
+              <th>sl_order_type</th>
+              <th>tp_limit</th>
+              <th>sl_limit</th>
+              <th>tp_trigger_by</th>
+              <th>sl_trigger_by</th>
+              <th>last_exec_price</th>
+              <th>cum_exec_qty</th>
+              <th>cum_exec_open_qty</th>
+              <th>cum_exec_close_qty</th>
+              <th>cum_exec_amount</th>
+              <th>cum_exec_open_amount</th>
+              <th>cum_exec_close_amount</th>
+              <th>cum_exec_fee</th>
+              <th>cum_close_pos_open_fee</th>
+              <th>cum_close_pos_close_fee</th>
+              <th>cum_open_pnl</th>
+              <th>cum_close_pnl</th>
+              <th>cum_entry_amount</th>
+              <th>i_margin</th>
+              <th>margin</th>
+              <th>bkrc_price</th>
+              <th>liq_price</th>
+              <th>updated_at</th>
+              <th>created_at</th>
+              <th>asset</th>
+              <th>ts_id</th>
+              <th>created_ts</th>
             </tr>
           </thead>
 
