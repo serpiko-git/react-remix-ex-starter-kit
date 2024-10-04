@@ -69,6 +69,25 @@ export const action: ActionFunction = async ({
   const formData = await request.formData();
   const actionType = formData.get('action');
 
+  if (actionType === 'get') {
+    const account_id = formData.get('account_id');
+    const category = formData.get('category');
+    const start_time = formData.get('start_time');
+    const end_time = formData.get('end_time');
+    const page = formData.get('page');
+    const limit = formData.get('limit');
+
+    const url = new URL(request.url);
+    const searchParams = new URLSearchParams(url.search);
+
+    if (page) searchParams.set('page', page.toString());
+    if (limit) searchParams.set('limit', limit.toString());
+    if (account_id) searchParams.set('account_id', account_id.toString());
+
+    return redirect(
+      `./?account_id=${account_id}&category=${category}&start_time=${start_time}&end_time=${end_time}&page=${page}&limit=${limit}`,
+    );
+  }
   return null;
 };
 
