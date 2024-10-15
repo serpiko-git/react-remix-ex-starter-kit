@@ -1,3 +1,4 @@
+import '~/common/libs/logger';
 import {
   ActionFunction,
   ActionFunctionArgs,

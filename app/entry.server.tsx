@@ -1,3 +1,4 @@
+import '~/common/libs/logger';
 import createEmotionServer from '@emotion/server/create-instance';
 import { CssBaseline } from '@mui/material';
 import { createReadableStreamFromReadable } from '@remix-run/node';

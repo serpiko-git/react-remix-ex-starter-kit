@@ -1,4 +1,5 @@
-import { Dashboard } from '@mui/icons-material';
+import '~/common/libs/logger';
+
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 

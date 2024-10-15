@@ -1,3 +1,5 @@
+import '~/common/libs/logger';
+
 import { LoaderFunction, LoaderFunctionArgs } from '@remix-run/node';
 import { useFetcher, useLoaderData } from '@remix-run/react';
 
