@@ -93,11 +93,16 @@ function RowMenu({
   };
 
   const handleConfirm = () => {
+    // debug order_id
+    console.log('order_id:', order_id);
     fetcher.submit(
       {
-        action: 'delete',
+        action: 'cancel',
+        // for cancel
         symbol,
         order_id,
+
+        // for redirecting
         account_id,
         page,
         limit,
@@ -108,6 +113,7 @@ function RowMenu({
   };
 
   const handleCancel = () => {
+    fetcher.submit({ method: 'POST', action: './' });
     setOpenConfirm(false);
   };
 

@@ -43,6 +43,8 @@ export const loader: LoaderFunction = async ({
   searchParams.set('limit', limit.toString());
 
   const fetchUrl = `${apiHost_v1}/open-order/list?${searchParams.toString()}`;
+  console.log('fetchUrl: ', fetchUrl);
+
   const response = await fetch(fetchUrl);
   const responseProps: OpenOrderResponse = await response.json();
   const queriesProps = { account_id, page, limit };
@@ -58,13 +60,12 @@ export const action: ActionFunction = async ({
   const formData = await request.formData();
   const actionType = formData.get('action');
 
-  if (actionType === 'delete') {
+  if (actionType === 'cancel') {
     const symbol = formData.get('symbol');
     const order_id = formData.get('order_id');
-    const account_id = formData.get('account_id');
-    const page = formData.get('page');
-    const limit = formData.get('limit');
-    const response = await fetch(`${apiHost_v1}/acs/etcd/service/list`, {
+    console.log('cancel symbol: ', symbol);
+    console.log('cancel order_id: ', order_id);
+    const response = await fetch(`${apiHost_v1}/open-order/cancel`, {
       method: 'POST',
       body: JSON.stringify({
         symbol,
@@ -76,10 +77,15 @@ export const action: ActionFunction = async ({
     });
 
     const data = await response.json();
-    console.log('action delete', data);
+    console.log('cancel response: ', data);
 
+    // redirect to current page
     const url = new URL(request.url);
     const searchParams = new URLSearchParams(url.search);
+
+    const page = formData.get('page');
+    const limit = formData.get('limit');
+    const account_id = formData.get('account_id');
 
     if (page) searchParams.set('page', page.toString());
     if (limit) searchParams.set('limit', limit.toString());
@@ -87,13 +93,12 @@ export const action: ActionFunction = async ({
 
     return redirect(`./?${searchParams.toString()}`);
   }
-  return null;
+  return redirect('./');
 };
 
 export default function index() {
   const combineProps: OpenOrderCombineProps = useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = combineProps;
-
   return (
     <div>
       <DashboardOpenOrder
