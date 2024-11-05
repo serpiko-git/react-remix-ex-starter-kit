@@ -53,31 +53,31 @@ const _traceFunctions: TraceFunction[] = [
   {
     trace_name: 'trace_me_core',
     trace_group: 'trace_me',
-    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/core`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
     params: new URLSearchParams(''),
   },
   {
     trace_name: 'trace_me_snapshot',
     trace_group: 'trace_me',
-    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/snapshot`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_orderbook_b',
     trace_group: 'trace_me',
-    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_reset',
     trace_group: 'trace_me',
-    url: `${apiProxy_v1}/futures/api/v1/debug/trace/me/reset_me`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_recon_reset',
     trace_group: 'trace_recon',
-    url: `${apiProxy_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
