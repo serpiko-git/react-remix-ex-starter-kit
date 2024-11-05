@@ -8,7 +8,18 @@ import {
   CheckCircle as CheckIcon,
   Monitor as MonitorIcon,
 } from '@mui/icons-material';
-import { Button, ModalDialog, Sheet, Table, Textarea } from '@mui/joy';
+import {
+  Button,
+  ModalDialog,
+  Sheet,
+  Table,
+  Textarea,
+  Stack,
+  FormControl,
+  FormLabel,
+  Select,
+  Option,
+} from '@mui/joy';
 import { DialogTitle, Modal } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
@@ -34,8 +45,11 @@ import {
 } from '../models/matching-engine.model';
 
 import { TraceFunctionDetailForm } from './DetailForm';
+import TableRows from './TableRows';
 
-const TraceFunctions: TraceFunction[] = [
+const sequenceOptions = ['none', '1', '2', '3', '4'];
+
+const _traceFunctions: TraceFunction[] = [
   {
     trace_name: 'trace_me_core',
     trace_group: 'trace_me',
@@ -75,120 +89,61 @@ const TraceFunctions: TraceFunction[] = [
 ];
 
 export function MatchingEngineTable() {
-  const nodeRef = React.useRef(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [traceFunctions, setTraceFunctions] =
-    useState<TraceFunction[]>(TraceFunctions);
-  const [traceFunction, setTraceFunction] = useState<TraceFunction>();
-  const [queryParams, setQueryParams] = useState<string>('');
-  const [paramsIndex, setParamsIndex] = useState<number>();
-  const [traceData, setTraceData] = useState<TraceFunction>();
-  const handleRefreshDetailForm = ($index: number) => {
-    setTraceFunction(traceFunctions[$index]);
-    console.log('traceFunction:', traceFunction);
+  const [TraceFunctions, setTraceFunctions] = useState(_traceFunctions);
+  const [traceUrl, setTraceUrl] = useState('');
+  const [selectedSequnce, setSelectedSequnce] = useState(sequenceOptions[0]);
+
+  const handleSelectChange = (
+    event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
+    value: string,
+  ) => {
+    setSelectedSequnce(value);
   };
 
-  const handleOnChangeParams = ($index: number, $params: string) => {
-    const url = `${TraceFunctions[$index].url}?${$params}`;
-    setTraceFunctions((prev) => {
-      const result = prev.map((trace, index) => {
-        if (index === $index) {
-          return {
-            ...trace,
-            params: new URLSearchParams($params),
-          };
-        }
-        return trace;
+  useEffect(() => {
+    if (selectedSequnce !== sequenceOptions[0]) {
+      setTraceFunctions((trace) => {
+        const updateUrl = trace.map((data) => ({
+          ...data,
+          url: data.url.replace(/me\d*/, `me${selectedSequnce}`),
+        }));
+        console.log(updateUrl);
+        return updateUrl;
       });
-      return result;
-    });
-    setQueryParams('');
-    setModalOpen(false);
-
-    console.log('url: ', url);
-  };
-
-  const traceRows = traceFunctions.map((traceRow, index) => (
-    <tr key={traceRow.trace_name}>
-      <td style={{ padding: '12px 6px' }}>{traceRow.trace_name}</td>
-      <td style={{ padding: '12px 6px' }}>{traceRow.trace_group}</td>
-      <td style={{ padding: '12px 6px' }}>
-        {`${traceRow.url}?${traceRow.params.toString()}`}
-      </td>
-
-      <td style={{ padding: '12px 6px' }}>
-        <Button
-          variant="outlined"
-          onClick={(e) => {
-            setModalOpen(true);
-            console.log(traceRow.trace_name);
-            setParamsIndex(index);
-            const found = traceFunctions[index];
-            setQueryParams(found.params.toString());
-            console.log('traceData:', JSON.stringify(queryParams));
-          }}
-        >
-          Params
-        </Button>
-        <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
-          <ModalDialog
-            sx={{
-              width: '80%',
-              height: '40%',
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <DialogTitle>Params</DialogTitle>
-            <form
-              onSubmit={(e) => {
-                console.log('submit');
-                e.preventDefault();
-                handleOnChangeParams(paramsIndex, queryParams);
-              }}
-            >
-              <Textarea
-                style={{ width: '100%', height: '100%', minHeight: '200px' }}
-                onChange={(e) => setQueryParams(e.target.value)}
-                defaultValue={queryParams}
-              ></Textarea>
-              <Button
-                style={{ margin: '10px 0', marginRight: '10px' }}
-                type="submit"
-                variant="solid"
-              >
-                Save
-              </Button>
-              <Button
-                style={{ margin: '10px 0', marginRight: '10px' }}
-                variant="solid"
-                onClick={() => {
-                  setModalOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
-            </form>
-          </ModalDialog>
-        </Modal>
-      </td>
-      <td style={{ padding: '12px 6px' }}>
-        <Button
-          variant="outlined"
-          onClick={(e) => {
-            setParamsIndex(index);
-            handleRefreshDetailForm(index);
-            console.log('traceData:', JSON.stringify(queryParams));
-          }}
-        >
-          Trace
-        </Button>
-      </td>
-    </tr>
-  ));
+    } else {
+      setTraceFunctions(_traceFunctions);
+    }
+  }, [selectedSequnce, setTraceFunctions]);
 
   return (
     <>
+      <Stack
+        width="100%"
+        direction="row"
+        alignItems="flex-start"
+        justifyItems="center"
+        spacing={1}
+      >
+        <FormControl
+          size="sm"
+          sx={{ flexDirection: 'row', alignItems: 'center' }}
+        >
+          <FormLabel>API Sequence</FormLabel>
+          <Select
+            size="sm"
+            placeholder="API Sequence"
+            defaultValue={sequenceOptions[0]}
+            onChange={handleSelectChange}
+            slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+          >
+            {sequenceOptions.map((value) => (
+              <Option key={value} value={value}>
+                {value}
+              </Option>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
       <Sheet
         className="MatchingEngineTableContainer"
         variant="outlined"
@@ -213,8 +168,8 @@ export function MatchingEngineTable() {
             <tr>
               <th style={{ width: 180, padding: '12px 6px' }}>trace_name</th>
               <th style={{ width: 180, padding: '12px 6px' }}>trace_group</th>
-              <th style={{ width: 600, padding: '12px 6px' }}>trace_url</th>
-              <th style={{ width: 300, padding: '12px 6px' }}>trace_params</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>trace_url</th>
+              {/* <th style={{ width: 300, padding: '12px 6px' }}>trace_params</th> */}
               <th style={{ width: 300, padding: '12px 6px' }}>trace</th>
             </tr>
           </thead>
@@ -223,15 +178,14 @@ export function MatchingEngineTable() {
               backgroundColor: 'transparent',
             }}
           >
-            {traceRows}
+            <TableRows
+              TraceFunctions={TraceFunctions}
+              setTraceUrl={setTraceUrl}
+            />
           </tbody>
         </Table>
       </Sheet>
-      <TraceFunctionDetailForm
-        traceFunction={traceFunction}
-        open={modalOpen}
-        setOpen={setModalOpen}
-      />
+      <TraceFunctionDetailForm traceUrl={traceUrl} />
     </>
   );
 }

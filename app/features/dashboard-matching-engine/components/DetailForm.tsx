@@ -17,17 +17,11 @@ import {
 } from '../models/matching-engine.model';
 
 export interface TraceFunctionDetailFormProps {
-  traceFunction: TraceFunction;
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  traceUrl: TraceFunction['url'];
 }
 
-export function TraceFunctionDetailForm({
-  traceFunction,
-  open,
-  setOpen,
-}: TraceFunctionDetailFormProps) {
-  console.log('traceFunction:', traceFunction);
+export function TraceFunctionDetailForm(props: TraceFunctionDetailFormProps) {
+  const { traceUrl } = props;
 
   const [response, setResponse] = useState<
     | TraceMMserverResponse
@@ -41,8 +35,8 @@ export function TraceFunctionDetailForm({
 
   useEffect(() => {
     // This effect runs only when `traceFunction` changes
-    if (traceFunction) {
-      const requestUrl = `${traceFunction.url}?${traceFunction.params.toString()}`;
+    if (traceUrl.length > 0) {
+      const requestUrl = traceUrl;
       console.log('Request URL:', requestUrl);
       fetch(requestUrl)
         .then((resp) => resp.text()) // Assuming response is text
@@ -54,7 +48,7 @@ export function TraceFunctionDetailForm({
           setResponse('Failed to fetch data'); // Handle error case
         });
     }
-  }, [traceFunction]);
+  }, [traceUrl]);
 
   return (
     <React.Fragment>
