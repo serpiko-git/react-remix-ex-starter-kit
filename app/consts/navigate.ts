@@ -1,5 +1,6 @@
 export const DEFAULT_DASHBOARD_PATH = {
   symbols: '/dashboard/symbol',
+  userBalance: '/dashboard/user-balance',
   openOrder: '/dashboard/open-order',
   closedOrderPnl: '/dashboard/closed-order-pnl',
   closedPositionPnl: '/dashboard/closed-position-pnl',

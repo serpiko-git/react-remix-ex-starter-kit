@@ -172,6 +172,24 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.userBalance,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.userBalance,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">User Balance</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
                       DEFAULT_PATH_NAVIGATE.dashboard.openOrder,
                     )}
                     onClick={() =>
