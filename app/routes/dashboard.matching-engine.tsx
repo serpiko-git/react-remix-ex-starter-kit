@@ -1,4 +1,4 @@
-import '~/common/libs/logger';
+// import '~/common/libs/logger';
 
 import { LoaderFunction } from '@remix-run/node';
 
