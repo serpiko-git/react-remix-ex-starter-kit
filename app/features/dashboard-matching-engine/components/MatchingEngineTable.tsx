@@ -27,10 +27,13 @@ import { Controller, set, useForm } from 'react-hook-form';
 
 import { BaseError } from '~/common/apis/apis.model';
 import {
+  apiHost_v1,
+  apiGateway_v1,
+  accountHost,
+  apiAccount_id,
   apiMatchingEngine_v1,
   apiMatchingRecon_v1,
   apiProxy_v1,
-  apiAccount_id,
 } from '~/consts';
 import { ResponsiveModal } from '~/features/modal';
 
@@ -47,7 +50,17 @@ import {
 import { TraceFunctionDetailForm } from './DetailForm';
 import TableRows from './TableRows';
 
-const sequenceOptions = ['none', '1', '2', '3', '4'];
+console.log({
+  apiHost_v1,
+  apiGateway_v1,
+  accountHost,
+  apiAccount_id,
+  apiMatchingEngine_v1,
+  apiMatchingRecon_v1,
+  apiProxy_v1,
+});
+
+const _sequenceOptions = ['none', '1', '2', '3', '4'];
 
 const _traceFunctions: TraceFunction[] = [
   {
@@ -91,7 +104,7 @@ const _traceFunctions: TraceFunction[] = [
 export function MatchingEngineTable() {
   const [TraceFunctions, setTraceFunctions] = useState(_traceFunctions);
   const [traceUrl, setTraceUrl] = useState('');
-  const [selectedSequnce, setSelectedSequnce] = useState(sequenceOptions[0]);
+  const [selectedSequnce, setSelectedSequnce] = useState(_sequenceOptions[0]);
 
   const handleSelectChange = (
     event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
@@ -101,7 +114,7 @@ export function MatchingEngineTable() {
   };
 
   useEffect(() => {
-    if (selectedSequnce !== sequenceOptions[0]) {
+    if (selectedSequnce !== _sequenceOptions[0]) {
       setTraceFunctions((trace) => {
         const updateUrl = trace.map((data) => ({
           ...data,
@@ -132,11 +145,11 @@ export function MatchingEngineTable() {
           <Select
             size="sm"
             placeholder="API Sequence"
-            defaultValue={sequenceOptions[0]}
+            defaultValue={_sequenceOptions[0]}
             onChange={handleSelectChange}
             slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
           >
-            {sequenceOptions.map((value) => (
+            {_sequenceOptions.map((value) => (
               <Option key={value} value={value}>
                 {value}
               </Option>
