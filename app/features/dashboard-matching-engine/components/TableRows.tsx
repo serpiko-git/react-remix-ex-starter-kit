@@ -11,24 +11,25 @@ interface TableRowsProps {
 
 export default function TableRows(props: TableRowsProps) {
   const { TraceFunctions, setTraceUrl: onTraceUrl } = props;
-  console.log(TraceFunctions);
-  const [urlValues, setUrlValues] = useState<TraceFunction['url'][]>(
-    TraceFunctions.map((trace) => trace.url),
-  );
+  const [urlValues, setUrlValues] = useState<string[]>();
 
   const handleUrlChange = (index: number, updateUrl: string) => {
+    console.log(index, updateUrl);
     setUrlValues((prevUrls) =>
       prevUrls.map((url: string, i: number) => (i === index ? updateUrl : url)),
     );
   };
 
   const handleTraceClick = (index: number) => {
+    console.log('clicked!', index);
     const updatedUrl = urlValues[index];
     onTraceUrl(updatedUrl);
   };
 
   useEffect(() => {
-    const traceUrl = TraceFunctions.map((trace) => trace.url);
+    const traceUrl = TraceFunctions.map(
+      (trace) => `${trace.url}?${trace.params.toString()}`,
+    );
     setUrlValues(traceUrl);
   }, [TraceFunctions]);
 
@@ -43,11 +44,7 @@ export default function TableRows(props: TableRowsProps) {
               size="sm"
               type="text"
               sx={{ flexGrow: 1 }}
-              value={
-                traceRow.params.size > 0
-                  ? `${urlValues[index]}?${traceRow.params}`
-                  : urlValues[index]
-              }
+              value={urlValues?.length > 0 ? urlValues[index] : ''}
               onChange={(e) => handleUrlChange(index, e.target.value)}
             />
           </td>

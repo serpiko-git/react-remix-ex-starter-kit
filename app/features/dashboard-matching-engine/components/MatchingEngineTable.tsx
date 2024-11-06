@@ -50,18 +50,15 @@ import {
 import { TraceFunctionDetailForm } from './DetailForm';
 import TableRows from './TableRows';
 
-console.log({
-  apiHost_v1,
-  apiGateway_v1,
-  accountHost,
-  apiAccount_id,
-  apiMatchingEngine_v1,
-  apiMatchingRecon_v1,
-  apiProxy_v1,
-});
-
-// FIXME: 하드코딩됨
-const _apiMatchingEngine_v1 = 'https://matching-me.dev.julybit.com';
+// console.log({
+//   apiHost_v1,
+//   apiGateway_v1,
+//   accountHost,
+//   apiAccount_id,
+//   apiMatchingEngine_v1,
+//   apiMatchingRecon_v1,
+//   apiProxy_v1,
+// });
 
 const _sequenceOptions = ['none', '1', '2', '3', '4'];
 
@@ -69,37 +66,37 @@ const _traceFunctions: TraceFunction[] = [
   {
     trace_name: 'trace_me_core',
     trace_group: 'trace_me',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
     params: new URLSearchParams(''),
   },
   {
     trace_name: 'trace_me_snapshot',
     trace_group: 'trace_me',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_orderbook_b',
     trace_group: 'trace_me',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_me_reset',
     trace_group: 'trace_me',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_recon_reset',
     trace_group: 'trace_recon',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
     params: new URLSearchParams('ticker=BTCUSDT'),
   },
   {
     trace_name: 'trace_mmserver',
     trace_group: 'trace_mmserver',
-    url: `${_apiMatchingEngine_v1}/futures/api/v1/debug/trace/mm`,
+    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/mm`,
     params: new URLSearchParams('op=stat'),
   },
 ];
@@ -121,9 +118,8 @@ export function MatchingEngineTable() {
       setTraceFunctions((trace) => {
         const updateUrl = trace.map((data) => ({
           ...data,
-          url: data.url.replace(/me\d*/, `me${selectedSequnce}`),
+          url: data.url.replace(/^(.*?)me\d*/, `$1me${selectedSequnce}`),
         }));
-        console.log(updateUrl);
         return updateUrl;
       });
     } else {
