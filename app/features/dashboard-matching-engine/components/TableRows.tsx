@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Button, Input } from '@mui/joy';
+import { Button, Input, Typography } from '@mui/joy';
 
 import { TraceFunction } from '../models/matching-engine.model';
 
@@ -37,6 +37,10 @@ export default function TableRows(props: TableRowsProps) {
     <>
       {TraceFunctions.map((traceRow, index) => (
         <tr key={traceRow.trace_name}>
+          <td></td>
+          <td>
+            <Typography level="body-xs">{index + 1}</Typography>
+          </td>
           <td style={{ padding: '12px 6px' }}>{traceRow.trace_name}</td>
           <td style={{ padding: '12px 6px' }}>{traceRow.trace_group}</td>
           <td style={{ padding: '12px 6px' }}>

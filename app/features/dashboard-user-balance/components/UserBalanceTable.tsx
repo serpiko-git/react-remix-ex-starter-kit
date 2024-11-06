@@ -60,7 +60,7 @@ export function UserBalanceTable({
   responseProps,
   queriesProps,
 }: UserBalanceCombineProps) {
-  console.log(responseProps);
+  // console.log(responseProps);
 
   let list: UserBalance[] = [];
   let total: number;

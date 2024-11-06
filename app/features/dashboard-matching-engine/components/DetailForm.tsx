@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as React from 'react';
 
 import { Box, Modal, Typography, Textarea, IconButton, Sheet } from '@mui/joy';
@@ -37,7 +37,7 @@ export function TraceFunctionDetailForm(props: TraceFunctionDetailFormProps) {
     // This effect runs only when `traceFunction` changes
     if (traceUrl.length > 0) {
       const requestUrl = traceUrl;
-      console.log('Request URL:', requestUrl);
+      // console.log('Request URL:', requestUrl);
       fetch(requestUrl)
         .then((resp) => resp.text()) // Assuming response is text
         .then((data) => {
@@ -50,6 +50,18 @@ export function TraceFunctionDetailForm(props: TraceFunctionDetailFormProps) {
     }
   }, [traceUrl]);
 
+  const responseText = useMemo(() => {
+    if (!response) {
+      return '';
+    }
+
+    const parsedResponse = JSON.stringify(response).replace(/\\"/g, '"');
+
+    return parsedResponse.startsWith('"') && parsedResponse.endsWith('"')
+      ? parsedResponse.slice(1, -1)
+      : parsedResponse;
+  }, [response]);
+
   return (
     <React.Fragment>
       <Sheet
@@ -60,10 +72,7 @@ export function TraceFunctionDetailForm(props: TraceFunctionDetailFormProps) {
           width: '100%',
         }}
       >
-        <Textarea
-          sx={{ width: '100%', height: '100%' }}
-          value={JSON.stringify(response.toString())}
-        />
+        <Textarea sx={{ width: '100%', height: '100%' }} value={responseText} />
       </Sheet>
     </React.Fragment>
   );

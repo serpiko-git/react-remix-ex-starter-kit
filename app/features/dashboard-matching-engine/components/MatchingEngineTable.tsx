@@ -19,6 +19,7 @@ import {
   FormLabel,
   Select,
   Option,
+  Box,
 } from '@mui/joy';
 import { DialogTitle, Modal } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
@@ -141,37 +142,50 @@ export function MatchingEngineTable() {
 
   return (
     <>
-      <Stack
-        width="100%"
-        direction="row"
-        alignItems="flex-start"
-        justifyItems="center"
-        spacing={1}
+      <Box
+        className="SearchAndFilters-tabletUp"
+        sx={{
+          borderRadius: 'sm',
+          py: 2,
+          display: { xs: 'none', sm: 'flex' },
+          alignItems: 'flex-start',
+          gap: 1.5,
+          '& > *': {
+            minWidth: { xs: '120px', md: '160px' },
+          },
+        }}
       >
-        <FormControl
-          size="sm"
-          sx={{ flexDirection: 'row', alignItems: 'center' }}
-        >
-          <FormLabel>API Sequence</FormLabel>
-          <Select
-            size="sm"
-            placeholder="API Sequence"
-            defaultValue={_sequenceOptions[0]}
-            onChange={handleSelectChange}
-            slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-          >
-            {_sequenceOptions.map((value) => (
-              <Option key={value} value={value}>
-                {value}
-              </Option>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
+        <Stack direction="row" alignItems="flex-end" spacing={1}>
+          <FormControl size="sm" sx={{ flex: 1 }}>
+            <FormLabel>API Sequence</FormLabel>
+            <Select
+              size="sm"
+              placeholder="API Sequence"
+              defaultValue={_sequenceOptions[0]}
+              onChange={handleSelectChange}
+              slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+            >
+              {_sequenceOptions.map((value) => (
+                <Option key={value} value={value}>
+                  {value}
+                </Option>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+      </Box>
+
       <Sheet
         className="MatchingEngineTableContainer"
         variant="outlined"
-        sx={{}}
+        sx={{
+          display: { sm: 'initial' },
+          width: '100%',
+          borderRadius: 'sm',
+          flexShrink: 1,
+          overflow: 'auto',
+          minHeight: 0,
+        }}
       >
         <Table
           aria-labelledby="tableTitle"
@@ -190,6 +204,11 @@ export function MatchingEngineTable() {
         >
           <thead>
             <tr>
+              <th
+                data-comment="empty-gap"
+                style={{ width: 20, padding: '12px 6px' }}
+              ></th>
+              <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
               <th style={{ width: 180, padding: '12px 6px' }}>trace_name</th>
               <th style={{ width: 180, padding: '12px 6px' }}>trace_group</th>
               <th style={{ width: 'auto', padding: '12px 6px' }}>trace_url</th>

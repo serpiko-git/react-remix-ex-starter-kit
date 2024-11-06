@@ -126,9 +126,8 @@ export function DashboardMatchingEngine() {
             <Typography level="h2" component="h1">
               Matching Engine
             </Typography>
-
-            <MatchingEngineTable />
           </Box>
+          <MatchingEngineTable />
         </Box>
       </Box>
     </CssVarsProvider>
