@@ -330,6 +330,24 @@ export function Sidebar() {
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.exchangeBalance,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.exchangeBalance,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Exchange Balance</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
               </List>
             </Toggler>
           </ListItem>

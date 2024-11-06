@@ -9,6 +9,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   snapshotPosition: '/dashboard/snapshot-position',
   etcdService: '/dashboard/etcd-service',
   matchingEngine: '/dashboard/matching-engine',
+  exchangeBalance: '/dashboard/exchange-balance',
 };
 
 export const DEFAULT_PATH_NAVIGATE = {
