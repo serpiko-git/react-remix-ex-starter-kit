@@ -8,5 +8,6 @@ export const DEFAULT_SYMBOL_LIST = {
   ETHUSDT: 'ETHUSDT',
   XRPUSDT: 'XRPUSDT',
 };
+export const DEFAULT_DASHBOARD_TICKER = 'BTCUSDT';
 
 export const DEFAULT_EMPTY = '';

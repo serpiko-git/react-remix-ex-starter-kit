@@ -244,6 +244,26 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">
+                        Closed Position P&L
+                      </Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
                       DEFAULT_PATH_NAVIGATE.dashboard.transaction,
                     )}
                     onClick={() =>
@@ -345,6 +365,22 @@ export function Sidebar() {
                     <ListIcon />
                     <ListItemContent>
                       <Typography level="title-sm">Exchange Balance</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.userPnl,
+                    )}
+                    onClick={() =>
+                      handleSideClick(DEFAULT_PATH_NAVIGATE.dashboard.userPnl)
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">User P&L</Typography>
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>

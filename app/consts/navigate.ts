@@ -10,6 +10,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   etcdService: '/dashboard/etcd-service',
   matchingEngine: '/dashboard/matching-engine',
   exchangeBalance: '/dashboard/exchange-balance',
+  userPnl: '/dashboard/user-pnl',
 };
 
 export const DEFAULT_PATH_NAVIGATE = {
