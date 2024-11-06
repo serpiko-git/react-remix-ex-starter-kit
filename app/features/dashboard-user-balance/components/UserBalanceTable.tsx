@@ -60,12 +60,19 @@ export function UserBalanceTable({
   responseProps,
   queriesProps,
 }: UserBalanceCombineProps) {
-  const {
-    data: {
-      list,
-      pagination: { total, page_no, page_size },
-    },
-  } = responseProps;
+  console.log(responseProps);
+
+  let list: UserBalance[] = [];
+  let total: number;
+  let page_no: number;
+  let page_size: number;
+
+  if (responseProps.code === 0) {
+    list = responseProps.data.list;
+    total = responseProps.data.pagination.total;
+    page_no = responseProps.data.pagination.page_no;
+    page_size = responseProps.data.pagination.page_size;
+  }
 
   const { account_id, page, limit } = queriesProps;
   const [order, setOrder] = useState<Order>('desc');
@@ -396,7 +403,7 @@ export function UserBalanceTable({
           )}
 
           {/* data render */}
-          {!!list.length && (
+          {list && list.length ? (
             <>
               <tbody>
                 {[...list]
@@ -489,7 +496,7 @@ export function UserBalanceTable({
                   ))}
               </tbody>
             </>
-          )}
+          ) : null}
         </Table>
       </Sheet>
       <Form method="get" action="./">
@@ -505,7 +512,7 @@ export function UserBalanceTable({
             },
           }}
         >
-          {previous_page && (
+          {previous_page ? (
             <>
               <Button
                 size="sm"
@@ -517,7 +524,7 @@ export function UserBalanceTable({
                 Previous
               </Button>
             </>
-          )}
+          ) : null}
 
           <Box sx={{ flex: 1 }} />
           {pageNumbers.map((pageNumber) => (
@@ -540,7 +547,7 @@ export function UserBalanceTable({
           ))}
           <Box sx={{ flex: 1 }} />
 
-          {next_page && (
+          {next_page ? (
             <>
               <Button
                 size="sm"
@@ -552,7 +559,7 @@ export function UserBalanceTable({
                 Next
               </Button>
             </>
-          )}
+          ) : null}
         </Box>
       </Form>
     </Fragment>
