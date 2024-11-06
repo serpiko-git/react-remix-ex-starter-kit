@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -346,8 +346,9 @@ export function UserPnlTable({
             <>
               <tbody>
                 {[...list]
-                  .sort(getComparator(order, 'worker_id'))
-                  .map((row, i) => (
+                  .map((row) => ({ ...row, sum: Number(row.sum) }))
+                  .sort(getComparator(order, 'sum'))
+                  .map((row) => (
                     <tr key={row.worker_id}>
                       <td>
                         <Typography level="body-xs">{row.ticker}</Typography>
