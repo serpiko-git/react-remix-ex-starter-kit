@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import { hexToRgb } from '@material-ui/core';
 import {
+  ArrowDropDown as ArrowDropDownIcon,
   Search as SearchIcon,
   Warning as WarningIcon,
   EditNote as EditIcon,
@@ -20,6 +21,9 @@ import {
   Select,
   Option,
   Box,
+  IconButton,
+  Typography,
+  Link,
 } from '@mui/joy';
 import { DialogTitle, Modal } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
@@ -27,6 +31,7 @@ import dayjs from 'dayjs';
 import { Controller, set, useForm } from 'react-hook-form';
 
 import { BaseError } from '~/common/apis/apis.model';
+import { Pagination } from '~/common/libs/pagination';
 import {
   apiHost_v1,
   apiGateway_v1,
@@ -37,108 +42,25 @@ import {
   apiProxy_v1,
 } from '~/consts';
 import { ResponsiveModal } from '~/features/modal';
+import { getComparator, Order } from '~/utils/ordering';
 
 import {
-  TraceMMserverResponse,
-  TraceMeCoreResponse,
-  TraceMeOrderbookBResponse,
-  TraceMeResetResponse,
-  TraceMeSnapshotResponse,
-  TraceReconResetResponse,
-  TraceFunction,
-} from '../models/matching-engine.model';
+  ExchangeBalance,
+  ExchangeBalanceCombineProps,
+} from '../models/exchange-balance.model';
 
-import { TraceFunctionDetailForm } from './DetailForm';
-import TableRows from './TableRows';
+export function ExchangeBalanceTable({
+  responseProps,
+  queriesProps,
+}: ExchangeBalanceCombineProps) {
+  const [,] = useState('');
+  const [order, setOrder] = useState<Order>('desc');
+  const [thCount, setThCount] = useState<number>();
 
-// console.log({
-//   apiHost_v1,
-//   apiGateway_v1,
-//   accountHost,
-//   apiAccount_id,
-//   apiMatchingEngine_v1,
-//   apiMatchingRecon_v1,
-//   apiProxy_v1,
-// });
-
-const _sequenceOptions = [
-  'none',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
-];
-
-const _traceFunctions: TraceFunction[] = [
-  {
-    trace_name: 'trace_me_core',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
-    params: new URLSearchParams(''),
-  },
-  {
-    trace_name: 'trace_me_snapshot',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_me_orderbook_b',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_me_reset',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_recon_reset',
-    trace_group: 'trace_recon',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_mmserver',
-    trace_group: 'trace_mmserver',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/mm`,
-    params: new URLSearchParams('op=stat'),
-  },
-];
-
-export function ExchangeBalanceTable() {
-  const [TraceFunctions, setTraceFunctions] = useState(_traceFunctions);
-  const [traceUrl, setTraceUrl] = useState('');
-  const [selectedSequnce, setSelectedSequnce] = useState(_sequenceOptions[0]);
-
-  const handleSelectChange = (
-    event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
-    value: string,
-  ) => {
-    setSelectedSequnce(value);
-  };
-
-  useEffect(() => {
-    if (selectedSequnce !== _sequenceOptions[0]) {
-      setTraceFunctions((trace) => {
-        const updateUrl = trace.map((data) => ({
-          ...data,
-          url: data.url.replace(/^(.*?)me\d*/, `$1me${selectedSequnce}`),
-        }));
-        return updateUrl;
-      });
-    } else {
-      setTraceFunctions(_traceFunctions);
-    }
-  }, [selectedSequnce, setTraceFunctions]);
+  // map data to list (with symbol <= key)
+  const symbolList = Object.entries(responseProps.data).map(
+    ([symbol, data]) => ({ symbol, ...data }),
+  );
 
   return (
     <>
@@ -154,26 +76,7 @@ export function ExchangeBalanceTable() {
             minWidth: { xs: '120px', md: '160px' },
           },
         }}
-      >
-        <Stack direction="row" alignItems="flex-end" spacing={1}>
-          <FormControl size="sm" sx={{ flex: 1 }}>
-            <FormLabel>API Sequence</FormLabel>
-            <Select
-              size="sm"
-              placeholder="API Sequence"
-              defaultValue={_sequenceOptions[0]}
-              onChange={handleSelectChange}
-              slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-            >
-              {_sequenceOptions.map((value) => (
-                <Option key={value} value={value}>
-                  {value}
-                </Option>
-              ))}
-            </Select>
-          </FormControl>
-        </Stack>
-      </Box>
+      ></Box>
 
       <Sheet
         className="MatchingEngineTableContainer"
@@ -209,26 +112,150 @@ export function ExchangeBalanceTable() {
                 style={{ width: 20, padding: '12px 6px' }}
               ></th>
               <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>trace_name</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>trace_group</th>
-              <th style={{ width: 'auto', padding: '12px 6px' }}>trace_url</th>
-              {/* <th style={{ width: 300, padding: '12px 6px' }}>trace_params</th> */}
-              <th style={{ width: 300, padding: '12px 6px' }}>trace</th>
+              <th style={{ width: 120, padding: '12px 6px' }}>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  Symbol
+                </Link>
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_fee_total:lvm
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_fee_total:lvu
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_funding_fee_total:lvm
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_funding_fee_total:lvu
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_re_total:lvm
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_re_total:lvu
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_un_total:lvm
+              </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>
+                pnl_un_total:lvu
+              </th>
             </tr>
           </thead>
-          <tbody
-            style={{
-              backgroundColor: 'transparent',
-            }}
-          >
-            <TableRows
-              TraceFunctions={TraceFunctions}
-              setTraceUrl={setTraceUrl}
-            />
-          </tbody>
+
+          {/* nodata */}
+          {!symbolList.length && (
+            <tbody>
+              <tr>
+                <td colSpan={thCount}>
+                  <Box
+                    display="flex"
+                    justifyContent="flex-start"
+                    alignItems="center"
+                    sx={{ padding: 2 }} // 패딩 추가
+                  >
+                    <IconButton variant="plain" color="danger" sx={{ mr: 1 }}>
+                      <WarningIcon />
+                    </IconButton>
+                    <Typography color="danger" fontWeight="md">
+                      No Data.
+                    </Typography>
+                  </Box>
+                </td>
+              </tr>
+            </tbody>
+          )}
+
+          {/* data render */}
+          {!!symbolList.length && (
+            <>
+              <tbody>
+                {[...symbolList]
+                  .sort(getComparator(order, 'symbol'))
+                  .map((row, i) => (
+                    <tr key={row.symbol}>
+                      <td>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            gap: 2,
+                            alignItems: 'center',
+                          }}
+                        ></Box>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{i}</Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">{row.symbol}</Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_fee_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_fee_total:lvu']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_funding_fee_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_funding_fee_total:lvu']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_re_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_re_total:lvu']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_un_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_un_total:lvu']}
+                        </Typography>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </>
+          )}
         </Table>
       </Sheet>
-      <TraceFunctionDetailForm traceUrl={traceUrl} />
     </>
   );
 }

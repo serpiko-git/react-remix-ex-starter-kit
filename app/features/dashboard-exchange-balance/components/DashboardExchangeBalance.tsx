@@ -41,18 +41,50 @@ import { Form, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
 import { Controller, set, useForm } from 'react-hook-form';
 
-import { BaseError } from '~/common/apis/apis.model';
 import { Header } from '~/features/dashboard-common';
-import { ResponsiveModal } from '~/features/modal';
 import { Sidebar } from '~/features/side-bar';
 
-import { TraceFunctionDetailForm } from './DetailForm';
+import { ExchangeBalanceCombineProps } from '../models/exchange-balance.model';
+
 import { ExchangeBalanceTable } from './ExchangeBalanceTable';
 
-export function DashboardExchangeBalance() {
+export function DashboardExchangeBalance({
+  responseProps,
+  queriesProps,
+}: ExchangeBalanceCombineProps) {
+  const { code, msg, time_now, data } = responseProps;
   const [open, setOpen] = useState<boolean>(true);
   return (
     <CssVarsProvider disableTransitionOnChange>
+      {code !== 0 && (
+        <Modal open={open} onClose={() => setOpen(false)}>
+          <ModalDialog variant="outlined" role="alertdialog">
+            <DialogTitle>
+              <WarningRoundedIcon />
+              Confirmation
+            </DialogTitle>
+            <Divider />
+            <DialogContent>{msg}</DialogContent>
+            <DialogActions>
+              <Button
+                variant="solid"
+                color="danger"
+                onClick={() => setOpen(false)}
+              >
+                Discard notes
+              </Button>
+              <Button
+                variant="plain"
+                color="neutral"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </ModalDialog>
+        </Modal>
+      )}
+
       <Box
         sx={{
           backgroundColor: 'transparent',
@@ -127,7 +159,10 @@ export function DashboardExchangeBalance() {
               Exchange Balance (거래소 잔고)
             </Typography>
           </Box>
-          <ExchangeBalanceTable />
+          <ExchangeBalanceTable
+            responseProps={responseProps}
+            queriesProps={queriesProps}
+          />
         </Box>
       </Box>
     </CssVarsProvider>

@@ -287,6 +287,12 @@ export function UserPnlTable({
         >
           <thead ref={theadRef}>
             <tr>
+              <th
+                style={{
+                  textAlign: 'center',
+                }}
+              ></th>
+              <th>No.</th>
               <th>ticker</th>
               <th>worker_id</th>
               <th>realized_pnl</th>
@@ -348,8 +354,12 @@ export function UserPnlTable({
                 {[...list]
                   .map((row) => ({ ...row, sum: Number(row.sum) }))
                   .sort(getComparator(order, 'sum'))
-                  .map((row) => (
+                  .map((row, i) => (
                     <tr key={row.worker_id}>
+                      <td></td>
+                      <td>
+                        <Typography level="body-xs">{no + i}</Typography>
+                      </td>
                       <td>
                         <Typography level="body-xs">{row.ticker}</Typography>
                       </td>

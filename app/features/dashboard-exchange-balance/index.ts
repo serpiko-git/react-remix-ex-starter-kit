@@ -1,2 +1,2 @@
 export * from './components';
-export * from './models/matching-engine.model';
+export * from './models/exchange-balance.model';
