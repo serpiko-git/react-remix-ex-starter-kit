@@ -13,6 +13,16 @@ if [[ "${args[0]}" = 'derivatives-admin-debug' ]]; then
         set +e
         echo "Run ${args[@]:1} with --expose-gc"
         # node --expose-gc ./dist/index.js "${args[@]:1}"
+
+        echo "NODE_ENV: $NODE_ENV"
+        if [ "$NODE_ENV" = "production" ]; then
+            echo "Run production commands"
+            npm run start
+        else
+            echo "Run develop commands"
+            npm run dev
+        fi
+
         node ./server.js
         ret=$?
         set -e
