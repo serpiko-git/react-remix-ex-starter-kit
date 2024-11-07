@@ -9,6 +9,7 @@ import {
   HomeRounded,
   ChevronRightRounded,
   DownloadRounded,
+  RefreshRounded,
 } from '@mui/icons-material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import {
@@ -158,6 +159,14 @@ export function DashboardExchangeBalance({
             <Typography level="h2" component="h1">
               Exchange Balance (거래소 잔고)
             </Typography>
+            <Button
+              color="primary"
+              startDecorator={<RefreshRounded />}
+              size="sm"
+              onClick={() => window.location.reload()}
+            >
+              Refresh
+            </Button>
           </Box>
           <ExchangeBalanceTable
             responseProps={responseProps}

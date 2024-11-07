@@ -8,6 +8,7 @@ import {
   EditNote as EditIcon,
   CheckCircle as CheckIcon,
   Monitor as MonitorIcon,
+  FormatListNumberedRtlSharp,
 } from '@mui/icons-material';
 import {
   Button,
@@ -28,9 +29,11 @@ import {
 import { DialogTitle, Modal } from '@mui/material';
 import { Form, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
+import numeral from 'numeral';
 import { Controller, set, useForm } from 'react-hook-form';
 
 import { BaseError } from '~/common/apis/apis.model';
+import { Abs } from '~/common/libs/number';
 import { Pagination } from '~/common/libs/pagination';
 import {
   apiHost_v1,
@@ -42,6 +45,7 @@ import {
   apiProxy_v1,
 } from '~/consts';
 import { ResponsiveModal } from '~/features/modal';
+import { ParseCalaog } from '~/features/models/common.model';
 import { getComparator, Order } from '~/utils/ordering';
 
 import {
@@ -56,11 +60,16 @@ export function ExchangeBalanceTable({
   const [,] = useState('');
   const [order, setOrder] = useState<Order>('desc');
   const [thCount, setThCount] = useState<number>();
+  const { catalog, data } = responseProps.data;
 
   // map data to list (with symbol <= key)
-  const symbolList = Object.entries(responseProps.data).map(
-    ([symbol, data]) => ({ symbol, ...data }),
+  const list = Object.entries(responseProps.data.data).map(
+    ([symbol, item]) => ({
+      symbol,
+      ...item,
+    }),
   );
+  const listFmt = ParseCalaog(catalog, list);
 
   return (
     <>
@@ -137,34 +146,42 @@ export function ExchangeBalanceTable({
                 </Link>
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_fee_total:lvm
+                {/* pnl_fee_total:lvu */}
+                P&L금액 합계(user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_fee_total:lvu
+                {/* pnl_fee_total:lvm */}
+                P&L금액 합계(mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_funding_fee_total:lvm
+                {/* pnl_funding_fee_total:lvu */}
+                Funding Fee 합계(user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_funding_fee_total:lvu
+                {/* pnl_funding_fee_total:lvm */}
+                Funding Fee 합계(mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_re_total:lvm
+                {/* pnl_re_total:lvu */}
+                Realized P&L 합계(user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_re_total:lvu
+                {/* pnl_un_total:lvu */}
+                Unrealized P&L 합계(user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_un_total:lvm
+                {/* pnl_re_total:lvm */}
+                Realized P&L 합계(mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
-                pnl_un_total:lvu
+                {/* pnl_un_total:lvm */}
+                Unrealized P&L 합계(mm)
               </th>
             </tr>
           </thead>
 
           {/* nodata */}
-          {!symbolList.length && (
+          {!listFmt.length && (
             <tbody>
               <tr>
                 <td colSpan={thCount}>
@@ -187,10 +204,10 @@ export function ExchangeBalanceTable({
           )}
 
           {/* data render */}
-          {!!symbolList.length && (
+          {!!listFmt.length && (
             <>
               <tbody>
-                {[...symbolList]
+                {[...listFmt]
                   .sort(getComparator(order, 'symbol'))
                   .map((row, i) => (
                     <tr key={row.symbol}>
@@ -211,17 +228,12 @@ export function ExchangeBalanceTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
+                          {row['pnl_fee_total:lvu'].toString().replace('-', '')}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
                           {row['pnl_fee_total:lvm']}
-                        </Typography>
-                      </td>
-                      <td>
-                        <Typography level="body-xs">
-                          {row['pnl_fee_total:lvu']}
-                        </Typography>
-                      </td>
-                      <td>
-                        <Typography level="body-xs">
-                          {row['pnl_funding_fee_total:lvm']}
                         </Typography>
                       </td>
                       <td>
@@ -231,7 +243,7 @@ export function ExchangeBalanceTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {row['pnl_re_total:lvm']}
+                          {row['pnl_funding_fee_total:lvm']}
                         </Typography>
                       </td>
                       <td>
@@ -241,12 +253,17 @@ export function ExchangeBalanceTable({
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {row['pnl_un_total:lvm']}
+                          {row['pnl_un_total:lvu']}
                         </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">
-                          {row['pnl_un_total:lvu']}
+                          {row['pnl_re_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row['pnl_un_total:lvm']}
                         </Typography>
                       </td>
                     </tr>

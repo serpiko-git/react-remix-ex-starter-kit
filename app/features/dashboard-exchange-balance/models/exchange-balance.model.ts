@@ -13,6 +13,9 @@ export interface ExchangeBalance {
   'pnl_re_total:lvu': string;
   'pnl_un_total:lvm': string;
   'pnl_un_total:lvu': string;
+
+  'pnl_funding_fee_total:lvm_abs': number;
+  'pnl_funding_fee_total:lvu_abs': number;
 }
 
 export interface ExchangeBalanceGroup {

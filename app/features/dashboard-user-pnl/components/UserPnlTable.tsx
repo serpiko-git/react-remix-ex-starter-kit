@@ -47,6 +47,7 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 import dayjs from 'dayjs';
+import numeral from 'numeral';
 import { useForm, Controller } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs';
@@ -54,6 +55,7 @@ import {
   DEFAULT_DASHBOARD_TICKER,
   DEFAULT_PAGINATION_LIMIT,
 } from '~/consts/consts';
+import { ParseCalaog } from '~/features/models/common.model';
 import { getComparator, Order } from '~/utils/ordering';
 
 import {
@@ -71,9 +73,12 @@ export function UserPnlTable({
   const {
     data: {
       list,
+      catalog,
       pagination: { total, page_no, page_size },
     },
   } = responseProps;
+
+  const listFmt = ParseCalaog(catalog, list);
   const { code, msg, data } = responseProps;
   const { ticker, page, limit } = queriesProps;
 
@@ -100,7 +105,7 @@ export function UserPnlTable({
   } = Pagination<UserPnl>({
     $current_page: Number(page),
     $num_records: Number(total),
-    $record_data: list,
+    $record_data: listFmt,
     $num_records_per_page: Number(limit),
   });
 
@@ -174,7 +179,7 @@ export function UserPnlTable({
           >
             <Stack direction="row" alignItems="flex-end" spacing={1}>
               <FormControl size="sm" sx={{ flex: 1 }}>
-                <FormLabel>worker_id</FormLabel>
+                <FormLabel>user_id</FormLabel>
                 <Controller
                   name="worker_id"
                   control={control}
@@ -294,7 +299,7 @@ export function UserPnlTable({
               ></th>
               <th>No.</th>
               <th>ticker</th>
-              <th>worker_id</th>
+              <th>user_id</th>
               <th>realized_pnl</th>
               <th>unrealized_pnl</th>
               <th>
@@ -325,7 +330,7 @@ export function UserPnlTable({
           </thead>
 
           {/* nodata */}
-          {!list.length && (
+          {!listFmt.length && (
             <tbody>
               <tr>
                 <td colSpan={thCount}>
@@ -348,11 +353,14 @@ export function UserPnlTable({
           )}
 
           {/* data render */}
-          {!!list.length && (
+          {!!listFmt.length && (
             <>
               <tbody>
-                {[...list]
-                  .map((row) => ({ ...row, sum: Number(row.sum) }))
+                {[...listFmt]
+                  .map((row) => {
+                    const a = Number(row.sum.replace(/,/g, ''));
+                    return { ...row, sum: a };
+                  })
                   .sort(getComparator(order, 'sum'))
                   .map((row, i) => (
                     <tr key={row.worker_id}>
@@ -373,7 +381,9 @@ export function UserPnlTable({
                         <Typography level="body-xs">{row.un}</Typography>
                       </td>
                       <td>
-                        <Typography level="body-xs">{row.sum}</Typography>
+                        <Typography level="body-xs">
+                          {numeral(row.sum).format('0,0.00')}
+                        </Typography>
                       </td>
                     </tr>
                   ))}

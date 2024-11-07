@@ -4,6 +4,7 @@ import {
   ChevronRightRounded,
   HomeRounded,
   DownloadRounded,
+  RefreshRounded,
 } from '@mui/icons-material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
@@ -27,7 +28,6 @@ export function DashboardUserPnl({
   queriesProps,
 }: UserPnlCombineProps) {
   const { code, msg } = responseProps;
-
   const [open, setOpen] = useState<boolean>(true);
 
   return (
@@ -130,10 +130,11 @@ export function DashboardUserPnl({
             </Typography>
             <Button
               color="primary"
-              startDecorator={<DownloadRounded />}
+              startDecorator={<RefreshRounded />}
               size="sm"
+              onClick={() => window.location.reload()}
             >
-              Download PDF
+              Refresh
             </Button>
           </Box>
           <UserPnlTable
