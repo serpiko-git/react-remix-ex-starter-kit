@@ -147,36 +147,37 @@ export function ExchangeBalanceTable({
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_fee_total:lvu */}
-                P&L금액 합계(user)
+                P&L Fee (user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_fee_total:lvm */}
-                P&L금액 합계(mm)
+                P&L Fee (mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_funding_fee_total:lvu */}
-                Funding Fee 합계(user)
+                Funding Fee (user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_funding_fee_total:lvm */}
-                Funding Fee 합계(mm)
+                Funding Fee (mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_re_total:lvu */}
-                Realized P&L 합계(user)
+                Realized P&L (user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_un_total:lvu */}
-                Unrealized P&L 합계(user)
+                Unrealized P&L (user)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_re_total:lvm */}
-                Realized P&L 합계(mm)
+                Realized P&L (mm)
               </th>
               <th style={{ width: 180, padding: '12px 6px' }}>
                 {/* pnl_un_total:lvm */}
-                Unrealized P&L 합계(mm)
+                Unrealized P&L (mm)
               </th>
+              <th style={{ width: 180, padding: '12px 6px' }}>Time At</th>
             </tr>
           </thead>
 
@@ -264,6 +265,11 @@ export function ExchangeBalanceTable({
                       <td>
                         <Typography level="body-xs">
                           {row['pnl_un_total:lvm']}
+                        </Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {`[TODO - me] ${Date.now()}`}
                         </Typography>
                       </td>
                     </tr>
