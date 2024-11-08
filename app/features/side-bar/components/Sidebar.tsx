@@ -384,6 +384,24 @@ export function Sidebar() {
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>
+
+                <ListItem>
+                  <ListItemButton
+                    selected={currentPath.startsWith(
+                      DEFAULT_PATH_NAVIGATE.dashboard.serverControl,
+                    )}
+                    onClick={() =>
+                      handleSideClick(
+                        DEFAULT_PATH_NAVIGATE.dashboard.serverControl,
+                      )
+                    }
+                  >
+                    <ListIcon />
+                    <ListItemContent>
+                      <Typography level="title-sm">Server Control</Typography>
+                    </ListItemContent>
+                  </ListItemButton>
+                </ListItem>
               </List>
             </Toggler>
           </ListItem>
