@@ -398,7 +398,9 @@ export function Sidebar() {
                   >
                     <ListIcon />
                     <ListItemContent>
-                      <Typography level="title-sm">Server Control</Typography>
+                      <Typography level="title-sm">
+                        Server Control (Start, Shutdown, Restart)
+                      </Typography>
                     </ListItemContent>
                   </ListItemButton>
                 </ListItem>

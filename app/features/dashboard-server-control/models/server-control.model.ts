@@ -1,67 +1,77 @@
-import { NumbersSharp } from '@mui/icons-material';
+import { BaseResponse, BaseResponseList } from '~/features/models/common.model';
 
-export interface TraceFunction {
-  trace_name: string;
-  trace_group: string;
-  url: string;
-  params: URLSearchParams;
+export type SequenceOptions = { key: string; value: number }[];
+
+interface ServiceEndpoints {
+  protocol: string;
+  host: string;
+  port: string;
 }
 
-export interface TraceMeCoreResponse {
-  c_cancel: number;
-  c_cancel_err: number;
-  c_edit: number;
-  c_edit_err: number;
-  c_settle: number;
-  count: number;
-  elapsed: number;
-  id: string;
-  n_cm_log_events: number;
-  n_cm_log_obook: number;
-  n_cm_log_snapshot: number;
-  n_entry_buy: number;
-  n_entry_sell: number;
-  n_lmt_log_events: number;
-  n_lmt_log_events_ref: number;
-  n_lmt_log_obooks: number;
-  n_lmt_log_orders: number;
-  n_orders: number;
-  n_orders_buys: number;
-  n_orders_sell: number;
-  num_total_processed: number;
-  time_last: string;
-  ts_last: number;
-  ts_reset: string;
-  v_cancel: number;
-  v_cancel_err: number;
-  v_edit: number;
-  v_edit_err: number;
-  v_settle: number;
-  volume: number;
+type ISO_8601 =
+  `${string}-${string}-${string}T${string}:${string}:${string}.${string}`;
+
+export const etcdServerListServiceStatus = {
+  0: 'Pending',
+  1: 'Recovering',
+  2: 'Running',
+  3: 'Draining',
+  4: 'Terminating',
+  5: 'Terminated',
+} as const;
+export type EtcdServerListServiceStatusTypes =
+  keyof typeof etcdServerListServiceStatus;
+
+export const etcdServerListServiceStatusColor = {
+  0: 'neutral',
+  1: 'primary',
+  2: 'success',
+  3: 'warning',
+  4: 'danger',
+  5: 'neutral',
+} as const;
+export type EtcdServerListServiceStatusColorTypes =
+  // eslint-disable-next-line max-len
+  (typeof etcdServerListServiceStatusColor)[keyof typeof etcdServerListServiceStatusColor];
+
+export interface EtcdServiceList {
+  pod_name: string;
+  service_name: string;
+  service_group: string;
+  service_host: string;
+  service_id: string;
+  service_endpoints?: ServiceEndpoints;
+  service_status: EtcdServerListServiceStatusTypes;
+  service_version: string;
+  build_time: string;
+  created_at: ISO_8601;
+  updated_at: ISO_8601;
+  lease_id: string;
 }
 
-export interface TraceMeSnapshotResponse {
-  pr_ask_set: string[];
-  pr_bid_set: string[];
-  qty_ask_set: string[];
-  qty_bid_set: string[];
-  ticker: string;
-  ts_id: string;
-  type: string;
-}
+export type EtcdServiceListResponse = BaseResponseList<EtcdServiceList>;
 
-export interface TraceMeOrderbookBResponse {
-  pr_ask_set: string[];
-  pr_bid_set: string[];
-  qty_ask_set: string[];
-  qty_bid_set: string[];
-  ticker: string;
-  ts_id: string;
-  type: string;
-}
+export const serviceControlStopStatus = {
+  SERVICE_STOP_ALL: 'service_stop_all',
+  SERVICE_STOP_EACH: 'service_stop_each',
+  SERVER_STOP_FORCE: 'server_stop_force',
+} as const;
 
-export interface TraceMeResetResponse {}
-export interface TraceReconResetResponse {}
-export interface TraceMMserverResponse {
-  // just text
+export type ServiceControlStopStatusTypes =
+  (typeof serviceControlStopStatus)[keyof typeof serviceControlStopStatus];
+
+export interface ServiceContolParams {
+  [serviceControlStopStatus.SERVICE_STOP_ALL]?: {
+    service_name: 'all';
+    service_status: 3;
+  };
+  [serviceControlStopStatus.SERVICE_STOP_EACH]?: {
+    service_name: string;
+    service_status: 3;
+  };
+  /** 서버 강제 중지 */
+  [serviceControlStopStatus.SERVER_STOP_FORCE]?: {
+    service_id: string;
+    service_status: 5;
+  };
 }

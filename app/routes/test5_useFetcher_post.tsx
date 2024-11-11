@@ -35,6 +35,7 @@ export const loader: LoaderFunction = async ({
   request,
   params,
 }: LoaderFunctionArgs) => {
+  console.log('loader 함수 작동');
   const url = new URL(request.url);
   const queryParams = url.searchParams;
   const limitParam = queryParams.get('limit');
@@ -49,6 +50,7 @@ export const action: ActionFunction = async ({
   request,
   params,
 }: ActionFunctionArgs) => {
+  console.log('action 함수 작동');
   // Get the requested form.
   const form = await request.formData();
 

@@ -1,149 +1,109 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import { hexToRgb } from '@material-ui/core';
-import {
-  Search as SearchIcon,
-  Warning as WarningIcon,
-  EditNote as EditIcon,
-  CheckCircle as CheckIcon,
-  Monitor as MonitorIcon,
-} from '@mui/icons-material';
+import { RefreshRounded, WarningRounded } from '@mui/icons-material';
 import {
   Button,
-  ModalDialog,
   Sheet,
   Table,
-  Textarea,
   Stack,
   FormControl,
   FormLabel,
   Select,
   Option,
   Box,
+  Typography,
 } from '@mui/joy';
-import { DialogTitle, Modal } from '@mui/material';
-import { Form, useFetcher } from '@remix-run/react';
-import dayjs from 'dayjs';
-import { Controller, set, useForm } from 'react-hook-form';
-
-import { BaseError } from '~/common/apis/apis.model';
-import {
-  apiHost_v1,
-  apiGateway_v1,
-  accountHost,
-  apiAccount_id,
-  apiMatchingEngine_v1,
-  apiMatchingRecon_v1,
-  apiProxy_v1,
-} from '~/consts';
-import { ResponsiveModal } from '~/features/modal';
+import { useFetcher } from '@remix-run/react';
 
 import {
-  TraceMMserverResponse,
-  TraceMeCoreResponse,
-  TraceMeOrderbookBResponse,
-  TraceMeResetResponse,
-  TraceMeSnapshotResponse,
-  TraceReconResetResponse,
-  TraceFunction,
+  EtcdServiceList,
+  SequenceOptions,
+  EtcdServerListServiceStatusColorTypes,
+  etcdServerListServiceStatus,
+  etcdServerListServiceStatusColor,
+  ServiceControlStopStatusTypes,
+  serviceControlStopStatus,
+  ServiceContolParams,
 } from '../models/server-control.model';
 
+import ModalConfirm from './ModalConfirm';
 import TableRows from './TableRows';
 
-// console.log({
-//   apiHost_v1,
-//   apiGateway_v1,
-//   accountHost,
-//   apiAccount_id,
-//   apiMatchingEngine_v1,
-//   apiMatchingRecon_v1,
-//   apiProxy_v1,
-// });
-
-const _sequenceOptions = [
-  'none',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10',
+const _sequenceOptions: SequenceOptions = [
+  { key: 'none', value: 0 },
+  { key: '3(s)', value: 3 },
+  { key: '5(s)', value: 5 },
+  { key: '10(s)', value: 10 },
+  { key: '15(s)', value: 15 },
+  { key: '20(s)', value: 20 },
+  { key: '30(s)', value: 30 },
+  { key: '60(s) - 1분', value: 60 },
+  { key: '90(s) - 1분 30초', value: 90 },
+  { key: '120(s) - 2분', value: 120 },
+  { key: '180(s) - 3분', value: 180 },
+  { key: '240(s) - 4분', value: 240 },
+  { key: '300(s) - 5분', value: 300 },
+  { key: '600(s) - 10분', value: 600 },
+  { key: '1800(s) - 30분', value: 1800 },
+  { key: '3600(s) - 1시간', value: 3600 },
 ];
 
-const _traceFunctions: TraceFunction[] = [
-  {
-    trace_name: 'trace_me_core',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/core`,
-    params: new URLSearchParams(''),
-  },
-  {
-    trace_name: 'trace_me_snapshot',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/snapshot`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_me_orderbook_b',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/orderbook_b`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_me_reset',
-    trace_group: 'trace_me',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/me/reset_me`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_recon_reset',
-    trace_group: 'trace_recon',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/recon/reset_recon`,
-    params: new URLSearchParams('ticker=BTCUSDT'),
-  },
-  {
-    trace_name: 'trace_mmserver',
-    trace_group: 'trace_mmserver',
-    url: `${apiMatchingEngine_v1}/futures/api/v1/debug/trace/mm`,
-    params: new URLSearchParams('op=stat'),
-  },
-];
+export interface ServerControlTableProps {
+  lists: EtcdServiceList[];
+}
 
-export function ServerControlTable() {
-  const [TraceFunctions, setTraceFunctions] = useState(_traceFunctions);
-  const [traceUrl, setTraceUrl] = useState('');
-  const [selectedSequnce, setSelectedSequnce] = useState(_sequenceOptions[0]);
+export function ServerControlTable(props: ServerControlTableProps) {
+  const { lists } = props;
+  const [selectedSequnce, setSelectedSequnce] = useState<number>(
+    _sequenceOptions[0].value,
+  );
+  const fetcher = useFetcher();
+  const [showModal, setShowModal] = useState(false);
+  const onCancel = () => setShowModal(false);
+  const onConfirm = () => setShowModal(false);
+
+  const [action, setAction] = useState<ServiceControlStopStatusTypes>();
+  const [request, setRequest] = useState<
+    | ServiceContolParams['service_stop_all']
+    | ServiceContolParams['service_stop_each']
+    | ServiceContolParams['server_stop_force']
+  >();
 
   const handleSelectChange = (
     event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
-    value: string,
+    value: number,
   ) => {
     setSelectedSequnce(value);
   };
 
-  useEffect(() => {
-    if (selectedSequnce !== _sequenceOptions[0]) {
-      setTraceFunctions((trace) => {
-        const updateUrl = trace.map((data) => ({
-          ...data,
-          url: data.url.replace(/^(.*?)me\d*/, `$1me${selectedSequnce}`),
-        }));
-        return updateUrl;
-      });
-    } else {
-      setTraceFunctions(_traceFunctions);
-    }
-  }, [selectedSequnce, setTraceFunctions]);
+  const handleConfirm = (params: {
+    actionParam: ServiceControlStopStatusTypes;
+    requestParam:
+      | ServiceContolParams['service_stop_all']
+      | ServiceContolParams['service_stop_each']
+      | ServiceContolParams['server_stop_force'];
+  }) => {
+    const { actionParam, requestParam } = params;
+    setAction(actionParam);
+    setRequest(requestParam);
+    setShowModal(true);
+  };
 
   return (
     <>
+      <ModalConfirm
+        open={showModal}
+        action={action}
+        request={request}
+        fetcher={fetcher}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+      />
       <Box
         className="SearchAndFilters-tabletUp"
         sx={{
+          position: 'relative',
           borderRadius: 'sm',
           py: 2,
           display: { xs: 'none', sm: 'flex' },
@@ -152,25 +112,69 @@ export function ServerControlTable() {
           '& > *': {
             minWidth: { xs: '120px', md: '160px' },
           },
+          width: '100%',
         }}
       >
         <Stack direction="row" alignItems="flex-end" spacing={1}>
           <FormControl size="sm" sx={{ flex: 1 }}>
-            <FormLabel>API Sequence</FormLabel>
+            <FormLabel>Server status update time (seconds)</FormLabel>
             <Select
               size="sm"
-              placeholder="API Sequence"
-              defaultValue={_sequenceOptions[0]}
+              placeholder="Server status update time (seconds)"
+              defaultValue={selectedSequnce}
               onChange={handleSelectChange}
               slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
             >
-              {_sequenceOptions.map((value) => (
-                <Option key={value} value={value}>
-                  {value}
+              {_sequenceOptions.map((option) => (
+                <Option key={option.key} value={option.value}>
+                  {option.key}
                 </Option>
               ))}
             </Select>
           </FormControl>
+          <Button
+            type="button"
+            variant="solid"
+            color="primary"
+            startDecorator={<RefreshRounded />}
+            sx={{ height: '32px' }}
+          >
+            Menual Refresh (수동 동기화)
+          </Button>
+          <div style={{ marginLeft: '20px' }}>
+            <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
+              {Object.keys(etcdServerListServiceStatus).map((index) => (
+                <Box display="flex" alignItems="center" key={index}>
+                  <Typography
+                    fontWeight="bold"
+                    color={etcdServerListServiceStatusColor[index]}
+                  >
+                    ■ {etcdServerListServiceStatus[index]}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </div>
+
+          {/* 맨 우측에 위치시키기 위해 margin-left: auto 추가 */}
+          <Button
+            type="button"
+            variant="solid"
+            color="danger"
+            startDecorator={<WarningRounded />}
+            sx={{ height: '32px', position: 'absolute', right: 0 }}
+            onClick={() =>
+              handleConfirm({
+                actionParam: serviceControlStopStatus.SERVICE_STOP_ALL,
+                requestParam: {
+                  service_name: 'all',
+                  service_status: 3,
+                },
+              })
+            }
+          >
+            서비스 전체 중지 요청
+          </Button>
         </Stack>
       </Box>
 
@@ -208,11 +212,19 @@ export function ServerControlTable() {
                 style={{ width: 20, padding: '12px 6px' }}
               ></th>
               <th style={{ width: 50, padding: '12px 6px' }}>No.</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>trace_name</th>
-              <th style={{ width: 180, padding: '12px 6px' }}>trace_group</th>
-              <th style={{ width: 'auto', padding: '12px 6px' }}>trace_url</th>
-              {/* <th style={{ width: 300, padding: '12px 6px' }}>trace_params</th> */}
-              <th style={{ width: 300, padding: '12px 6px' }}>trace</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>Service</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>Service ID</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>Group</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>Status</th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>
+                Startup Time
+              </th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>
+                Server Action
+              </th>
+              <th style={{ width: 'auto', padding: '12px 6px' }}>
+                Service Action
+              </th>
             </tr>
           </thead>
           <tbody
@@ -220,10 +232,7 @@ export function ServerControlTable() {
               backgroundColor: 'transparent',
             }}
           >
-            <TableRows
-              TraceFunctions={TraceFunctions}
-              setTraceUrl={setTraceUrl}
-            />
+            <TableRows lists={lists} handleConfirm={handleConfirm} />
           </tbody>
         </Table>
       </Sheet>

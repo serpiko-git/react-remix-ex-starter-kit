@@ -46,10 +46,25 @@ import { Header } from '~/features/dashboard-common';
 import { ResponsiveModal } from '~/features/modal';
 import { Sidebar } from '~/features/side-bar';
 
+import { EtcdServiceListResponse } from '../models';
+
 import { ServerControlTable } from './ServerControlTable';
 
-export function DashboardServerControl() {
-  const [open, setOpen] = useState<boolean>(true);
+interface DashboardServerControlProps {
+  etcdServiceListResponse: EtcdServiceListResponse;
+}
+
+export function DashboardServerControl(props: DashboardServerControlProps) {
+  const { etcdServiceListResponse } = props;
+  console.log(etcdServiceListResponse);
+
+  const { code, data, msg } = etcdServiceListResponse;
+
+  let lists = [];
+  if (code === 0) {
+    lists = data.list;
+  }
+
   return (
     <CssVarsProvider disableTransitionOnChange>
       <Box
@@ -107,7 +122,7 @@ export function DashboardServerControl() {
                 color="primary"
                 sx={{ fontWeight: 500, fontSize: 12 }}
               >
-                Matching Engine
+                Server Control (Start, Shutdown, Restart)
               </Typography>
             </Breadcrumbs>
           </Box>
@@ -123,10 +138,10 @@ export function DashboardServerControl() {
             }}
           >
             <Typography level="h2" component="h1">
-              Matching Engine
+              Server Control (Start, Shutdown, Restart)
             </Typography>
           </Box>
-          <ServerControlTable />
+          <ServerControlTable lists={lists} />
         </Box>
       </Box>
     </CssVarsProvider>

@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as React from 'react';
 
-import { Box, Modal, Typography, Textarea, IconButton, Sheet } from '@mui/joy';
-import { transformWithEsbuild } from 'vite';
-
-import { apiHost_v1, apiGateway_v1, apiMatchingEngine_v1 } from '~/consts';
+import { Textarea, Sheet } from '@mui/joy';
 
 import {
   TraceFunction,
