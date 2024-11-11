@@ -55,7 +55,7 @@ import {
   DEFAULT_DASHBOARD_TICKER,
   DEFAULT_PAGINATION_LIMIT,
 } from '~/consts/consts';
-import { ParseCalaog } from '~/features/models/common.model';
+import { ParseCatalog } from '~/features/models/common.model';
 import { getComparator, Order } from '~/utils/ordering';
 
 import {
@@ -78,7 +78,7 @@ export function UserPnlTable({
     },
   } = responseProps;
 
-  const listFmt = ParseCalaog(catalog, list);
+  const listFmt = ParseCatalog(catalog, list);
   const { code, msg, data } = responseProps;
   const { ticker, page, limit } = queriesProps;
 

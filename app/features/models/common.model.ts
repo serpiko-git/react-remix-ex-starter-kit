@@ -10,7 +10,7 @@ export interface BaseResponse<T> {
 export interface BaseResponseList<T> {
   code: number;
   data: {
-    catalog: {
+    catalog?: {
       [key: string]: any;
     };
     list: T[];
@@ -22,7 +22,7 @@ export interface BaseResponseList<T> {
 export interface BaseResponsePaging<T> {
   code: number;
   data: {
-    catalog: {
+    catalog?: {
       [key: string]: any;
     };
     pagination: {
@@ -39,7 +39,7 @@ export interface BaseResponsePaging<T> {
 const CATALOG_CASH = 'cash';
 const CATALOG_TIME = 'time';
 
-export function ParseCalaog<T>(catalog, list: T[]) {
+export function ParseCatalog<T>(catalog, list: T[]) {
   return list.map((item) => {
     const clone = { ...item };
     const fields = Object.keys(clone);
