@@ -19,6 +19,7 @@ import {
   ClosedPositionPnlQueries,
   ClosedPositionPnlCombineProps,
 } from '~/features/dashboard-closed-postion-pnl';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -96,6 +97,13 @@ export default function index() {
   const combinedProps: ClosedPositionPnlCombineProps =
     useLoaderData<ClosedPositionPnlCombineProps>();
   const { responseProps, queriesProps } = combinedProps;
+
+  if (responseProps.data?.catalog && responseProps.data?.list) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
 
   return (
     <div>

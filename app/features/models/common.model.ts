@@ -37,6 +37,7 @@ export interface BaseResponsePaging<T> {
 }
 
 const CATALOG_CASH = 'cash';
+const CATALOG_QTY = 'qty';
 const CATALOG_TIME = 'time';
 
 export function ParseCatalog<T>(catalog, list: T[]) {
@@ -49,8 +50,11 @@ export function ParseCatalog<T>(catalog, list: T[]) {
         const catalogItem = catalog[k];
         if (catalogItem === CATALOG_CASH) {
           clone[k] = numeral(clone[k]).format('0,0.00');
+        } else if (catalogItem === CATALOG_QTY) {
+          clone[k] = numeral(clone[k]).format('0,0.000');
         } else if (catalogItem === CATALOG_TIME) {
-          // nothing to do
+          // UTC ISO-8601
+          clone[k] = new Date(clone[k]).toISOString();
         } else {
           // nothing to do
         }

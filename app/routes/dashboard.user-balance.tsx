@@ -20,6 +20,7 @@ import {
   UserBalanceCombineProps,
   UserBalanceResponse,
 } from '~/features/dashboard-user-balance/models/user-balance.model';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -65,6 +66,13 @@ export const action: ActionFunction = async ({
 export default function index() {
   const combineProps: UserBalanceCombineProps = useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = combineProps;
+  if (responseProps.data.catalog) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
+
   return (
     <div>
       <DashboardUserBalance

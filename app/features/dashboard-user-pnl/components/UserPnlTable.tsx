@@ -40,7 +40,6 @@ import {
   DialogActions,
 } from '@mui/joy';
 import {
-  FetcherWithComponents,
   Form,
   useFetcher,
   useNavigate,
