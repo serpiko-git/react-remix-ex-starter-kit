@@ -177,7 +177,7 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
             <Divider sx={{ my: 2 }} />
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
               </FormControl>
               <Button color="primary" onClick={() => setOpen(false)}>
                 Submit
@@ -272,7 +272,7 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
               </FormControl>
 
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
                 <Controller
                   name="page_size"
                   control={control}
@@ -340,32 +340,7 @@ export function TradeTable({ responseProps, queriesProps }: TradeCombineProps) {
         >
           <thead ref={theadRef}>
             <tr>
-              <th
-                style={{
-                  textAlign: 'center',
-                }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== list.length
-                  }
-                  checked={selected.length === list.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked
-                        ? list.map((row) => row.order_id.toString())
-                        : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === list.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
-              </th>
+              <th></th>
               <th>No.</th>
               <th>
                 <Link

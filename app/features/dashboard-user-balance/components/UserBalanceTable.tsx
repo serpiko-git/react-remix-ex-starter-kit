@@ -249,8 +249,7 @@ export function UserBalanceTable({
                   render={({ field: { name, value, onChange, onBlur } }) => (
                     <Select
                       name={name}
-                      placeholder={name}
-                      value={value ?? limit}
+                      placeholder="Limit"
                       onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"

@@ -40,7 +40,6 @@ import {
   FormControl,
 } from '@mui/joy';
 import {
-  FetcherWithComponents,
   Form,
   useFetcher,
   useNavigate,
@@ -80,93 +79,6 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: number;
-  limit: number;
-}) {
-  const [openConfirm, setOpenConfirm] = useState(false);
-
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
-
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
-
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
-
-  return (
-    <Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Detail</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </Fragment>
-  );
-}
 export function ClosedPositionPnlTable({
   responseProps,
   queriesProps,
@@ -232,7 +144,7 @@ export function ClosedPositionPnlTable({
   const renderFilters = () => (
     <Fragment>
       <FormControl size="sm">
-        <FormLabel>Category</FormLabel>
+        <FormLabel>category</FormLabel>
         <Controller
           name="symbol"
           control={control}
@@ -376,7 +288,7 @@ export function ClosedPositionPnlTable({
               />
             </FormControl>
             <FormControl size="sm">
-              <FormLabel>Category</FormLabel>
+              <FormLabel>limit</FormLabel>
 
               <Controller
                 name="limit"
@@ -445,34 +357,7 @@ export function ClosedPositionPnlTable({
         >
           <thead ref={theadRef}>
             <tr>
-              <th
-                style={{
-                  width: 48,
-                  textAlign: 'center',
-                  padding: '12px 6px',
-                }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== list.length
-                  }
-                  checked={selected.length === list.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked
-                        ? list.map((row) => row.closed_pnl_position_id)
-                        : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === list.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
-              </th>
+              <th></th>
               <th>No.</th>
               <th>
                 <Link
@@ -558,34 +443,7 @@ export function ClosedPositionPnlTable({
                   .sort(getComparator(order, 'closed_pnl_position_id'))
                   .map((row, i) => (
                     <tr key={row.closed_pnl_position_id}>
-                      <td style={{ textAlign: 'center', width: 120 }}>
-                        <Checkbox
-                          size="sm"
-                          checked={selected.includes(
-                            row.closed_pnl_position_id,
-                          )}
-                          color={
-                            selected.includes(row.closed_pnl_position_id)
-                              ? 'primary'
-                              : undefined
-                          }
-                          onChange={(event) => {
-                            // eslint-disable-next-line no-confusing-arrow
-                            setSelected((ids) =>
-                              event.target.checked
-                                ? ids.concat(row.closed_pnl_position_id)
-                                : ids.filter(
-                                    (itemId) =>
-                                      itemId !== row.closed_pnl_position_id,
-                                  ),
-                            );
-                          }}
-                          slotProps={{
-                            checkbox: { sx: { textAlign: 'left' } },
-                          }}
-                          sx={{ verticalAlign: 'text-bottom' }}
-                        />
-                      </td>
+                      <td style={{ textAlign: 'center', width: 120 }}></td>
                       <td>
                         <Typography level="body-xs">{no + i}</Typography>
                       </td>
@@ -702,27 +560,7 @@ export function ClosedPositionPnlTable({
                       <td>
                         <Typography level="body-xs">{row.trade_ts}</Typography>
                       </td>
-                      <td>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            gap: 2,
-                            alignItems: 'center',
-                          }}
-                        >
-                          {/* <Link level="body-xs" component="button">
-                          Download
-                          </Link> */}
-                          <RowMenu
-                            fetcher={fetcher}
-                            order_id={row.closed_pnl_position_id}
-                            account_id={row.account_id}
-                            symbol={row.symbol}
-                            page={page}
-                            limit={limit}
-                          />
-                        </Box>
-                      </td>
+                      <td></td>
                     </tr>
                   ))}
               </tbody>

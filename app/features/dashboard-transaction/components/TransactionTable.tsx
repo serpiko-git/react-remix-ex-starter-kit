@@ -270,7 +270,7 @@ export function TransactionTable({
             <Divider sx={{ my: 2 }} />
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
               </FormControl>
               <Button color="primary" onClick={() => setOpen(false)}>
                 Submit
@@ -399,7 +399,7 @@ export function TransactionTable({
               </FormControl>
 
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
                 <Controller
                   name="page_size"
                   control={control}
@@ -469,9 +469,8 @@ export function TransactionTable({
         >
           <thead ref={theadRef}>
             <tr>
-              <td></td>
+              <th></th>
               <th>No.</th>
-              <th>Action</th>
               <th>
                 <Link
                   underline="none"
@@ -686,27 +685,6 @@ export function TransactionTable({
                     <td></td>
                     <td>
                       <Typography level="body-xs">{no + i}</Typography>
-                    </td>
-                    <td>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          gap: 2,
-                          alignItems: 'center',
-                        }}
-                      >
-                        {/* <Link level="body-xs" component="button">
-                          Download
-                          </Link> */}
-                        <RowMenu
-                          fetcher={fetcher}
-                          order_id={row.transaction_id}
-                          account_id={row.account_id}
-                          symbol={row.symbol}
-                          page_no={String(page_no)}
-                          page_size={String(page_size)}
-                        />
-                      </Box>
                     </td>
                     <td>
                       {' '}

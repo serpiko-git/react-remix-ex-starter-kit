@@ -40,101 +40,12 @@ import {
   DialogActions,
 } from '@mui/joy';
 import {
-  FetcherWithComponents,
   Form,
   useFetcher,
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
 import { useForm, Controller } from 'react-hook-form';
-
-function RowMenu({
-  fetcher,
-  order_id,
-  account_id,
-  symbol,
-  page,
-  limit,
-}: {
-  fetcher: FetcherWithComponents<unknown>;
-  symbol: string;
-  order_id: string;
-  account_id: string;
-  page: string;
-  limit: string;
-}) {
-  const [openConfirm, setOpenConfirm] = useState(false);
-
-  const handleDeleteClick = () => {
-    setOpenConfirm(true); // 모달을 열기 위해 상태를 true로 설정
-  };
-
-  const handleConfirm = () => {
-    // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
-    fetcher.submit(
-      {
-        action: 'delete',
-        symbol,
-        order_id,
-        account_id,
-        page,
-        limit,
-      },
-      { method: 'post', action: './' },
-    );
-    setOpenConfirm(false); // 모달 닫기
-  };
-
-  const handleCancel = () => {
-    setOpenConfirm(false); // 모달을 취소하면 닫기
-  };
-
-  return (
-    <Fragment>
-      <Dropdown>
-        <MenuButton
-          slots={{ root: IconButton }}
-          slotProps={{
-            root: { variant: 'plain', color: 'neutral', size: 'sm' },
-          }}
-        >
-          <MoreHorizRoundedIcon />
-        </MenuButton>
-        <Menu size="sm" sx={{ minWidth: 140 }}>
-          <MenuItem color="primary">Create</MenuItem>
-          <Divider />
-          <MenuItem color="warning">Edit</MenuItem>
-          <Divider />
-          {/* Delete */}
-          <MenuItem color="danger" onClick={handleDeleteClick}>
-            Order Cancel
-          </MenuItem>
-        </Menu>
-      </Dropdown>
-      {/* 모달 구현 */}
-      <Modal open={openConfirm} onClose={handleCancel}>
-        <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>
-            <WarningRoundedIcon />
-            Confirm Cancellation
-          </DialogTitle>
-          <Divider />
-          <DialogContent>
-            Are you sure you want to cancel this order?
-          </DialogContent>
-          <DialogActions>
-            <Button variant="solid" color="danger" onClick={handleConfirm}>
-              OK
-            </Button>
-            <Button variant="plain" color="neutral" onClick={handleCancel}>
-              Cancel
-            </Button>
-          </DialogActions>
-        </ModalDialog>
-      </Modal>
-    </Fragment>
-  );
-}
 
 import { Pagination } from '~/common/libs';
 import { DEFAULT_SYMBOL_LIST } from '~/consts';
@@ -246,7 +157,7 @@ export function ClosedOrderPnlTable({
             <Divider sx={{ my: 2 }} />
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
               </FormControl>
               <Button color="primary" onClick={() => setOpen(false)}>
                 Submit
@@ -375,14 +286,14 @@ export function ClosedOrderPnlTable({
               </FormControl>
 
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
                 <Controller
                   name="limit"
                   control={control}
                   render={({ field: { name, value, onChange, onBlur } }) => (
                     <Select
                       name={name}
-                      placeholder={name}
+                      placeholder="Limit"
                       value={value ?? limit}
                       onChange={(event, newValue) => onChange(newValue)} // 선택된 옵션의 값을 반영
                       onBlur={onBlur}
@@ -446,32 +357,7 @@ export function ClosedOrderPnlTable({
         >
           <thead ref={theadRef}>
             <tr>
-              <th
-                style={{
-                  textAlign: 'center',
-                }}
-              >
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== list.length
-                  }
-                  checked={selected.length === list.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked
-                        ? list.map((row) => row.closed_pnl_order_id)
-                        : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === list.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
-              </th>
+              <th></th>
               <th>No.</th>
               <th>Action</th>
               <th>
@@ -553,55 +439,9 @@ export function ClosedOrderPnlTable({
                   .sort(getComparator(order, 'closed_pnl_order_id'))
                   .map((row, i) => (
                     <tr key={row.closed_pnl_order_id}>
-                      <td style={{ textAlign: 'center', width: 120 }}>
-                        <Checkbox
-                          size="sm"
-                          checked={selected.includes(row.closed_pnl_order_id)}
-                          color={
-                            selected.includes(row.closed_pnl_order_id)
-                              ? 'primary'
-                              : undefined
-                          }
-                          onChange={(event) => {
-                            // eslint-disable-next-line no-confusing-arrow
-                            setSelected((ids) =>
-                              event.target.checked
-                                ? ids.concat(row.closed_pnl_order_id)
-                                : ids.filter(
-                                    (itemId) =>
-                                      itemId !== row.closed_pnl_order_id,
-                                  ),
-                            );
-                          }}
-                          slotProps={{
-                            checkbox: { sx: { textAlign: 'left' } },
-                          }}
-                          sx={{ verticalAlign: 'text-bottom' }}
-                        />
-                      </td>
+                      <td> </td>
                       <td>
                         <Typography level="body-xs">{no + i}</Typography>
-                      </td>
-                      <td>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            gap: 2,
-                            alignItems: 'center',
-                          }}
-                        >
-                          {/* <Link level="body-xs" component="button">
-                          Download
-                          </Link> */}
-                          <RowMenu
-                            fetcher={fetcher}
-                            order_id={row.order_id}
-                            account_id={row.account_id}
-                            symbol={row.symbol}
-                            page={page.toString()}
-                            limit={limit.toString()}
-                          />
-                        </Box>
                       </td>
                       <td>
                         {' '}
