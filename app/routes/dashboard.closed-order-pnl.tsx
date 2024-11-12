@@ -18,6 +18,7 @@ import {
   ClosedOrderPnlResponse,
   DashboardClosedOrderPnl,
 } from '~/features/dashboard-closed-order-pnl';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -98,6 +99,12 @@ export default function index() {
   const combineProps: ClosedOrderPnlCombinProps =
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = combineProps;
+  if (responseProps.data?.catalog && responseProps.data?.list) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
 
   return (
     <div>

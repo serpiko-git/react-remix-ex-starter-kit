@@ -37,7 +37,6 @@ export const loader: LoaderFunction = async ({
   searchParams.set('limit', limit.toString());
 
   const fetchUrl = `${apiHost_v1}/prometheus/user-balance?${searchParams.toString()}`;
-  console.log('fetchUrl: ', fetchUrl);
 
   const response = await fetch(fetchUrl);
   const responseProps: UserPnlResponse = await response.json();

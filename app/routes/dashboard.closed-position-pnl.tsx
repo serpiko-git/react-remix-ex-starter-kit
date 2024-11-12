@@ -19,6 +19,7 @@ import {
   ClosedPositionPnlQueries,
   ClosedPositionPnlCombineProps,
 } from '~/features/dashboard-closed-postion-pnl';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -34,7 +35,6 @@ export const loader: LoaderFunction = async ({
   const endTime = url.searchParams.get('end_time') || '999999999999';
   const fetchUrl = `${apiHost_v1}/closed-pnl-position/list?account_id=${account_id}&page=${page}&limit=${limit}&category=${category}&start_time=${startTime}&end_time=${endTime}`;
 
-  console.log(`request url: ${fetchUrl}`);
   const response = await fetch(fetchUrl);
   const responseProps: ClosedPositionPnlResponse = await response.json();
 
@@ -96,6 +96,13 @@ export default function index() {
   const combinedProps: ClosedPositionPnlCombineProps =
     useLoaderData<ClosedPositionPnlCombineProps>();
   const { responseProps, queriesProps } = combinedProps;
+
+  if (responseProps.data?.catalog && responseProps.data?.list) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
 
   return (
     <div>

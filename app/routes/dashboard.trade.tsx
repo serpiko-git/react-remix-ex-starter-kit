@@ -17,6 +17,7 @@ import {
   TradeCombineProps,
   TradeResponse,
 } from '~/features/dashboard-trade';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -60,6 +61,13 @@ export default function index() {
   const transactionCombineProps: TradeCombineProps =
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = transactionCombineProps;
+
+  if (responseProps.data?.catalog && responseProps.data?.list) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
 
   const { account_id, page_size, page_no } = queriesProps;
   const fetcher = useFetcher();

@@ -260,7 +260,7 @@ export function OpenOrderTable({
             <Divider sx={{ my: 2 }} />
             <Sheet sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
               </FormControl>
               <Button color="primary" onClick={() => setOpen(false)}>
                 Submit
@@ -406,7 +406,7 @@ export function OpenOrderTable({
               </FormControl>
 
               <FormControl size="sm">
-                <FormLabel>Category</FormLabel>
+                <FormLabel>limit</FormLabel>
                 <Controller
                   name="limit"
                   control={control}

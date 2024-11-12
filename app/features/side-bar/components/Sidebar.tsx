@@ -244,26 +244,6 @@ export function Sidebar() {
                 <ListItem>
                   <ListItemButton
                     selected={currentPath.startsWith(
-                      DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
-                    )}
-                    onClick={() =>
-                      handleSideClick(
-                        DEFAULT_PATH_NAVIGATE.dashboard.closedPositionPnl,
-                      )
-                    }
-                  >
-                    <ListIcon />
-                    <ListItemContent>
-                      <Typography level="title-sm">
-                        Closed Position P&L
-                      </Typography>
-                    </ListItemContent>
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem>
-                  <ListItemButton
-                    selected={currentPath.startsWith(
                       DEFAULT_PATH_NAVIGATE.dashboard.transaction,
                     )}
                     onClick={() =>

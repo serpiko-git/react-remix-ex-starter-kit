@@ -18,6 +18,7 @@ import {
   TransactionCombineProps,
   TransactionResponse,
 } from '~/features/dashboard-transaction';
+import { ParseCatalog } from '~/features/models/common.model';
 
 export const loader: LoaderFunction = async ({
   request,
@@ -78,6 +79,12 @@ export default function index() {
   const transactionCombineProps: TransactionCombineProps =
     useLoaderData<typeof loader>();
   const { responseProps, queriesProps } = transactionCombineProps;
+  if (responseProps.data?.catalog && responseProps.data?.list) {
+    responseProps.data.list = ParseCatalog(
+      responseProps.data.catalog,
+      responseProps.data.list,
+    );
+  }
 
   return (
     <div>

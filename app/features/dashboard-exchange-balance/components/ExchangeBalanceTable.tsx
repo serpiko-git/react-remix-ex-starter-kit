@@ -45,7 +45,7 @@ import {
   apiProxy_v1,
 } from '~/consts';
 import { ResponsiveModal } from '~/features/modal';
-import { ParseCalaog } from '~/features/models/common.model';
+import { ParseCatalog } from '~/features/models/common.model';
 import { getComparator, Order } from '~/utils/ordering';
 
 import {
@@ -69,7 +69,7 @@ export function ExchangeBalanceTable({
       ...item,
     }),
   );
-  const listFmt = ParseCalaog(catalog, list);
+  const listFmt = ParseCatalog(catalog, list);
 
   return (
     <>
