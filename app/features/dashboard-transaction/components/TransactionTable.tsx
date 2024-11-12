@@ -46,7 +46,7 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, set } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs';
 import { DEFAULT_SYMBOL_LIST } from '~/consts';
@@ -183,11 +183,12 @@ export function TransactionTable({
   const { account_id } = queriesProps;
 
   const [order, setOrder] = useState<Order>('desc');
+  const [orderField, setOrderField] =
+    useState<keyof Transaction>('transaction_id');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
   const [thCount, setThCount] = useState<number>();
-
   const { control, handleSubmit, watch, setValue } =
     useForm<TransactionSearchValues>({
       defaultValues: {
@@ -468,28 +469,7 @@ export function TransactionTable({
         >
           <thead ref={theadRef}>
             <tr>
-              <th>
-                <Checkbox
-                  size="sm"
-                  indeterminate={
-                    selected.length > 0 && selected.length !== list.length
-                  }
-                  checked={selected.length === list.length}
-                  onChange={(event) => {
-                    setSelected(
-                      event.target.checked
-                        ? list.map((row) => row.order_id)
-                        : [],
-                    );
-                  }}
-                  color={
-                    selected.length > 0 || selected.length === list.length
-                      ? 'primary'
-                      : undefined
-                  }
-                  sx={{ verticalAlign: 'text-bottom' }}
-                />
-              </th>
+              <td></td>
               <th>No.</th>
               <th>Action</th>
               <th>
@@ -497,7 +477,10 @@ export function TransactionTable({
                   underline="none"
                   color="primary"
                   component="button"
-                  onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')}
+                  onClick={() => {
+                    setOrderField('transaction_id');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
                   endDecorator={<ArrowDropDownIcon />}
                   sx={[
                     {
@@ -516,7 +499,33 @@ export function TransactionTable({
                   transaction_id
                 </Link>
               </th>
-              <th> account_id </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={(event) => {
+                    setOrderField('account_id');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  account_id
+                </Link>
+              </th>
               <th> symbol </th>
               <th> BaseAsset </th>
               <th> QuoteAsset </th>
@@ -531,12 +540,116 @@ export function TransactionTable({
               <th> balance </th>
               <th> exec_price </th>
               <th> fee_rate </th>
-              <th> order_id </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={(event) => {
+                    setOrderField('order_id');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  order_id
+                </Link>
+              </th>
               <th> from_transfer_account_id </th>
               <th> to_transfer_account_id </th>
-              <th> ts_id </th>
-              <th> created_ts </th>
-              <th> transaction_time </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={(event) => {
+                    setOrderField('ts_id');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  ts_id
+                </Link>
+              </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={(event) => {
+                    setOrderField('created_ts');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  created_ts
+                </Link>
+              </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={(event) => {
+                    setOrderField('transaction_time');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  transaction_time
+                </Link>
+              </th>
             </tr>
           </thead>
 
@@ -567,34 +680,10 @@ export function TransactionTable({
           {!!list.length && (
             <tbody>
               {[...list]
-                .sort(getComparator(order, 'transaction_id'))
+                .sort(getComparator(order, orderField))
                 .map((row, i) => (
-                  <tr key={row.transaction_id}>
-                    <td style={{ textAlign: 'center', width: 120 }}>
-                      <Checkbox
-                        size="sm"
-                        checked={selected.includes(row.transaction_id)}
-                        color={
-                          selected.includes(row.transaction_id)
-                            ? 'primary'
-                            : undefined
-                        }
-                        onChange={(event) => {
-                          // eslint-disable-next-line no-confusing-arrow
-                          setSelected((ids) =>
-                            event.target.checked
-                              ? ids.concat(row.transaction_id)
-                              : ids.filter(
-                                  (itemId) => itemId !== row.transaction_id,
-                                ),
-                          );
-                        }}
-                        slotProps={{
-                          checkbox: { sx: { textAlign: 'left' } },
-                        }}
-                        sx={{ verticalAlign: 'text-bottom' }}
-                      />
-                    </td>
+                  <tr key={''}>
+                    <td></td>
                     <td>
                       <Typography level="body-xs">{no + i}</Typography>
                     </td>
@@ -795,19 +884,21 @@ export function TransactionTable({
           ))}
           <Box sx={{ flex: 1 }} />
 
-          {next_page && (
-            <>
-              <Button
-                size="sm"
-                variant="outlined"
-                color="neutral"
-                endDecorator={<KeyboardArrowRightIcon />}
-                onClick={() => handlePagination(next_page)}
-              >
-                Next
-              </Button>
-            </>
-          )}
+          {next_page &&
+            (console.log(`next_page: ${next_page}`),
+            (
+              <>
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  endDecorator={<KeyboardArrowRightIcon />}
+                  onClick={() => handlePagination(next_page)}
+                >
+                  Next
+                </Button>
+              </>
+            ))}
         </Box>
       </Form>
     </Fragment>
