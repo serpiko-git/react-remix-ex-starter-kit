@@ -11,6 +11,7 @@ export const DEFAULT_DASHBOARD_PATH = {
   matchingEngine: '/dashboard/matching-engine',
   exchangeBalance: '/dashboard/exchange-balance',
   userPnl: '/dashboard/user-pnl',
+  serverControl: '/dashboard/server-control',
 };
 
 export const DEFAULT_PATH_NAVIGATE = {

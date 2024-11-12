@@ -7,22 +7,15 @@ export interface BaseResponse<T> {
   time_now: string;
 }
 
-export interface BaseResponseList<T> {
-  code: number;
-  data: {
-    catalog?: {
-      [key: string]: any;
-    };
+export interface BaseResponseList<T>
+  extends BaseResponse<{
+    catalog: { [key: string]: any };
     list: T[];
-  };
-  msg: string;
-  time_now: string;
-}
+  }> {}
 
-export interface BaseResponsePaging<T> {
-  code: number;
-  data: {
-    catalog?: {
+export interface BaseResponsePaging<T>
+  extends BaseResponse<{
+    catalog: {
       [key: string]: any;
     };
     pagination: {
@@ -31,10 +24,7 @@ export interface BaseResponsePaging<T> {
       page_size: number;
     };
     list: T[];
-  };
-  msg: string;
-  time_now: string;
-}
+  }> {}
 
 const CATALOG_CASH = 'cash';
 const CATALOG_QTY = 'qty';
