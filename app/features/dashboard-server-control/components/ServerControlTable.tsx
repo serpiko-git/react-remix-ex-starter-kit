@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { RefreshRounded, WarningRounded } from '@mui/icons-material';
 import {
@@ -102,20 +102,49 @@ export function ServerControlTable(props: ServerControlTableProps) {
     setShowModal(true);
   };
 
+  const onPoll = useCallback(async () => {
+    try {
+      await fetcher.submit({}, { method: 'get', action: './' });
+    } catch (error) {
+      console.error('Polling error:', error);
+    }
+  }, []);
+
+  const { start: pollingStart, stop: pollingStop } = usePolling(onPoll);
+
   const handleRefresh = () => {
     if (isExecution.current === true) {
       alert('요청 처리중입니다');
     }
+
+    // pollingStop(); // 수동 리프레시 시 자동 갱신 중지
+
     fetcher.submit({}, { method: 'get', action: './' });
 
     isExecution.current = true;
   };
 
-  const onPoll = () => {
-    fetcher.submit({}, { method: 'get', action: './' });
-  };
+  // 타이머 주기에 따른 자동 갱신을 설정
+  useEffect(() => {
+    if (isExecution.current) {
+      console.log('요청 처리 중 폴링 중지');
+      return;
+    }
 
-  usePolling({ interval: selectedSeconds, onPoll });
+    if (selectedSeconds > 0) {
+      pollingStart(selectedSeconds); // 선택한 주기에 맞춰 밀리초로 변환하여 타이머 시작
+    } else {
+      pollingStop(); // 선택 주기가 0이면 타이머 중지
+    }
+
+    // 주기 변경 시마다 타이머를 리셋하기 위해 pollingStop을 cleanup에 설정
+    // eslint-disable-next-line consistent-return
+    return () => {
+      if (selectedSeconds > 0) {
+        pollingStop();
+      }
+    };
+  }, [selectedSeconds, pollingStart, pollingStop]);
 
   /**
    * fetcher idle 모드에는 옵션값이 없다
@@ -168,6 +197,9 @@ export function ServerControlTable(props: ServerControlTableProps) {
         fetcher={fetcher}
         onCancel={onCancel}
         onConfirm={onConfirm}
+        pollingStart={pollingStart}
+        selectedSeconds={selectedSeconds}
+        pollingStop={pollingStop}
       />
       <Box
         className="SearchAndFilters-tabletUp"
@@ -185,7 +217,7 @@ export function ServerControlTable(props: ServerControlTableProps) {
         }}
       >
         <Stack direction="row" alignItems="flex-end" spacing={1}>
-          <FormControl size="sm" sx={{ flex: 1, width: '324px' }}>
+          <FormControl size="sm" sx={{ flex: 1, width: '330px' }}>
             <FormLabel>
               Last update:
               <Typography fontWeight="bold" fontSize="sm">

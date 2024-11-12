@@ -61,8 +61,11 @@ interface ModalConfirmlProps {
     | ServiceContolParams['service_stop_each']
     | ServiceContolParams['server_stop_force'];
   fetcher: FetcherWithComponents<unknown>;
-  onCancel?: () => void;
-  onConfirm?: () => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+  pollingStart: ($seconds: number) => void;
+  selectedSeconds: number;
+  pollingStop: () => void;
 }
 
 export default function ModalConfirm(props: ModalConfirmlProps) {
@@ -73,6 +76,9 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
     requestParams,
     onCancel,
     onConfirm,
+    pollingStart,
+    selectedSeconds,
+    pollingStop,
   } = props;
 
   const handleConfirm = () => {
@@ -87,6 +93,14 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
 
     onConfirm(); // 모달 닫기
   };
+
+  useEffect(() => {
+    if (open) {
+      pollingStop();
+    } else {
+      pollingStart(selectedSeconds);
+    }
+  }, [open]);
 
   let description: JSX.Element = null;
 

@@ -1,26 +1,58 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-interface UsePollingProps {
-  interval: number;
-  onPoll: () => void;
-}
+type UsePollingProps = () => void | Promise<void>;
 
-export function usePolling({ interval, onPoll }: UsePollingProps) {
+export type SetInterval = ReturnType<typeof window.setInterval>;
+
+export function usePolling(onPoll: UsePollingProps) {
   const isExecuting = useRef(false);
+  const pollingInterval = useRef<SetInterval>();
 
-  useEffect(() => {
-    if (interval <= 0) return;
-    const pollingInterval = setInterval(() => {
-      if (isExecuting.current) return;
+  const stop = useCallback(() => {
+    console.log('폴링 중지');
+    if (pollingInterval.current) {
+      clearInterval(pollingInterval.current);
+      pollingInterval.current = undefined;
+    }
+  }, []);
 
-      isExecuting.current = true;
-      onPoll(); // 요청 실행
-      isExecuting.current = false;
-    }, interval * 1000); // ms로 변환
+  const start = useCallback(
+    ($seconds: number) => {
+      console.log(`폴링 시작: ${$seconds}초`);
+      if (pollingInterval.current) {
+        stop(); // 기존 타이머가 있으면 중지하고
+      }
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      clearInterval(pollingInterval);
-    };
-  }, [interval, onPoll]);
+      pollingInterval.current = setInterval(async () => {
+        if (isExecuting.current) return;
+
+        isExecuting.current = true;
+        console.log('폴링 실행됨');
+        await onPoll(); // 요청 실행
+        isExecuting.current = false;
+      }, $seconds * 1000);
+    },
+    [stop, onPoll],
+  );
+
+  // useEffect(() => {
+  //   if (interval <= 0) return;
+
+  //   pollingInterval.current = setInterval(async () => {
+  //     if (isExecuting.current) return;
+
+  //     isExecuting.current = true;
+  //     console.log('폴링 실행됨');
+  //     await onPoll(); // 요청 실행
+  //     isExecuting.current = false;
+  //   }, interval * 1000); // ms로 변환
+
+  //   // eslint-disable-next-line consistent-return
+  //   return () => {
+  //     console.log('여기가 실행');
+  //     stop();
+  //   };
+  // }, [interval]);
+
+  return { stop, start };
 }
