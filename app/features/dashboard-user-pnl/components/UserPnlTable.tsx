@@ -54,6 +54,14 @@ import {
   DEFAULT_DASHBOARD_TICKER,
   DEFAULT_PAGINATION_LIMIT,
 } from '~/consts/consts';
+import {
+  USER_PNL_SORT_COLUMN_RE,
+  USER_PNL_SORT_COLUMN_SUM,
+  USER_PNL_SORT_COLUMN_UN,
+  USER_PNL_USERTYPE_ALL,
+  USER_PNL_USERTYPE_MM,
+  USER_PNL_USERTYPE_USER,
+} from '~/features/dashboard-user-pnl';
 import { ParseCatalog } from '~/features/models/common.model';
 import { getComparator, Order } from '~/utils/ordering';
 
@@ -82,6 +90,7 @@ export function UserPnlTable({
   const { ticker, page, limit } = queriesProps;
 
   const [order, setOrder] = useState<Order>('desc');
+  const [orderBy, setOrderBy] = useState<keyof UserPnl>('sum');
   const [selected, setSelected] = useState<readonly string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const theadRef = useRef<HTMLTableSectionElement | null>(null);
@@ -178,6 +187,27 @@ export function UserPnlTable({
           >
             <Stack direction="row" alignItems="flex-end" spacing={1}>
               <FormControl size="sm" sx={{ flex: 1 }}>
+                <FormLabel>ticker</FormLabel>
+                <Controller
+                  name="ticker"
+                  control={control}
+                  render={({ field: { name, value, onChange, onBlur } }) => (
+                    <Input
+                      name={name}
+                      placeholder={name}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                      size="sm"
+                      startDecorator={<SearchIcon />}
+                    />
+                  )}
+                />
+              </FormControl>
+            </Stack>
+
+            <Stack direction="row" alignItems="flex-end" spacing={1}>
+              <FormControl size="sm" sx={{ flex: 1 }}>
                 <FormLabel>user_id</FormLabel>
                 <Controller
                   name="worker_id"
@@ -195,6 +225,30 @@ export function UserPnlTable({
               </FormControl>
             </Stack>
 
+            <Stack direction="row" alignItems="flex-end" spacing={1}>
+              <FormControl size="sm" sx={{ flex: 1 }}>
+                <FormLabel>user_type</FormLabel>
+                <Controller
+                  name="worker_type"
+                  control={control}
+                  render={({ field: { name, value, onChange, onBlur } }) => (
+                    <Select
+                      name={name}
+                      placeholder={USER_PNL_USERTYPE_ALL}
+                      onChange={(event, newValue) => onChange(newValue)}
+                      onBlur={onBlur}
+                      size="sm"
+                      slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+                    >
+                      <Option value="all">{USER_PNL_USERTYPE_ALL}</Option>
+                      <Option value="lvu">{USER_PNL_USERTYPE_USER}</Option>
+                      <Option value="lvm">{USER_PNL_USERTYPE_MM}</Option>
+                    </Select>
+                  )}
+                />
+              </FormControl>
+            </Stack>
+
             <Stack
               direction="row"
               alignItems="flex-end"
@@ -202,20 +256,29 @@ export function UserPnlTable({
               sx={{ flex: 1 }}
             >
               <FormControl sx={{ flex: 1 }} size="sm">
-                <FormLabel>ticker</FormLabel>
+                <FormLabel>sort_by (descending)</FormLabel>
                 <Controller
-                  name="ticker"
+                  name="sort_by"
                   control={control}
                   render={({ field: { name, value, onChange, onBlur } }) => (
-                    <Input
+                    <Select
                       name={name}
-                      placeholder={name}
-                      value={value}
-                      onChange={onChange}
+                      placeholder={USER_PNL_SORT_COLUMN_SUM}
+                      onChange={(event, newValue) => onChange(newValue)}
                       onBlur={onBlur}
                       size="sm"
-                      startDecorator={<SearchIcon />}
-                    />
+                      slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+                    >
+                      <Option value={USER_PNL_SORT_COLUMN_SUM}>
+                        {USER_PNL_SORT_COLUMN_SUM}
+                      </Option>
+                      <Option value={USER_PNL_SORT_COLUMN_RE}>
+                        {USER_PNL_SORT_COLUMN_RE}
+                      </Option>
+                      <Option value={USER_PNL_SORT_COLUMN_UN}>
+                        {USER_PNL_SORT_COLUMN_UN}
+                      </Option>
+                    </Select>
                   )}
                 />
               </FormControl>
@@ -299,14 +362,70 @@ export function UserPnlTable({
               <th>No.</th>
               <th>ticker</th>
               <th>user_id</th>
-              <th>realized_pnl</th>
-              <th>unrealized_pnl</th>
+              <th>user_type</th>
               <th>
                 <Link
                   underline="none"
                   color="primary"
                   component="button"
-                  onClick={() => setOrder(order === 'asc' ? 'desc' : 'asc')}
+                  onClick={() => {
+                    setOrderBy('re');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  realized_pnl
+                </Link>
+              </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={() => {
+                    setOrderBy('un');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
+                  endDecorator={<ArrowDropDownIcon />}
+                  sx={[
+                    {
+                      fontWeight: 'lg',
+                      '& svg': {
+                        transition: '0.2s',
+                        transform:
+                          order === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                      },
+                    },
+                    order === 'desc'
+                      ? { '& svg': { transform: 'rotate(0deg)' } }
+                      : { '& svg': { transform: 'rotate(180deg)' } },
+                  ]}
+                >
+                  unrealized_pnl
+                </Link>
+              </th>
+              <th>
+                <Link
+                  underline="none"
+                  color="primary"
+                  component="button"
+                  onClick={() => {
+                    setOrderBy('sum');
+                    setOrder(order === 'asc' ? 'desc' : 'asc');
+                  }}
                   endDecorator={<ArrowDropDownIcon />}
                   sx={[
                     {
@@ -357,10 +476,12 @@ export function UserPnlTable({
               <tbody>
                 {[...listFmt]
                   .map((row) => {
-                    const a = Number(row.sum.replace(/,/g, ''));
-                    return { ...row, sum: a };
+                    const sum = Number(row.sum.replace(/,/g, ''));
+                    const un = Number(row.un.replace(/,/g, ''));
+                    const re = Number(row.re.replace(/,/g, ''));
+                    return { ...row, sum, un, re };
                   })
-                  .sort(getComparator(order, 'sum'))
+                  .sort(getComparator(order, orderBy))
                   .map((row, i) => (
                     <tr key={row.worker_id}>
                       <td></td>
@@ -372,6 +493,11 @@ export function UserPnlTable({
                       </td>
                       <td>
                         <Typography level="body-xs">{row.worker_id}</Typography>
+                      </td>
+                      <td>
+                        <Typography level="body-xs">
+                          {row.worker_type}
+                        </Typography>
                       </td>
                       <td>
                         <Typography level="body-xs">{row.re}</Typography>
