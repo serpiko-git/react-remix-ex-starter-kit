@@ -40,7 +40,7 @@ export interface EtcdServiceList {
   service_group: string;
   service_host: string;
   service_id: string;
-  service_endpoints?: ServiceEndpoints;
+  service_endpoints?: ServiceEndpoints[];
   service_status: EtcdServerListServiceStatusTypes;
   service_version: string;
   build_time: string;
@@ -49,11 +49,17 @@ export interface EtcdServiceList {
   lease_id: string;
 }
 
-export type EtcdServiceListResponse = BaseResponseList<EtcdServiceList>;
+export interface EtcdServiceListResponse
+  extends BaseResponseList<EtcdServiceList> {
+  method: string;
+}
 
 export const serviceControlStopStatus = {
+  /** 서비스 전체 중지 요청 */
   SERVICE_STOP_ALL: 'service_stop_all',
+  /** 서비스 중지 요청 */
   SERVICE_STOP_EACH: 'service_stop_each',
+  /** 서버 강제 중지 */
   SERVER_STOP_FORCE: 'server_stop_force',
 } as const;
 
@@ -61,10 +67,12 @@ export type ServiceControlStopStatusTypes =
   (typeof serviceControlStopStatus)[keyof typeof serviceControlStopStatus];
 
 export interface ServiceContolParams {
+  /** 서비스 전체 중지 요청 */
   [serviceControlStopStatus.SERVICE_STOP_ALL]?: {
     service_name: 'all';
     service_status: 3;
   };
+  /** 서비스 중지 요청 */
   [serviceControlStopStatus.SERVICE_STOP_EACH]?: {
     service_name: string;
     service_status: 3;

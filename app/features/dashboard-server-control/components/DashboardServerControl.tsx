@@ -56,7 +56,7 @@ interface DashboardServerControlProps {
 
 export function DashboardServerControl(props: DashboardServerControlProps) {
   const { etcdServiceListResponse } = props;
-  console.log(etcdServiceListResponse);
+  // console.log(etcdServiceListResponse);
 
   const { code, data, msg } = etcdServiceListResponse;
 

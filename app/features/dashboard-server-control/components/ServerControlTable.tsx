@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { hexToRgb } from '@material-ui/core';
 import { RefreshRounded, WarningRounded } from '@mui/icons-material';
 import {
   Button,
@@ -14,23 +13,26 @@ import {
   Box,
   Typography,
 } from '@mui/joy';
-import { useFetcher } from '@remix-run/react';
+import { useActionData, useFetcher } from '@remix-run/react';
+import dayjs from 'dayjs';
+
+import { usePolling } from '~/common/hooks/usePolling';
 
 import {
   EtcdServiceList,
   SequenceOptions,
-  EtcdServerListServiceStatusColorTypes,
   etcdServerListServiceStatus,
   etcdServerListServiceStatusColor,
   ServiceControlStopStatusTypes,
   serviceControlStopStatus,
   ServiceContolParams,
+  EtcdServiceListResponse,
 } from '../models/server-control.model';
 
 import ModalConfirm from './ModalConfirm';
 import TableRows from './TableRows';
 
-const _sequenceOptions: SequenceOptions = [
+const _secondsOptions: SequenceOptions = [
   { key: 'none', value: 0 },
   { key: '3(s)', value: 3 },
   { key: '5(s)', value: 5 },
@@ -54,27 +56,37 @@ export interface ServerControlTableProps {
 }
 
 export function ServerControlTable(props: ServerControlTableProps) {
+  /** props */
   const { lists } = props;
-  const [selectedSequnce, setSelectedSequnce] = useState<number>(
-    _sequenceOptions[0].value,
-  );
   const fetcher = useFetcher();
-  const [showModal, setShowModal] = useState(false);
-  const onCancel = () => setShowModal(false);
-  const onConfirm = () => setShowModal(false);
+  // const actionData = useActionData();
+  const isExecution = useRef(false);
 
-  const [action, setAction] = useState<ServiceControlStopStatusTypes>();
-  const [request, setRequest] = useState<
+  /** state */
+  const [showModal, setShowModal] = useState(false);
+  const [selectedSeconds, setSelectedSeconds] = useState<number>(
+    _secondsOptions[0].value,
+  );
+  const [serviceFetchActionType, setServiceFetchActionType] =
+    useState<ServiceControlStopStatusTypes>();
+  const [requestParams, setRequestParams] = useState<
     | ServiceContolParams['service_stop_all']
     | ServiceContolParams['service_stop_each']
     | ServiceContolParams['server_stop_force']
   >();
+  const [updatedLists, setUpdatedLists] = useState<EtcdServiceList[]>(lists);
+  const [lastUpdate, setLastUpdate] = useState<string>();
+
+  /** functions */
+  const onCancel = () => setShowModal(false);
+
+  const onConfirm = () => setShowModal(false);
 
   const handleSelectChange = (
     event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
     value: number,
   ) => {
-    setSelectedSequnce(value);
+    setSelectedSeconds(value);
   };
 
   const handleConfirm = (params: {
@@ -85,17 +97,74 @@ export function ServerControlTable(props: ServerControlTableProps) {
       | ServiceContolParams['server_stop_force'];
   }) => {
     const { actionParam, requestParam } = params;
-    setAction(actionParam);
-    setRequest(requestParam);
+    setServiceFetchActionType(actionParam);
+    setRequestParams(requestParam);
     setShowModal(true);
   };
+
+  const handleRefresh = () => {
+    if (isExecution.current === true) {
+      alert('요청 처리중입니다');
+    }
+    fetcher.submit({}, { method: 'get', action: './' });
+
+    isExecution.current = true;
+  };
+
+  const onPoll = () => {
+    fetcher.submit({}, { method: 'get', action: './' });
+  };
+
+  usePolling({ interval: selectedSeconds, onPoll });
+
+  /**
+   * fetcher idle 모드에는 옵션값이 없다
+   * 현재 fetcher.submit 을 이용하여 GET, POST 를 모두 사용하고 있으므로
+   * 서버사이드(loader)에서 method=GET 을 넣어 POST를 감지 하지 않도록 한다
+   */
+  useEffect(() => {
+    // console.log('fetcher', fetcher);
+    if (fetcher.state === 'idle') {
+      let method;
+      if ((fetcher.data as EtcdServiceListResponse)?.method) {
+        method = (fetcher.data as EtcdServiceListResponse).method;
+      }
+
+      const data = fetcher.data as EtcdServiceListResponse;
+
+      if (typeof data === 'object') {
+        setLastUpdate(
+          dayjs(new Date()).format('YYYY년 MM월 DD일 HH시 mm분 ss.SSS초'),
+        );
+
+        if (method === 'GET') {
+          if (data?.data?.list) {
+            setUpdatedLists(data.data.list);
+          }
+        }
+      }
+
+      isExecution.current = false;
+    }
+  }, [fetcher, fetcher.data]);
+
+  // fetcher 가 아닌 loader 값을 감지하여 갱신하는 이펙트
+  useEffect(() => {
+    if (lists.length) {
+      setLastUpdate(
+        dayjs(new Date()).format('YYYY년 MM월 DD일 HH시 mm분 ss.SSS초'),
+      );
+
+      setUpdatedLists(lists);
+    }
+  }, [lists]);
 
   return (
     <>
       <ModalConfirm
         open={showModal}
-        action={action}
-        request={request}
+        serviceFetchActionType={serviceFetchActionType}
+        requestParams={requestParams}
         fetcher={fetcher}
         onCancel={onCancel}
         onConfirm={onConfirm}
@@ -116,31 +185,39 @@ export function ServerControlTable(props: ServerControlTableProps) {
         }}
       >
         <Stack direction="row" alignItems="flex-end" spacing={1}>
-          <FormControl size="sm" sx={{ flex: 1 }}>
-            <FormLabel>Server status update time (seconds)</FormLabel>
+          <FormControl size="sm" sx={{ flex: 1, width: '324px' }}>
+            <FormLabel>
+              Last update:
+              <Typography fontWeight="bold" fontSize="sm">
+                {lastUpdate}
+              </Typography>
+            </FormLabel>
             <Select
               size="sm"
               placeholder="Server status update time (seconds)"
-              defaultValue={selectedSequnce}
+              defaultValue={selectedSeconds}
               onChange={handleSelectChange}
-              slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
+              sx={{ height: '36px' }}
             >
-              {_sequenceOptions.map((option) => (
+              {_secondsOptions.map((option) => (
                 <Option key={option.key} value={option.value}>
                   {option.key}
                 </Option>
               ))}
             </Select>
           </FormControl>
+
           <Button
             type="button"
             variant="solid"
             color="primary"
             startDecorator={<RefreshRounded />}
             sx={{ height: '32px' }}
+            onClick={handleRefresh}
           >
-            Menual Refresh (수동 동기화)
+            Refresh
           </Button>
+
           <div style={{ marginLeft: '20px' }}>
             <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
               {Object.keys(etcdServerListServiceStatus).map((index) => (
@@ -232,7 +309,7 @@ export function ServerControlTable(props: ServerControlTableProps) {
               backgroundColor: 'transparent',
             }}
           >
-            <TableRows lists={lists} handleConfirm={handleConfirm} />
+            <TableRows lists={updatedLists} handleConfirm={handleConfirm} />
           </tbody>
         </Table>
       </Sheet>

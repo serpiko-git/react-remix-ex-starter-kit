@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -46,6 +46,7 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
+import { JSX } from 'react/jsx-runtime';
 
 import {
   ServiceContolParams,
@@ -54,8 +55,8 @@ import {
 } from '../models/server-control.model';
 interface ModalConfirmlProps {
   open: boolean;
-  action: ServiceControlStopStatusTypes;
-  request:
+  serviceFetchActionType: ServiceControlStopStatusTypes;
+  requestParams:
     | ServiceContolParams['service_stop_all']
     | ServiceContolParams['service_stop_each']
     | ServiceContolParams['server_stop_force'];
@@ -65,13 +66,21 @@ interface ModalConfirmlProps {
 }
 
 export default function ModalConfirm(props: ModalConfirmlProps) {
-  const { open, fetcher, action, request, onCancel, onConfirm } = props;
+  const {
+    open,
+    fetcher,
+    serviceFetchActionType,
+    requestParams,
+    onCancel,
+    onConfirm,
+  } = props;
 
   const handleConfirm = () => {
     // 모달의 OK 버튼을 클릭하면 fetcher.submit 호출
     fetcher.submit(
       {
-        action: 'delete',
+        serviceFetchActionType,
+        ...requestParams,
       },
       { method: 'post', action: './' },
     );
@@ -79,16 +88,46 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
     onConfirm(); // 모달 닫기
   };
 
-  let description = '';
-  if (action === serviceControlStopStatus.SERVICE_STOP_ALL) {
-    description = '[서비스 전체 중지]를 실행 하시겠습니까?';
-  } else if (action === serviceControlStopStatus.SERVICE_STOP_EACH) {
+  let description: JSX.Element = null;
+
+  /** 서비스 전체 중지 요청 */
+  if (serviceFetchActionType === serviceControlStopStatus.SERVICE_STOP_ALL) {
+    description = (
+      <Stack direction="row" alignItems="center">
+        <Typography fontWeight="bold" fontSize="lg" color="danger">
+          서비스 전체 중지 요청
+        </Typography>
+        <Typography>을 실행 하시겠습니까?</Typography>
+      </Stack>
+    );
+    /** 서비스 중지 요청 */
+  } else if (
+    serviceFetchActionType === serviceControlStopStatus.SERVICE_STOP_EACH
+  ) {
     const { service_name } =
-      request as ServiceContolParams['service_stop_each'];
-    description = `[서비스 중지 요청] ${service_name} 을 실행 하시겠습니까?`;
-  } else if (action === serviceControlStopStatus.SERVER_STOP_FORCE) {
-    const { service_id } = request as ServiceContolParams['server_stop_force'];
-    description = `[서버 강제 중지] ${service_id}를 실행 하시겠습니까?`;
+      requestParams as ServiceContolParams['service_stop_each'];
+    description = (
+      <Stack direction="row" alignItems="center">
+        <Typography fontWeight="bold" fontSize="lg" color="danger">
+          서비스 중지 요청({service_name})
+        </Typography>
+        <Typography>을 실행 하시겠습니까?</Typography>
+      </Stack>
+    );
+    /** 서버 강제 중지 */
+  } else if (
+    serviceFetchActionType === serviceControlStopStatus.SERVER_STOP_FORCE
+  ) {
+    const { service_id } =
+      requestParams as ServiceContolParams['server_stop_force'];
+    description = (
+      <Stack direction="row" alignItems="center">
+        <Typography fontWeight="bold" fontSize="lg" color="primary">
+          서버 강제 중지({service_id})
+        </Typography>
+        <Typography>를 실행 하시겠습니까?</Typography>
+      </Stack>
+    );
   }
 
   return (
@@ -106,7 +145,7 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
         <ModalDialog variant="outlined" role="alertdialog">
           <DialogTitle>
             <WarningRoundedIcon />
-            Confirm Cancellation
+            Confirm
           </DialogTitle>
           <Divider />
           <DialogContent>{description}</DialogContent>
