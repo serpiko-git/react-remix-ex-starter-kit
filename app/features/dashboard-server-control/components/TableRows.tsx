@@ -55,9 +55,7 @@ export default function TableRows(props: TableRowsProps) {
             ) : null}
 
             <td style={{ padding: '12px 6px' }}>{list.service_id}</td>
-            <td style={{ padding: '12px 6px' }}>
-              {list.service_group ? list.service_group : 'no data'}
-            </td>
+            <td style={{ padding: '12px 6px' }}>{list.service_group}</td>
             <td style={{ padding: '12px 6px' }}>
               <Typography
                 fontWeight="bold"
@@ -124,9 +122,7 @@ export default function TableRows(props: TableRowsProps) {
           </td>
           <td style={{ padding: '12px 6px' }}>{list.service_name}</td>
           <td style={{ padding: '12px 6px' }}>{list.service_id}</td>
-          <td style={{ padding: '12px 6px' }}>
-            {list.service_group ? list.service_group : 'no data'}
-          </td>
+          <td style={{ padding: '12px 6px' }}>{list.service_group}</td>
           <td style={{ padding: '12px 6px' }}>
             <Typography
               fontWeight="bold"

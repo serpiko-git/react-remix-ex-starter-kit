@@ -217,7 +217,7 @@ export function ServerControlTable(props: ServerControlTableProps) {
         }}
       >
         <Stack direction="row" alignItems="flex-end" spacing={1}>
-          <FormControl size="sm" sx={{ flex: 1, width: '330px' }}>
+          <FormControl size="sm" sx={{ flex: 1, width: '350px' }}>
             <FormLabel>
               Last update:
               <Typography fontWeight="bold" fontSize="sm">
@@ -238,7 +238,6 @@ export function ServerControlTable(props: ServerControlTableProps) {
               ))}
             </Select>
           </FormControl>
-
           <Button
             type="button"
             variant="solid"
@@ -249,7 +248,6 @@ export function ServerControlTable(props: ServerControlTableProps) {
           >
             Refresh
           </Button>
-
           <div style={{ marginLeft: '20px' }}>
             <Box display="flex" gap={3} sx={{ flexWrap: 'wrap' }}>
               {Object.keys(etcdServerListServiceStatus).map((index) => (
@@ -264,7 +262,6 @@ export function ServerControlTable(props: ServerControlTableProps) {
               ))}
             </Box>
           </div>
-
           {/* 맨 우측에 위치시키기 위해 margin-left: auto 추가 */}
           <Button
             type="button"
