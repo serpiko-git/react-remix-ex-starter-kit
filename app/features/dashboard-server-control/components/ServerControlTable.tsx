@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import { RefreshRounded, WarningRounded } from '@mui/icons-material';
+import {
+  RefreshRounded,
+  WarningRounded,
+  CheckCircle as CheckIcon,
+  Warning as WarningIcon,
+} from '@mui/icons-material';
 import {
   Button,
   Sheet,
@@ -12,6 +17,7 @@ import {
   Option,
   Box,
   Typography,
+  Snackbar,
 } from '@mui/joy';
 import { useActionData, useFetcher } from '@remix-run/react';
 import dayjs from 'dayjs';
@@ -77,6 +83,12 @@ export function ServerControlTable(props: ServerControlTableProps) {
   const [updatedLists, setUpdatedLists] = useState<EtcdServiceList[]>(lists);
   const [lastUpdate, setLastUpdate] = useState<string>();
 
+  const [isOpenSuccessAlert, setIsOpenSuccessAlert] = useState(false);
+  const [snackbarSuccessMessage, setSnackbarSuccessMessage] = useState('');
+
+  const [isOpenFailAlert, setIsOpenFailAlert] = useState(false);
+  const [snackbarErrorMessage, setSnackbarErrorMessage] = useState('');
+
   /** functions */
   const onCancel = () => setShowModal(false);
 
@@ -86,6 +98,11 @@ export function ServerControlTable(props: ServerControlTableProps) {
     event: React.MouseEvent | React.KeyboardEvent | React.FocusEvent,
     value: number,
   ) => {
+    const selectedText = (event.target as HTMLElement).textContent;
+
+    setIsOpenSuccessAlert(true);
+    setSnackbarSuccessMessage(`폴링 주기가 ${value}초로 선택되었습니다`);
+
     setSelectedSeconds(value);
   };
 
@@ -96,6 +113,7 @@ export function ServerControlTable(props: ServerControlTableProps) {
       | ServiceContolParams['service_stop_each']
       | ServiceContolParams['server_stop_force'];
   }) => {
+    // ModalConfirm에 전달하기 위한 값들
     const { actionParam, requestParam } = params;
     setServiceFetchActionType(actionParam);
     setRequestParams(requestParam);
@@ -114,8 +132,13 @@ export function ServerControlTable(props: ServerControlTableProps) {
 
   const handleRefresh = () => {
     if (isExecution.current === true) {
-      alert('요청 처리중입니다');
+      setIsOpenFailAlert(true);
+      setSnackbarErrorMessage('기존 요청을 처리중입니다');
+      return;
     }
+
+    setIsOpenSuccessAlert(true);
+    setSnackbarSuccessMessage('수동 폴링을 요청하였습니다');
 
     // pollingStop(); // 수동 리프레시 시 자동 갱신 중지
 
@@ -126,10 +149,10 @@ export function ServerControlTable(props: ServerControlTableProps) {
 
   // 타이머 주기에 따른 자동 갱신을 설정
   useEffect(() => {
-    if (isExecution.current) {
-      console.log('요청 처리 중 폴링 중지');
-      return;
-    }
+    // if (isExecution.current) {
+    //   console.log('요청 처리 중 폴링 중지');
+    //   return;
+    // }
 
     if (selectedSeconds > 0) {
       pollingStart(selectedSeconds); // 선택한 주기에 맞춰 밀리초로 변환하여 타이머 시작
@@ -137,7 +160,6 @@ export function ServerControlTable(props: ServerControlTableProps) {
       pollingStop(); // 선택 주기가 0이면 타이머 중지
     }
 
-    // 주기 변경 시마다 타이머를 리셋하기 위해 pollingStop을 cleanup에 설정
     // eslint-disable-next-line consistent-return
     return () => {
       if (selectedSeconds > 0) {
@@ -180,6 +202,9 @@ export function ServerControlTable(props: ServerControlTableProps) {
   // fetcher 가 아닌 loader 값을 감지하여 갱신하는 이펙트
   useEffect(() => {
     if (lists.length) {
+      setIsOpenSuccessAlert(true);
+      setSnackbarSuccessMessage('데이터가 갱신 되었습니다');
+
       setLastUpdate(
         dayjs(new Date()).format('YYYY년 MM월 DD일 HH시 mm분 ss.SSS초'),
       );
@@ -200,6 +225,10 @@ export function ServerControlTable(props: ServerControlTableProps) {
         pollingStart={pollingStart}
         selectedSeconds={selectedSeconds}
         pollingStop={pollingStop}
+        setIsOpenSuccessAlert={setIsOpenSuccessAlert}
+        setIsOpenFailAlert={setIsOpenFailAlert}
+        setSnackbarMessage={setSnackbarSuccessMessage}
+        setSnackbarErrorMessage={setSnackbarErrorMessage}
       />
       <Box
         className="SearchAndFilters-tabletUp"
@@ -342,6 +371,36 @@ export function ServerControlTable(props: ServerControlTableProps) {
           </tbody>
         </Table>
       </Sheet>
+
+      <Snackbar
+        open={isOpenSuccessAlert}
+        size="md"
+        variant="solid"
+        color="success"
+        startDecorator={<CheckIcon />}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={() => setIsOpenSuccessAlert(false)}
+      >
+        <Typography fontWeight="bold" fontSize="lg" sx={{ color: 'white' }}>
+          {snackbarSuccessMessage}
+        </Typography>
+      </Snackbar>
+
+      <Snackbar
+        open={isOpenFailAlert}
+        size="md"
+        variant="solid"
+        color="danger"
+        startDecorator={<WarningIcon />}
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={() => setIsOpenFailAlert(false)}
+      >
+        <Typography fontWeight="bold" fontSize="lg" sx={{ color: 'white' }}>
+          {snackbarErrorMessage}
+        </Typography>
+      </Snackbar>
     </>
   );
 }

@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({
   }
 
   const fetchUrl = `${apiHost_v1}/etcd/service/list?${searchParams.toString()}`;
-  console.log('fetchUrl', fetchUrl);
+  // console.log('fetchUrl', fetchUrl);
   const response = await fetch(fetchUrl);
   const responseProps: EtcdServiceListResponse = await response.json();
   if (responseProps.code === 0) {
@@ -123,14 +123,14 @@ export const action: ActionFunction = async ({
     const service_name = formData.get('service_name');
     const service_status = formData.get('service_status');
 
-    // /api/v1/etcd/service/all/update
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    // const fetchUrl = await fetch('https://jsonplaceholder.typicode.com/posts', { // mockup
+    const fetchUrl = `${apiHost_v1}/etcd/service/all/update`;
+    const response = await fetch(fetchUrl, {
       method: 'POST',
       body: JSON.stringify({
-        title: 'foo',
-        body: 'bar',
-        userId: '100',
-        serviceFetchActionType,
+        // title: 'foo',
+        // body: 'bar',
+        // userId: '100',
         service_name,
         service_status,
       }),
@@ -138,6 +138,14 @@ export const action: ActionFunction = async ({
         'Content-type': 'application/json; charset=UTF-8',
       },
     });
+
+    console.group();
+    console.log('dashboard.server-control');
+    console.log('fetchUrl', fetchUrl);
+    console.log('serviceFetchActionType', serviceFetchActionType);
+    console.log('service_name', service_name);
+    console.log('service_status', service_status);
+    console.groupEnd();
 
     const data = await response.json();
 
@@ -147,13 +155,14 @@ export const action: ActionFunction = async ({
     const service_id = formData.get('service_id');
     const service_status = formData.get('service_status');
 
-    // /api/v1/etcd/service/update
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    // const fetchUrl = await fetch('https://jsonplaceholder.typicode.com/posts', { // mockup
+    const fetchUrl = `${apiHost_v1}/etcd/service/all/update`;
+    const response = await fetch(fetchUrl, {
       method: 'POST',
       body: JSON.stringify({
-        title: 'foo',
-        body: 'bar',
-        userId: '100',
+        // title: 'foo',
+        // body: 'bar',
+        // userId: '100',
         serviceFetchActionType,
         service_id,
         service_status,
@@ -163,9 +172,17 @@ export const action: ActionFunction = async ({
       },
     });
 
-    // const data = await response.json();
+    console.group();
+    console.log('dashboard.server-control');
+    console.log('fetchUrl', fetchUrl);
+    console.log('serviceFetchActionType', serviceFetchActionType);
+    console.log('service_id', service_id);
+    console.log('service_status', service_status);
+    console.groupEnd();
 
-    // return json(data);
+    const data = await response.json();
+
+    return json(data);
   }
 
   return null;

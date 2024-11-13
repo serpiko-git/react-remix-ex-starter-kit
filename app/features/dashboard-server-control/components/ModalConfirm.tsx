@@ -1,4 +1,12 @@
-import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  Fragment,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -66,6 +74,10 @@ interface ModalConfirmlProps {
   pollingStart: ($seconds: number) => void;
   selectedSeconds: number;
   pollingStop: () => void;
+  setIsOpenSuccessAlert: Dispatch<SetStateAction<boolean>>;
+  setIsOpenFailAlert: Dispatch<SetStateAction<boolean>>;
+  setSnackbarMessage: Dispatch<SetStateAction<string>>;
+  setSnackbarErrorMessage: Dispatch<SetStateAction<string>>;
 }
 
 export default function ModalConfirm(props: ModalConfirmlProps) {
@@ -79,6 +91,10 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
     pollingStart,
     selectedSeconds,
     pollingStop,
+    setIsOpenSuccessAlert,
+    setIsOpenFailAlert,
+    setSnackbarMessage,
+    setSnackbarErrorMessage,
   } = props;
 
   const handleConfirm = () => {
@@ -95,9 +111,17 @@ export default function ModalConfirm(props: ModalConfirmlProps) {
   };
 
   useEffect(() => {
+    if (selectedSeconds <= 0) return;
+
     if (open) {
+      setIsOpenFailAlert(true);
+      setSnackbarErrorMessage('폴링을 일시 중지합니다');
+
       pollingStop();
     } else {
+      setIsOpenSuccessAlert(true);
+      setSnackbarMessage(`폴링 주기를 ${selectedSeconds}초로 재개합니다`);
+
       pollingStart(selectedSeconds);
     }
   }, [open]);
