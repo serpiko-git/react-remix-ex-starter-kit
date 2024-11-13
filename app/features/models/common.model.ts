@@ -2,7 +2,7 @@ import numeral from 'numeral';
 
 export interface BaseResponse<T> {
   code: number;
-  data: T;
+  data?: T;
   msg: string;
   time_now: string;
 }
@@ -14,17 +14,19 @@ export interface BaseResponseList<T>
   }> {}
 
 export interface BaseResponsePaging<T>
-  extends BaseResponse<{
-    catalog: {
-      [key: string]: any;
-    };
-    pagination: {
-      total: number;
-      page_no: number;
-      page_size: number;
-    };
-    list: T[];
-  }> {}
+  extends BaseResponse<
+    Partial<{
+      catalog: {
+        [key: string]: any;
+      };
+      pagination: {
+        total: number;
+        page_no: number;
+        page_size: number;
+      };
+      list: T[];
+    }>
+  > {}
 
 const CATALOG_CASH = 'cash';
 const CATALOG_QTY = 'qty';

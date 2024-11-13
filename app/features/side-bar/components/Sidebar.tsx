@@ -6,7 +6,6 @@ import {
   FormatListBulleted as ListIcon,
 } from '@mui/icons-material';
 import {
-  Box,
   GlobalStyles,
   List,
   ListItem,
@@ -16,6 +15,7 @@ import {
   Sheet,
   Typography,
   useColorScheme,
+  Box,
 } from '@mui/joy';
 import { useLocation, useNavigate } from '@remix-run/react';
 

@@ -6,14 +6,20 @@ import {
   DownloadRounded,
 } from '@mui/icons-material';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
-import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
-import DialogActions from '@mui/joy/DialogActions';
-import DialogContent from '@mui/joy/DialogContent';
-import DialogTitle from '@mui/joy/DialogTitle';
-import Divider from '@mui/joy/Divider';
-import Modal from '@mui/joy/Modal';
-import ModalDialog from '@mui/joy/ModalDialog';
-import { CssVarsProvider } from '@mui/joy/styles';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Link,
+  Typography,
+  DialogActions,
+  CssVarsProvider,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Modal,
+  ModalDialog,
+} from '@mui/joy';
 
 import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';

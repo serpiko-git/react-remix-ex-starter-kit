@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  Box,
   Button,
   Checkbox,
   Divider,
@@ -12,8 +11,9 @@ import {
   Link,
   Stack,
   Typography,
+  CssVarsProvider,
+  Box,
 } from '@mui/joy';
-import { CssVarsProvider } from '@mui/joy/styles';
 import { useNavigate } from '@remix-run/react';
 
 import { DEFAULT_PATH_NAVIGATE } from '~/consts';

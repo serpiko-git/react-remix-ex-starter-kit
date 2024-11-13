@@ -5,8 +5,14 @@ import {
   HomeRounded,
   DownloadRounded,
 } from '@mui/icons-material';
-import { Box, Breadcrumbs, Button, Link, Typography } from '@mui/joy';
-import { CssVarsProvider } from '@mui/joy/styles';
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Link,
+  Typography,
+  CssVarsProvider,
+} from '@mui/joy';
 
 import { Header } from '~/features/dashboard-common';
 import { Sidebar } from '~/features/side-bar';
