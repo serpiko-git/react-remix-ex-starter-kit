@@ -5,26 +5,19 @@ import {
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
-  MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
-  WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
-  Dropdown,
   FormControl,
   FormLabel,
   IconButton,
   Input,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
   Modal,
   ModalClose,
   ModalDialog,
@@ -35,9 +28,6 @@ import {
   Typography,
   iconButtonClasses,
   Stack,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
 } from '@mui/joy';
 import {
   Form,
@@ -48,7 +38,6 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs';
-import { DEFAULT_SYMBOL_LIST } from '~/consts';
 
 import {
   Trade,

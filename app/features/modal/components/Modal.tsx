@@ -1,8 +1,14 @@
 import * as React from 'react';
 
 import { Paper, PaperProps } from '@material-ui/core';
-import { Box, Button, Modal, ModalDialog, Typography } from '@mui/joy';
-import { CssVarsProvider } from '@mui/joy/styles';
+import {
+  Button,
+  Modal,
+  ModalDialog,
+  Typography,
+  CssVarsProvider,
+  Box,
+} from '@mui/joy';
 import Draggable from 'react-draggable';
 
 import { ModalProps } from '../models/modal.model';

@@ -1,21 +1,12 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
-import {
-  Box,
-  Modal,
-  Typography,
-  Textarea,
-  IconButton,
-  Sheet,
-  Table,
-} from '@mui/joy';
+import { Box, Typography, IconButton, Sheet, Table } from '@mui/joy';
 
-import { apiHost_v1, apiGateway_v1 } from '~/consts';
+import { apiGateway_v1 } from '~/consts';
 
 import {
   EtcdServiceAcsResponse,
-  EtcdServiceAcsPayload,
   EtcdTraceWorker,
 } from '../models/etcd-service.model';
 

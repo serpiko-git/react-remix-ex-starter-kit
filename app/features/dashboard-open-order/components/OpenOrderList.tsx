@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import {
   AutorenewRounded as AutorenewRoundedIcon,
   Block as BlockIcon,

@@ -1,30 +1,23 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 
 import {
   ArrowDropDown as ArrowDropDownIcon,
   FilterAlt as FilterAltIcon,
   KeyboardArrowLeft as KeyboardArrowLeftIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
-  MoreHorizRounded as MoreHorizRoundedIcon,
   Search as SearchIcon,
   Warning as WarningIcon,
   AccountCircle as AccountCircleIcon,
-  WarningRounded as WarningRoundedIcon,
 } from '@mui/icons-material';
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
-  Dropdown,
   FormControl,
   FormLabel,
   IconButton,
   Input,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
   Modal,
   ModalClose,
   ModalDialog,
@@ -35,9 +28,6 @@ import {
   Typography,
   iconButtonClasses,
   Stack,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
 } from '@mui/joy';
 import {
   Form,
@@ -45,15 +35,10 @@ import {
   useNavigate,
   useSearchParams,
 } from '@remix-run/react';
-import dayjs from 'dayjs';
 import numeral from 'numeral';
 import { useForm, Controller } from 'react-hook-form';
 
 import { Pagination } from '~/common/libs';
-import {
-  DEFAULT_DASHBOARD_TICKER,
-  DEFAULT_PAGINATION_LIMIT,
-} from '~/consts/consts';
 import {
   USER_PNL_SORT_COLUMN_RE,
   USER_PNL_SORT_COLUMN_SUM,
@@ -68,8 +53,6 @@ import { getComparator, Order } from '~/utils/ordering';
 import {
   UserPnl,
   UserPnlCombineProps,
-  UserPnlQueries,
-  UserPnlResponse,
   UserPnlSearchValues,
 } from '../models/user-pnl.model';
 

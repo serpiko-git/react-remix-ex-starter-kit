@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 
-import Box from '@mui/joy/Box';
-import CardOverflow from '@mui/joy/CardOverflow';
-import CircularProgress from '@mui/joy/CircularProgress';
-import Divider from '@mui/joy/Divider';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Stack from '@mui/joy/Stack';
-import Step from '@mui/joy/Step';
-import Stepper from '@mui/joy/Stepper';
-import Grid from '@mui/material/Grid';
+import {
+  Box,
+  CardOverflow,
+  CircularProgress,
+  Divider,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Step,
+  Stepper,
+} from '@mui/joy';
+import { Grid } from '@mui/material';
 
 import { useSymbol } from '../hooks/queries';
 import { ISymbol } from '../models/symbol.model';
